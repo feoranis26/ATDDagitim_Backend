@@ -1,4 +1,3 @@
-
 namespace ATDBackend
 {
     public class Program
@@ -26,7 +25,6 @@ namespace ATDBackend
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
