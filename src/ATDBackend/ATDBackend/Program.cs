@@ -1,4 +1,5 @@
 using ATDBackend.Models;
+using ATDBackend.data;
 using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend
@@ -10,7 +11,7 @@ namespace ATDBackend
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+            var conn = builder.Configuration.GetConnectionString("DefaultConnection"); 
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(conn));
 
