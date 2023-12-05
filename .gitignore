@@ -13,6 +13,10 @@
 # MacOS auto-generated files
 .DS_Store
 
+#VS-Code auto-generated files
+.vscode/
+.vscode
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
