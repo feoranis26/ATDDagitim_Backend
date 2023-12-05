@@ -1,19 +1,18 @@
-using Microsoft.EntityFrameworkCore;
 using ATDBackend.Database.DBContexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend
 {
     public class Program
     {
-
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var conn = builder.Configuration.GetConnectionString("DefaultConnection"); 
+            var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 
-            builder.Services.AddDbContext<UsersDBContext>(options => options.UseNpgsql(conn));
+            builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn)); //Default DB context
 
             builder.Services.AddControllers();
 
