@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ATDBackend.Database.DBContexts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ATDBackend
 {
@@ -14,6 +17,21 @@ namespace ATDBackend
             var conn = builder.Configuration.GetConnectionString("DefaultConnection"); 
 
             builder.Services.AddDbContext<UsersDBContext>(options => options.UseNpgsql(conn));
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["JWTToken:Issuer"],
+                    ValidAudience = builder.Configuration["JWTToken:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTToken:SecurityKey"])),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
             builder.Services.AddControllers();
 
@@ -32,7 +50,9 @@ namespace ATDBackend
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.MapControllers();
 
