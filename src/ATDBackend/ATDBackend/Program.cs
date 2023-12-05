@@ -1,5 +1,7 @@
-using ATDBackend.Models;
-using ATDBackend.data;
+using ATDBackend.Database.DBContexts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend
@@ -11,9 +13,24 @@ namespace ATDBackend
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var conn = builder.Configuration.GetConnectionString("DefaultConnection"); 
+            var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(conn));
+            builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn)); //Default DB context
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["JWTToken:Issuer"],
+                    ValidAudience = builder.Configuration["JWTToken:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTToken:SecurityKey"])),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
             builder.Services.AddControllers();
 
@@ -32,7 +49,9 @@ namespace ATDBackend
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.MapControllers();
 
