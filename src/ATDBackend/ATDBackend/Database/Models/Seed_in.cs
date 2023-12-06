@@ -32,7 +32,7 @@ namespace ATDBackend.Database.Models
         public int Status { get; set; }
 
         [ForeignKey("Id")]
-        public Category Category_id { get; set; }
+        public Category? Category_id { get; set; }
 
         public string? Notes { get; set; }
 

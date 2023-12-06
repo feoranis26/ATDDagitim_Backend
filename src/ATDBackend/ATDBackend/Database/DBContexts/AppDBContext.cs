@@ -26,7 +26,100 @@ namespace ATDBackend.Database.DBContexts
             modelBuilder.Entity<School>().HasIndex(e => e.Name).IsUnique();
 
             //Relationships
+            modelBuilder
+                .Entity<School_Seed>()
+                .HasOne(p => p.School)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder
+                .Entity<School_Seed>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder
+                .Entity<School_Seed>()
+                .HasOne(p => p.Category)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder
+                .Entity<School_Seed>()
+                .HasOne(p => p.Seed)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder
+                .Entity<Order>()
+                .HasOne(p => p.School)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Order>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Seed_in>()
+                .HasOne(p => p.School)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Seed_in>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Seed_in>()
+                .HasOne(p => p.School_Seed)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Seed_in>()
+                .HasOne(p => p.Category_id)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Seed>()
+                .HasOne(p => p.Category)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Seed>()
+                .HasOne(p => p.User_id)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<User>()
+                .HasOne(p => p.School_id)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<User>()
+                .HasOne(p => p.Role_id)
+                .WithMany()
+                .HasForeignKey(p => p.Id)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -11,10 +11,10 @@ namespace ATDBackend.Database.Models
         public int Id { get; set; }
 
         [Required]
-        public int Name { get; set; }
+        public String Name { get; set; }
 
         [Required]
-        [ForeignKey("Category_id")]
+        [ForeignKey("Id")]
         public Category Category { get; set; } //FOREIGN KEY
 
         [Required]
@@ -31,7 +31,7 @@ namespace ATDBackend.Database.Models
         public DateTime Date_added { get; set; }
 
         [Required]
-        public int Price { get; set; }
+        public float Price { get; set; }
 
         [Required]
         public bool Is_active { get; set; }
