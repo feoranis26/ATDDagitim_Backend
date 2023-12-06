@@ -1,5 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ATDBackend.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 namespace ATDBackend.Database.Models
 {
@@ -18,10 +23,12 @@ namespace ATDBackend.Database.Models
         public string Hashed_PW { get; set; }
 
         [Required]
-        public int School_id { get; set; } //FOREIGN KEY
+        [ForeignKey("Id")]
+        public School School_id { get; set; } //FOREIGN KEY
 
         [Required]
-        public int Role_id { get; set; } //FOREIGN KEY
+        [ForeignKey("Id")]
+        public Role Role_id { get; set; } //FOREIGN KEY
 
         [Required]
         public DateTime Register_date { get; set; }

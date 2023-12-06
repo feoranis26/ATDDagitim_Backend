@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 
@@ -13,13 +14,15 @@ namespace ATDBackend.Database.Models
         public int Name { get; set; }
 
         [Required]
-        public int Category { get; set; } //FOREIGN KEY
+        [ForeignKey("Category_id")]
+        public Category Category { get; set; } //FOREIGN KEY
 
         [Required]
         public string Description { get; set; }
 
         [Required]
-        public int User_id { get; set; } //FOREIGN KEY
+        [ForeignKey("Id")]
+        public User User_id { get; set; } //FOREIGN KEY
 
         [Required]
         public int Stock { get; set; }

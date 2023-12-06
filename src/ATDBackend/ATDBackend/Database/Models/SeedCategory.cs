@@ -10,5 +10,7 @@ namespace ATDBackend.Database.Models
 
         [Required]
         public string Category_name { get; set; }
+        
+        public string Origin { get; set; }
     }
 }
