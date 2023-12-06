@@ -12,5 +12,8 @@ namespace ATDBackend.Database.Models
 
         [Required]
         public string Address { get; set; }
+
+        [Required]
+        public int credit { get; set; }
     }
 }
