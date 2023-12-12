@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ATDBackend.Database.Models
 {
-    public class School
+    public class School 
     {
         [Key]
         public int Id { get; set; }

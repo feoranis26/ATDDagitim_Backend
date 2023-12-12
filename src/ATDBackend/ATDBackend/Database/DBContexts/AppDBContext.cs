@@ -8,14 +8,14 @@ namespace ATDBackend.Database.DBContexts
         public AppDBContext(DbContextOptions<AppDBContext> options)
             : base(options) { }
 
-        public DbSet<ATDBackend.Database.Models.Category> Categories { get; set; }
-        public DbSet<ATDBackend.Database.Models.Order> Orders { get; set; }
-        public DbSet<ATDBackend.Database.Models.Role> Roles { get; set; }
-        public DbSet<ATDBackend.Database.Models.School_Seed> Inventory { get; set; }
-        public DbSet<ATDBackend.Database.Models.School> Schools { get; set; }
-        public DbSet<ATDBackend.Database.Models.Seed_in> Seeds_in { get; set; }
-        public DbSet<ATDBackend.Database.Models.Seed> Seeds { get; set; }
-        public DbSet<ATDBackend.Database.Models.User> Users { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<School_Seed> Inventory { get; set; }
+        public DbSet<School> Schools { get; set; }
+        public DbSet<Seed_in> Seeds_in { get; set; }
+        public DbSet<Seed> Seeds { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) //Define relationships and indexes here
         {

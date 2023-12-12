@@ -26,13 +26,13 @@ namespace ATDBackend.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetProducts()
+        public IActionResult GetProducts()//ONLY FOR TESTING PURPOSES
         {
             return Ok(_context.Seeds);
         }
 
         [HttpPost]
-        public IActionResult AddProduct([FromBody] SeedDto seedDto)
+        public IActionResult AddProduct([FromBody] SeedDto seedDto)//REQUIRES AUTHENTICATION 
         {
             var category = _context.Categories.Find(seedDto.CategoryId);
             var user = _context.Users.Find(seedDto.UserId);
@@ -40,6 +40,14 @@ namespace ATDBackend.Controllers
             if (category == null || user == null)
             {
                 return BadRequest("Invalid CategoryId or UserId");
+            }
+            if (seedDto.Name.Length < 3)
+            {
+                return BadRequest("Name must be at least 3 characters long");
+            }
+            if (seedDto.Description.Length < 50)
+            {
+                return BadRequest("Description must be at least 50 characters long");
             }
 
             var seed = new Seed
