@@ -29,9 +29,9 @@ namespace ATDBackend.Controllers
         {
             return Ok(_context.Seeds);
         }
-        
+
         [HttpPost]
-        public IActionResult AddProduct(Seed seed)
+        public IActionResult AddProduct([FromBody] Seed seed)
         {
             _context.Seeds.Add(seed);
             _context.SaveChanges();

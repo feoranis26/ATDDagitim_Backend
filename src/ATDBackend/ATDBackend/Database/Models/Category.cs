@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations;
 
 namespace ATDBackend.Database.Models
@@ -12,7 +11,5 @@ namespace ATDBackend.Database.Models
         public string CategoryName { get; set; }
 
         public string Description { get; set; }
-
-        public ICollection<Seed>?  Seeds { get; set; }
     }
 }

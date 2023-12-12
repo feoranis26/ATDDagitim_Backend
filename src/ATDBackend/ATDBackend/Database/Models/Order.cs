@@ -18,7 +18,7 @@ namespace ATDBackend.Database.Models
         public User User { get; set; } //FOREIGN KEY
 
         [Required]
-        public ICollection<Seed> Seeds { get; set; }
+        public List<int> Seeds { get; set; }
 
         [Required]
         public DateTime Timestamp { get; set; }
