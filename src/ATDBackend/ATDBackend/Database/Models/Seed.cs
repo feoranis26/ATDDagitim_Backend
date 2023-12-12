@@ -8,20 +8,25 @@ namespace ATDBackend.Database.Models
     public class Seed
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
         public String Name { get; set; }
 
+        public int CategoryId { get; set; } //FOREIGN KEY
+
         [Required]
-        [ForeignKey("Id")]
+        [ForeignKey("Category_Id")]
         public Category Category { get; set; } //FOREIGN KEY
 
         [Required]
         public string Description { get; set; }
 
+        public int UserId { get; set; } //FOREIGN KEY
+
         [Required]
-        [ForeignKey("Id")]
+        [ForeignKey("User_Id")]
         public User User_id { get; set; } //FOREIGN KEY
 
         [Required]

@@ -10,11 +10,26 @@ namespace ATDBackend.Database.Models
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("Id")]
+        public int SchoolId { get; set; } 
+
+        [Required]
+        [ForeignKey("SchoolId")]
         public School School { get; set; }
 
-        [ForeignKey("Id")]
+        public int UserId { get; set; } // Foreign key property for User
+
+        [ForeignKey("UserId")]
         public User User { get; set; }
+
+        public int CategoryId { get; set; } // Foreign key property for Category
+
+        [ForeignKey("CategoryId")]
+        public Category? Category { get; set; }
+
+        public int SeedId { get; set; } // Foreign key property for Seed
+
+        [ForeignKey("SeedId")]
+        public Seed Seed { get; set; }
 
         [Required]
         [StringLength(255)]
@@ -25,9 +40,6 @@ namespace ATDBackend.Database.Models
         [Required]
         public int Stock { get; set; }
 
-        [ForeignKey("Id")]
-        public Category? Category { get; set; }
-
         public int? Price { get; set; }
 
         public string? Photo { get; set; }
@@ -37,9 +49,6 @@ namespace ATDBackend.Database.Models
 
         [Required]
         public int Source { get; set; }
-
-        [ForeignKey("Id")]
-        public Seed Seed { get; set; }
 
         [Required]
         public bool Is_deleted { get; set; }

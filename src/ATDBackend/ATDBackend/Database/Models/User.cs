@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ATDBackend.Database.Models;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ATDBackend.Database.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 
@@ -14,6 +14,12 @@ namespace ATDBackend.Database.Models
         public int Id { get; set; }
 
         [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string surname { get; set; }
+
+        [Required]
         public string Email { get; set; }
 
         [Required]
@@ -22,12 +28,16 @@ namespace ATDBackend.Database.Models
         [Required]
         public string Hashed_PW { get; set; }
 
-        [Required]
-        [ForeignKey("Id")]
-        public School School_id { get; set; } //FOREIGN KEY
+        public int SchoolId { get; set; } //FOREIGN KEY
 
         [Required]
-        [ForeignKey("Id")]
+        [ForeignKey("School_Id")]
+        public School School_id { get; set; } //FOREIGN KEY
+
+        public int RoleId { get; set; } //FOREIGN KEY
+
+        [Required]
+        [ForeignKey("Role_Id")]
         public Role Role_id { get; set; } //FOREIGN KEY
 
         [Required]

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,12 +10,16 @@ namespace ATDBackend.Database.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("Id")]
-        public School School { get; set; } //FOREIGN KEY
+        public int SchoolId { get; set; } // Foreign key property for School
 
         [Required]
-        [ForeignKey("Id")]
+        [ForeignKey("SchoolId")]
+        public School School { get; set; } //FOREIGN KEY
+
+        public int UserId { get; set; } // Foreign key property for User
+
+        [Required]
+        [ForeignKey("UserId")]
         public User User { get; set; } //FOREIGN KEY
 
         [Required]

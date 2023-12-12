@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,16 +9,22 @@ namespace ATDBackend.Database.Models
         [Key]
         public int Id { get; set; }
 
+        public int SchoolId { get; set; } // Foreign key property for School
+
         [Required]
-        [ForeignKey("Id")]
+        [ForeignKey("SchoolId")]
         public School School { get; set; }
 
-        [Required]
-        [ForeignKey("Id")]
-        public User User { get; set; }
+        public int UserId { get; set; } // Foreign key property for User
 
         [Required]
-        [ForeignKey("Id")]
+        [ForeignKey("UserId")]
+        public User User { get; set; }
+
+        public int SchoolSeedId { get; set; } // Foreign key property for School_Seed
+
+        [Required]
+        [ForeignKey("SchoolSeedId")]
         public School_Seed School_Seed { get; set; }
 
         [Required]
@@ -31,7 +38,9 @@ namespace ATDBackend.Database.Models
         [Required]
         public int Status { get; set; }
 
-        [ForeignKey("Id")]
+        public int? CategoryId { get; set; } // Foreign key property for Category
+
+        [ForeignKey("CategoryId")]
         public Category? Category_id { get; set; }
 
         public string? Notes { get; set; }

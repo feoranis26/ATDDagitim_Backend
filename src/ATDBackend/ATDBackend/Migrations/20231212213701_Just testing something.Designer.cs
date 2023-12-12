@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ATDBackend.Database.DBContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ATDBackend.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231212213701_Just testing something")]
+    partial class Justtestingsomething
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,7 +70,7 @@ namespace ATDBackend.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SchoolId")
+                    b.Property<int>("School_Id")
                         .HasColumnType("integer");
 
                     b.Property<List<int>>("Seeds")
@@ -81,14 +84,14 @@ namespace ATDBackend.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("User_Id")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SchoolId");
+                    b.HasIndex("School_Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("User_Id");
 
                     b.ToTable("Orders");
                 });
@@ -148,7 +151,7 @@ namespace ATDBackend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("Category_Id")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("Date")
@@ -171,10 +174,10 @@ namespace ATDBackend.Migrations
                     b.Property<int?>("Price")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SchoolId")
+                    b.Property<int>("School_Id")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SeedId")
+                    b.Property<int>("Seed_Id")
                         .HasColumnType("integer");
 
                     b.Property<int>("Source")
@@ -183,18 +186,18 @@ namespace ATDBackend.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("User_Id")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("Category_Id");
 
-                    b.HasIndex("SchoolId");
+                    b.HasIndex("School_Id");
 
-                    b.HasIndex("SeedId");
+                    b.HasIndex("Seed_Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("User_Id");
 
                     b.ToTable("Inventory");
                 });
@@ -206,9 +209,6 @@ namespace ATDBackend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("Category_Id")
                         .HasColumnType("integer");
@@ -237,20 +237,14 @@ namespace ATDBackend.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("User_Id")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("Category_Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("User_Id");
 
                     b.ToTable("Seeds");
                 });
@@ -266,16 +260,16 @@ namespace ATDBackend.Migrations
                     b.Property<string>("Cargo_Tracking_Number")
                         .HasColumnType("text");
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int?>("Category_Id")
                         .HasColumnType("integer");
 
                     b.Property<string>("Notes")
                         .HasColumnType("text");
 
-                    b.Property<int>("SchoolId")
+                    b.Property<int>("School_Id")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SchoolSeedId")
+                    b.Property<int>("School_Seed_Id")
                         .HasColumnType("integer");
 
                     b.Property<int>("Seed_amount")
@@ -291,18 +285,18 @@ namespace ATDBackend.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("User_Id")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("Category_Id");
 
-                    b.HasIndex("SchoolId");
+                    b.HasIndex("School_Id");
 
-                    b.HasIndex("SchoolSeedId");
+                    b.HasIndex("School_Seed_Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("User_Id");
 
                     b.ToTable("Seeds_in");
                 });
@@ -323,10 +317,6 @@ namespace ATDBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Phone_number")
                         .IsRequired()
                         .HasColumnType("text");
@@ -334,13 +324,7 @@ namespace ATDBackend.Migrations
                     b.Property<DateTime>("Register_date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Role_Id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SchoolId")
                         .HasColumnType("integer");
 
                     b.Property<int>("School_Id")
@@ -350,21 +334,11 @@ namespace ATDBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("surname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasIndex("Role_Id");
 
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("SchoolId");
-
-                    b.HasIndex("Username")
-                        .IsUnique();
+                    b.HasIndex("School_Id");
 
                     b.ToTable("Users");
                 });
@@ -373,14 +347,14 @@ namespace ATDBackend.Migrations
                 {
                     b.HasOne("ATDBackend.Database.Models.School", "School")
                         .WithMany()
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ATDBackend.Database.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("User_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("School");
@@ -392,26 +366,24 @@ namespace ATDBackend.Migrations
                 {
                     b.HasOne("ATDBackend.Database.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("Category_Id");
 
                     b.HasOne("ATDBackend.Database.Models.School", "School")
                         .WithMany()
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ATDBackend.Database.Models.Seed", "Seed")
                         .WithMany()
-                        .HasForeignKey("SeedId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("Seed_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ATDBackend.Database.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("User_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -427,14 +399,14 @@ namespace ATDBackend.Migrations
                 {
                     b.HasOne("ATDBackend.Database.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("Category_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ATDBackend.Database.Models.User", "User_id")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("User_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -446,25 +418,24 @@ namespace ATDBackend.Migrations
                 {
                     b.HasOne("ATDBackend.Database.Models.Category", "Category_id")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("Category_Id");
 
                     b.HasOne("ATDBackend.Database.Models.School", "School")
                         .WithMany()
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ATDBackend.Database.Models.School_Seed", "School_Seed")
                         .WithMany()
-                        .HasForeignKey("SchoolSeedId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("School_Seed_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ATDBackend.Database.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("User_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category_id");
@@ -480,14 +451,14 @@ namespace ATDBackend.Migrations
                 {
                     b.HasOne("ATDBackend.Database.Models.Role", "Role_id")
                         .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("Role_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ATDBackend.Database.Models.School", "School_id")
                         .WithMany()
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Role_id");
