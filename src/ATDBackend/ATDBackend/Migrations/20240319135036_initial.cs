@@ -5,7 +5,7 @@
 namespace ATDBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class F_Keyfixtry : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -180,6 +180,13 @@ namespace ATDBackend.Migrations
                 table: "Inventory",
                 newName: "IX_Inventory_SchoolId");
 
+            migrationBuilder.AddColumn<string>(
+                name: "Name",
+                table: "Users",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.AddColumn<int>(
                 name: "RoleId",
                 table: "Users",
@@ -193,6 +200,13 @@ namespace ATDBackend.Migrations
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
+
+            migrationBuilder.AddColumn<string>(
+                name: "surname",
+                table: "Users",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.AddColumn<int>(
                 name: "CategoryId",
@@ -216,6 +230,12 @@ namespace ATDBackend.Migrations
                 defaultValue: 0);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
@@ -224,6 +244,12 @@ namespace ATDBackend.Migrations
                 name: "IX_Users_SchoolId",
                 table: "Users",
                 column: "SchoolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Seeds_CategoryId",
@@ -419,11 +445,19 @@ namespace ATDBackend.Migrations
                 table: "Users");
 
             migrationBuilder.DropIndex(
+                name: "IX_Users_Email",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
                 name: "IX_Users_RoleId",
                 table: "Users");
 
             migrationBuilder.DropIndex(
                 name: "IX_Users_SchoolId",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_Username",
                 table: "Users");
 
             migrationBuilder.DropIndex(
@@ -443,11 +477,19 @@ namespace ATDBackend.Migrations
                 table: "Inventory");
 
             migrationBuilder.DropColumn(
+                name: "Name",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
                 name: "RoleId",
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "SchoolId",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "surname",
                 table: "Users");
 
             migrationBuilder.DropColumn(
