@@ -25,7 +25,7 @@ namespace ATDBackend.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public IActionResult GetProducts()
         {
             return Ok(_context.Seeds);
@@ -59,6 +59,22 @@ namespace ATDBackend.Controllers
             _context.SaveChanges();
 
             return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult GetProduct(int Page, int PageSize)
+        {
+            if (Page < 1)
+            {
+                return BadRequest("Page number cannot be smaller than 1");
+            }
+            if (PageSize > 100)
+            {
+                return BadRequest("Page Size cannot be bigger than 100");
+            }
+            var products = _context.Seeds.Skip((Page - 1) * PageSize).Take(PageSize).ToList();
+
+            return Ok(products);
         }
     }
 }
