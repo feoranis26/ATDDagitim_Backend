@@ -26,7 +26,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddSchool([FromBody] School school)
+        public IActionResult AddSchool([FromBody] School school)//REQUIRES AUTHENTICATION
         {
             _context.Schools.Add(school);
             _context.SaveChanges();
