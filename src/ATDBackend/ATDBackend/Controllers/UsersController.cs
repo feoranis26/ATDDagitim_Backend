@@ -91,11 +91,13 @@ namespace ATDBackend.Controllers
             {
                 return Unauthorized("Invalid email or password.");
             }
+            var tokenHandler = new Token();
+            var createdToken = TokenHandler.CreateToken(_configuration, user.Id);
 
             // If we reach this point, the user is authenticated
             // Here you might generate and return a JWT for the user, or just return a success message
-            return Ok("Login successful.");
-            var tokenHandler = new Token();
+            var returnObject = new { token = createdToken.AccessToken, };
+            return Ok(returnObject);
         }
     }
 }

@@ -1,13 +1,15 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ATDBackend.Security
 {
     public static class TokenHandler
     {
-        public static Token CreateToken(IConfiguration configuration)
+        public static Token CreateToken(IConfiguration configuration, int userId)
         {
             Token token = new();
 
@@ -21,10 +23,12 @@ namespace ATDBackend.Security
                 .Now
                 .AddMinutes(Convert.ToInt16(configuration["JWTToken:ExpirationMins"]));
 
+            var claims = new[] { new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()), };
             JwtSecurityToken jwtToken =
                 new(
                     issuer: configuration["JWTToken:Issuer"],
                     audience: configuration["JWTToken:Audience"],
+                    claims: claims,
                     expires: token.Expiration,
                     notBefore: DateTime.Now,
                     signingCredentials: creds
