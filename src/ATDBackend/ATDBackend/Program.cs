@@ -14,6 +14,19 @@ namespace ATDBackend
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            builder
+                .Services
+                .AddCors(options =>
+                {
+                    options.AddPolicy(
+                        name: MyAllowSpecificOrigins,
+                        policy =>
+                        {
+                            policy.WithOrigins("http://example.com", "http://www.contoso.com");
+                        }
+                    );
+                });
 
             // Add services to the container.
             var conn = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -63,9 +76,9 @@ namespace ATDBackend
 
             app.UseHttpsRedirection();
 
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();
