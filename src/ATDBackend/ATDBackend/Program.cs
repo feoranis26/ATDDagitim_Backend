@@ -1,8 +1,11 @@
-using ATDBackend.Database.DBContexts;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ATDBackend.Database.DBContexts;
+using ATDBackend.Swagger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ATDBackend
 {
@@ -17,26 +20,37 @@ namespace ATDBackend
 
             builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn)); //Default DB context
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+            builder
+                .Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    ValidateAudience = true,
-                    ValidateIssuer = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["JWTToken:Issuer"],
-                    ValidAudience = builder.Configuration["JWTToken:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTToken:SecurityKey"])),
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
+                    options.TokenValidationParameters =
+                        new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                        {
+                            ValidateAudience = true,
+                            ValidateIssuer = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = builder.Configuration["JWTToken:Issuer"],
+                            ValidAudience = builder.Configuration["JWTToken:Audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(
+                                Encoding
+                                    .UTF8
+                                    .GetBytes(builder.Configuration["JWTToken:SecurityKey"])
+                            ),
+                            ClockSkew = TimeSpan.Zero
+                        };
+                });
 
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder
+                .Services
+                .AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
             var app = builder.Build();
 
@@ -51,7 +65,6 @@ namespace ATDBackend
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 
