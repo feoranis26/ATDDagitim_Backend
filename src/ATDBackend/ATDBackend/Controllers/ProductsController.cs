@@ -2,7 +2,8 @@
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security;
-using Microsoft.AspNetCore.Mvc; //You know what this is...
+using Microsoft.AspNetCore.Cors; //You know what this is...
+using Microsoft.AspNetCore.Mvc;
 
 namespace ATDBackend.Controllers
 {
@@ -32,6 +33,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpPost]
+        [EnableCors("AllowAllOrigins")]
         public IActionResult AddProduct([FromBody] SeedDto seedDto) //REQUIRES AUTHENTICATION
         {
             var category = _context.Categories.Find(seedDto.CategoryId);
