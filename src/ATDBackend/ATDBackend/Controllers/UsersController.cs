@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
@@ -94,6 +95,7 @@ namespace ATDBackend.Controllers
             // If we reach this point, the user is authenticated
             // Here you might generate and return a JWT for the user, or just return a success message
             return Ok("Login successful.");
+            var tokenHandler = new Token();
         }
     }
 }
