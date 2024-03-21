@@ -89,45 +89,22 @@ namespace ATDBackend.Controllers
         [HttpGet("find")]
         public IActionResult GetOneProduct(int? productId, int? categoryId)
         {
-            if (productId != null)
+            if ((productId == null) == (categoryId == null)) return BadRequest("Why the fuck are you filling (or leaving them empty) the both integers at the same time?");
+
+            if(productId != null)
             {
-                if (productId > 0)
-                {
-                    var seeds = _context.Seeds.FirstOrDefault(a => a.CategoryId == categoryId);
-                    if (seeds != null)
-                    {
-                        return Ok(seeds);
-                    }
-                    else
-                    {
-                        return StatusCode(500);
-                    }
-                }
-                else
-                {
-                    return BadRequest("Id should be bigger than 0");
-                }
+                Seed? seed = _context.Seeds.Where(x => x.Id == productId).FirstOrDefault();
+                if (seed == null) return BadRequest("Seed not found");
+                return Ok(seed);
             }
-            if (categoryId != null)
+
+            if(categoryId != null)
             {
-                if (categoryId > 0)
-                {
-                    var seed = _context.Seeds.Find(productId);
-                    if (seed != null)
-                    {
-                        return Ok(seed);
-                    }
-                    else
-                    {
-                        return StatusCode(500);
-                    }
-                }
-                else
-                {
-                    return BadRequest("Id should be bigger than 0");
-                }
+                Seed[] seeds = _context.Seeds.Where(x => x.CategoryId == categoryId).ToArray();
+                return Ok(seeds);
             }
-            return BadRequest("You must provide a productId or categoryId");
+
+            return BadRequest("This shouldn't have happend...");
         }
     }
 }
