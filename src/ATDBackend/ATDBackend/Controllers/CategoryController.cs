@@ -33,7 +33,6 @@ namespace ATDBackend.Controllers
         }
 
         [HttpPost]
-        
         public IActionResult addCategory([FromBody] Category category)
         {
             try
@@ -43,9 +42,15 @@ namespace ATDBackend.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, (e));
+                
             }
             return Ok(category);
+        }
+
+        [HttpGet]
+        public IActionResult getCategory(int categoryID)
+        {
+            return Ok(_context.Categories.Where(x => x.Id == categoryID).FirstOrDefault());
         }
     }
 }
