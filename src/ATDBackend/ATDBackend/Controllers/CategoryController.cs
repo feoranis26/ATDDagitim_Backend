@@ -33,6 +33,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpPost]
+        
         public IActionResult addCategory([FromBody] Category category)
         {
             try
