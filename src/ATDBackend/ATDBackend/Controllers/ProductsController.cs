@@ -89,34 +89,45 @@ namespace ATDBackend.Controllers
         [HttpGet("find")]
         public IActionResult GetOneProduct(int? productId, int? categoryId)
         {
-            if (productId > 0)
+            if (productId != null)
             {
-                var seeds = _context.Seeds.FirstOrDefault(a => a.CategoryId == categoryId);
-                if (seeds != null)
+                if (productId > 0)
                 {
-                    return Ok(seeds);
+                    var seeds = _context.Seeds.FirstOrDefault(a => a.CategoryId == categoryId);
+                    if (seeds != null)
+                    {
+                        return Ok(seeds);
+                    }
+                    else
+                    {
+                        return StatusCode(500);
+                    }
                 }
                 else
                 {
-                    return StatusCode(500);
+                    return BadRequest("Id should be bigger than 0");
                 }
             }
-            else if (categoryId > 0)
+            if (categoryId != null)
             {
-                var seed = _context.Seeds.Find(productId);
-                if (seed != null)
+                if (categoryId > 0)
                 {
-                    return Ok(seed);
+                    var seed = _context.Seeds.Find(productId);
+                    if (seed != null)
+                    {
+                        return Ok(seed);
+                    }
+                    else
+                    {
+                        return StatusCode(500);
+                    }
                 }
                 else
                 {
-                    return StatusCode(500);
+                    return BadRequest("Id should be bigger than 0");
                 }
             }
-            else
-            {
-                return BadRequest("Id should be bigger than 0");
-            }
+            return BadRequest("You must provide a productId or categoryId");
         }
     }
 }
