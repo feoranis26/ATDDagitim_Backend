@@ -77,7 +77,7 @@ namespace ATDBackend
             app.UseSwagger(); //FOR DEVELOPMENT ONLY CHANGE LATER
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("swagger/v1/swagger.json", "Web API V1");
+                c.SwaggerEndpoint("/v1/swagger.json", "Web API V1");
             });
 
             app.UseHttpsRedirection();
