@@ -75,8 +75,11 @@ namespace ATDBackend.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult GetUsers([FromBody] UserDto userDto) //ONLY FOR TESTING PURPOSES
+        public IActionResult Login([FromBody] UserDto userDto) //ONLY FOR TESTING PURPOSES
         {
+
+            return Ok("TEST");
+
             var user = _context.Users.SingleOrDefault(u => u.Email == userDto.Email);
 
             if (user == null)
@@ -99,5 +102,7 @@ namespace ATDBackend.Controllers
             var returnObject = new { token = createdToken.AccessToken, };
             return Ok(returnObject);
         }
+
+        
     }
 }

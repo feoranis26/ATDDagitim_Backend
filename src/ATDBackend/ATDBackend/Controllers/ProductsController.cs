@@ -33,7 +33,6 @@ namespace ATDBackend.Controllers
         }
 
         [HttpPost]
-        [EnableCors("AllowAllOrigins")]
         public IActionResult AddProduct([FromBody] SeedDto seedDto) //REQUIRES AUTHENTICATION
         {
             var category = _context.Categories.Find(seedDto.CategoryId);
