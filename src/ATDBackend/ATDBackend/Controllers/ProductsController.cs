@@ -88,7 +88,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpGet("find")]
-        public IActionResult GetOneProduct(int productId, int categoryId)
+        public IActionResult GetOneProduct(int? productId, int? categoryId)
         {
             if (productId > 0)
             {
