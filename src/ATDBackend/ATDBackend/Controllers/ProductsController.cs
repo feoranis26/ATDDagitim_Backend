@@ -70,6 +70,30 @@ namespace ATDBackend.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        public IActionResult UpdateProduct(int Id, [FromBody] SeedUpdateDTO? seedDto)
+        {
+            if (seedDto == null || Id == 0)
+                return BadRequest("Invalid Id or SeedDto");
+            var seed = _context.Seeds.Find(Id);
+            if (seed == null)
+                return BadRequest("Seed not found");
+            if (seedDto.Name != null)
+                seed.Name = seedDto.Name;
+            if (seedDto.Description != null)
+                seed.Description = seedDto.Description;
+            if (seedDto.Stock != null)
+                seed.Stock = (int)seedDto.Stock;
+            if (seedDto.Price != null)
+                seed.Price = (int)seedDto.Price;
+            if (seedDto.Is_active != null)
+                seed.Is_active = (bool)seedDto.Is_active;
+            if (seedDto.Image != null)
+                seed.Image = seedDto.Image;
+            _context.SaveChanges();
+            return Ok();
+        }
+
         [HttpGet]
         public IActionResult GetProduct(int Page, int PageSize)
         {
@@ -89,16 +113,20 @@ namespace ATDBackend.Controllers
         [HttpGet("find")]
         public IActionResult GetOneProduct(int? productId, int? categoryId)
         {
-            if ((productId == null) == (categoryId == null)) return BadRequest("Why the fuck are you filling (or leaving them empty) the both integers at the same time?");
+            if ((productId == null) == (categoryId == null))
+                return BadRequest(
+                    "Why the fuck are you filling (or leaving them empty) the both integers at the same time?"
+                );
 
-            if(productId != null)
+            if (productId != null)
             {
                 Seed? seed = _context.Seeds.Where(x => x.Id == productId).FirstOrDefault();
-                if (seed == null) return BadRequest("Seed not found");
+                if (seed == null)
+                    return BadRequest("Seed not found");
                 return Ok(seed);
             }
 
-            if(categoryId != null)
+            if (categoryId != null)
             {
                 Seed[] seeds = _context.Seeds.Where(x => x.CategoryId == categoryId).ToArray();
                 return Ok(seeds);
