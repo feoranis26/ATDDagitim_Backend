@@ -29,7 +29,7 @@ namespace ATDBackend
                 });
 
             // Add services to the container.
-            var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+            var conn = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
             builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn)); //Default DB context
 

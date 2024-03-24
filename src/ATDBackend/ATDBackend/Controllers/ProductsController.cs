@@ -91,7 +91,7 @@ namespace ATDBackend.Controllers
             if (seedDto.Image != null)
                 seed.Image = seedDto.Image;
             _context.SaveChanges();
-            return Ok();
+            return Ok(seed);
         }
 
         [HttpGet]
