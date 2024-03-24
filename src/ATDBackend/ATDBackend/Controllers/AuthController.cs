@@ -37,8 +37,17 @@ namespace ATDBackend.Controllers
             {
                 return Unauthorized("Invalid Username");
             }
-            Token token = TokenHandler.CreateToken(_configuration, User.Id);
-            return Ok(token);
+            if (!BCrypt.Net.BCrypt.Verify(pw, User.Hashed_PW))
+            {
+                return Unauthorized("Invalid Password");
+            }
+            if (User != null && BCrypt.Net.BCrypt.Verify(pw, User.Hashed_PW))
+            {
+                // Create a token (JWT)
+                Token token = TokenHandler.CreateToken(_configuration, User.Id);
+                return Ok(token);
+            }
+            return StatusCode(500, "Internal Server Error");
         }
     }
 }

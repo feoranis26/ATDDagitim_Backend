@@ -23,7 +23,10 @@ namespace ATDBackend
                         name: MyAllowSpecificOrigins,
                         policy =>
                         {
-                            policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+                            policy
+                                .WithOrigins("https://www.sehirbahceleri.com.tr")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
                         }
                     );
                 });
