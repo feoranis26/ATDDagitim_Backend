@@ -94,6 +94,13 @@ namespace ATDBackend.Controllers
             return Ok(seed);
         }
 
+        /// <summary>
+        /// Get a list of products.
+        /// 
+        /// </summary>
+        /// <param name="Page">Page number</param>
+        /// <param name="PageSize">Number of products should the page have</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetProduct(int Page, int PageSize)
         {
