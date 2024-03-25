@@ -25,7 +25,7 @@ namespace ATDBackend
                         policy =>
                         {
                             policy
-                                .WithOrigins("https://www.sehirbahceleri.com.tr")
+                                .WithOrigins("*")
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
                         }
@@ -79,7 +79,7 @@ namespace ATDBackend
                             Contact = new OpenApiContact
                             {
                                 Name = "Example Contact",
-                                Url = new Uri("https://example.com/contact")
+                                Url = new Uri("https://www.sehirbahceleri.com.tr/")
                             },
                             License = new OpenApiLicense
                             {
