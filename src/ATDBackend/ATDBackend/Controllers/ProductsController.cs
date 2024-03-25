@@ -96,7 +96,6 @@ namespace ATDBackend.Controllers
 
         /// <summary>
         /// Get a list of products.
-        /// 
         /// </summary>
         /// <param name="Page">Page number</param>
         /// <param name="PageSize">Number of products should the page have</param>

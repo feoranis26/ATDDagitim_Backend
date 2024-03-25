@@ -73,7 +73,7 @@ namespace ATDBackend
                         new OpenApiInfo
                         {
                             Version = "v1",
-                            Title = "ToDo API",
+                            Title = "Sehirbahceleri API",
                             Description = "An ASP.NET Core Web API for managing ToDo items",
                             TermsOfService = new Uri("https://example.com/terms"),
                             Contact = new OpenApiContact
@@ -105,11 +105,10 @@ namespace ATDBackend
             app.UseSwagger(); //FOR DEVELOPMENT ONLY CHANGE LATER
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("swagger/v1/swagger.json", "Web API V1");
+                c.SwaggerEndpoint("/v1/swagger.json", "Web API V1");
             });
 
             app.UseHttpsRedirection();
-
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
             app.UseAuthorization();
