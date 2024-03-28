@@ -2,9 +2,7 @@
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security;
-using ATDBackend.Security;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc; //You know what this is...
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +14,7 @@ namespace ATDBackend.Controllers
         ILogger<AuthController> logger,
         IConfiguration configuration,
         AppDBContext context
-        ) : ControllerBase
+    ) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;

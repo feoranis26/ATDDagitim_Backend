@@ -13,7 +13,7 @@ namespace ATDBackend.Controllers
         ILogger<AuthController> logger,
         IConfiguration configuration,
         AppDBContext context
-        ) : ControllerBase
+    ) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
@@ -28,15 +28,8 @@ namespace ATDBackend.Controllers
         [HttpPost]
         public IActionResult addCategory([FromBody] Category category)
         {
-            try
-            {
-                _context.Categories.Add(category);
-                _context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                
-            }
+            _context.Categories.Add(category);
+            _context.SaveChanges();
             return Ok(category);
         }
 
