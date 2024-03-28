@@ -29,9 +29,9 @@ namespace ATDBackend.Security
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(configuration["JWTToken:SecurityKey"]);
 
+            Console.WriteLine("Checking token");
             try
             {
-                Console.WriteLine("Checking token");
                 tokenHandler.ValidateToken(
                     token,
                     new TokenValidationParameters
@@ -46,55 +46,64 @@ namespace ATDBackend.Security
                     },
                     out SecurityToken validatedToken
                 );
-
-                var tokenUser = tokenHandler
-                    .ReadJwtToken(token)
-                    .Claims
-                    .First(claim => claim.Type == "sub")
-                    .Value;
-
-                var user = dbContext.Users.Find(Convert.ToInt32(tokenUser));
-                if (user == null)
-                {
-                    Console.WriteLine("User not found");
-                    context.HttpContext.Response.StatusCode = 401;
-                    await context.HttpContext.Response.WriteAsync("Unauthorized_noUsr");
-                    return;
-                }
-                if (roleName != null || roleName != "")
-                {
-                    Console.WriteLine("Checking role");
-                    var role = dbContext
-                        .Roles
-                        .FirstOrDefault(
-                            x => x.Role_name.Equals(roleName, StringComparison.OrdinalIgnoreCase)
-                        );
-                    int role_id = -1;
-                    if (role == null)
-                    {
-                        Console.WriteLine("Role not found");
-                        throw new Exception("Role not found");
-                    }
-                    else
-                    {
-                        role_id = role.Id;
-                        if (role_id != user.RoleId)
-                        {
-                            Console.WriteLine("Unauthorized_role");
-                            context.HttpContext.Response.StatusCode = 401;
-                            await context.HttpContext.Response.WriteAsync("Unauthorized_role");
-                            return;
-                        }
-                    }
-                }
+                await next();
             }
             catch
             {
+                Console.WriteLine("Unauthorized_token");
                 context.HttpContext.Response.StatusCode = 401;
-                await context.HttpContext.Response.WriteAsync("Unauthorized_tokenExp");
+                await context.HttpContext.Response.WriteAsync("Unauthorized_token");
                 return;
             }
-            await next();
+
+            var tokenUser = tokenHandler
+                .ReadJwtToken(token)
+                .Claims
+                .First(claim => claim.Type == "sub")
+                .Value;
+
+            var user = dbContext.Users.Find(Convert.ToInt32(tokenUser));
+            if (user == null)
+            {
+                Console.WriteLine("User not found");
+                context.HttpContext.Response.StatusCode = 401;
+                await context.HttpContext.Response.WriteAsync("Unauthorized_noUsr");
+                return;
+            }
+            if (roleName != null || roleName != "")
+            {
+                Console.WriteLine("Checking role");
+                var role = dbContext
+                    .Roles
+                    .FirstOrDefault(
+                        x => x.Role_name.Equals(roleName, StringComparison.OrdinalIgnoreCase)
+                    );
+                int role_id = -1;
+                if (role == null)
+                {
+                    Console.WriteLine("Role not found");
+                    throw new Exception("Role not found");
+                }
+                else
+                {
+                    role_id = role.Id;
+                    if (role_id == user.RoleId)
+                    {
+                        await next();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unauthorized_role");
+                        context.HttpContext.Response.StatusCode = 401;
+                        await context.HttpContext.Response.WriteAsync("Unauthorized_role");
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                await next();
+            }
         }
     }
 }
