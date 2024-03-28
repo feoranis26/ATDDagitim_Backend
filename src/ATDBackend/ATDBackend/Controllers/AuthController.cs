@@ -21,18 +21,18 @@ namespace ATDBackend.Controllers
         private readonly AppDBContext _context = context;
 
         [HttpGet("login")]
-        public IActionResult Login(string username, string pw)
+        public IActionResult Login(string username, string password)
         {
             var User = _context.Users.FirstOrDefault(u => u.Username == username);
             if (User == null)
             {
                 return Unauthorized("Invalid Username");
             }
-            if (!BCrypt.Net.BCrypt.Verify(pw, User.Hashed_PW))
+            if (!BCrypt.Net.BCrypt.Verify(password, User.Hashed_PW))
             {
                 return Unauthorized("Invalid Password");
             }
-            if (User != null && BCrypt.Net.BCrypt.Verify(pw, User.Hashed_PW))
+            if (User != null && BCrypt.Net.BCrypt.Verify(password, User.Hashed_PW))
             {
                 // Create a token (JWT)
                 Token token = TokenHandler.CreateToken(_configuration, User.Id);
