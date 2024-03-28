@@ -98,11 +98,8 @@ namespace ATDBackend
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger(); //FOR DEVELOPMENT ONLY
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/v1/swagger.json", "Web API V1");
-                });
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             app.UseSwagger(); //FOR DEVELOPMENT ONLY
             app.UseSwaggerUI(c =>
