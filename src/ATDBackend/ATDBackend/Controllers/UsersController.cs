@@ -3,12 +3,10 @@ using System.IdentityModel.Tokens.Jwt;
 using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
-using ATDBackend.Security;
+using ATDBackend.Security; //login and register operations
+using ATDBackend.Utils; //Utilities
 using BCrypt.Net;
-using Mailjet.Client;
-using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Mvc; //You know what this is...
-using Newtonsoft.Json.Linq;
 
 namespace ATDBackend.Controllers
 {
@@ -80,140 +78,27 @@ namespace ATDBackend.Controllers
 
             _context.Users.Add(user);
             _context.SaveChanges();
-
-            static async Task RunAsync()
-            {
-                MailjetClient client = new MailjetClient(
-                    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"),
-                    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE")
-                );
-                MailjetRequest request = new MailjetRequest { Resource = Send.Resource, }
-                    .Property(Send.SandboxMode, "true")
-                    .Property(
-                        Send.Messages,
-                        new JArray
-                        {
-                            new JObject
-                            {
-                                {
-                                    "From",
-                                    new JArray
-                                    {
-                                        new JObject
-                                        {
-                                            { "Email", "pilot@mailjet.com" },
-                                            { "Name", "Your Mailjet Pilot" }
-                                        }
-                                    }
-                                },
-                                {
-                                    "HTMLPart",
-                                    "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!"
-                                },
-                                { "Subject", "Your email flight plan!" },
-                                {
-                                    "TextPart",
-                                    "Dear passenger, welcome to Mailjet! May the delivery force be with you!"
-                                },
-                                {
-                                    "To",
-                                    new JArray
-                                    {
-                                        new JObject
-                                        {
-                                            { "Email", "sehirbahceleri@gmail.com" },
-                                            { "Name", "sehirbahceleri" }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    );
-                MailjetResponse response = await client.PostAsync(request);
-                if (response.IsSuccessStatusCode)
-                {
-                    Console.WriteLine(
-                        string.Format(
-                            "Total: {0}, Count: {1}\n",
-                            response.GetTotal(),
-                            response.GetCount()
-                        )
-                    );
-                    Console.WriteLine(response.GetData());
-                }
-                else
-                {
-                    Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-                    Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-                    Console.WriteLine(response.GetData());
-                    Console.WriteLine(
-                        string.Format("ErrorMessage: {0}\n", response.GetErrorMessage())
-                    );
-                }
-            }
-
-            RunAsync().Wait();
-
             return Ok(user);
         }
 
         [HttpGet("sendMail")]
-        public IActionResult mailSendTest()
+        public IActionResult MailSendTest()
         {
-            static async Task RunAsync()
+            try
             {
-                MailjetClient client = new MailjetClient(
-                    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"),
-                    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE")
-                );
-                MailjetRequest request = new MailjetRequest { Resource = Send.Resource, }
-                    .Property(Send.FromEmail, "sehirbahceleri@gmail.com")
-                    .Property(Send.FromName, "Sehirbahceleri")
-                    .Property(
-                        Send.Recipients,
-                        new JArray
-                        {
-                            new JObject
-                            {
-                                { "Email", "sehirbahceleri@gmail.com" },
-                                { "Name", "Bora" }
-                            }
-                        }
-                    )
-                    .Property(Send.Subject, "Uyduruk Bora")
-                    .Property(
-                        Send.TextPart,
-                        "Dear passenger, welcome to Mailjet! May the delivery force be with you!"
-                    )
-                    .Property(
-                        Send.HtmlPart,
-                        "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!"
-                    );
-                MailjetResponse response = await client.PostAsync(request);
-                if (response.IsSuccessStatusCode)
-                {
-                    Console.WriteLine(
-                        string.Format(
-                            "Total: {0}, Count: {1}\n",
-                            response.GetTotal(),
-                            response.GetCount()
-                        )
-                    );
-                    Console.WriteLine(response.GetData());
-                }
-                else
-                {
-                    Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-                    Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-                    Console.WriteLine(response.GetData());
-                    Console.WriteLine(
-                        string.Format("ErrorMessage: {0}\n", response.GetErrorMessage())
-                    );
-                }
+                MailSender
+                    .SendMail("sehirbahceleri@gmail.com", "Test", "Test", null, "Test")
+                    .Wait();
+                return Ok("Mail sent successfully.");
             }
-
-            RunAsync().Wait();
-            return Ok();
+            catch (mailException e)
+            {
+                if (e.ErrorCode > 200)
+                {
+                    return StatusCode(e.ErrorCode, "Mail could not be sent.");
+                }
+                return BadRequest();
+            }
         }
 
         [HttpPost("login")]
