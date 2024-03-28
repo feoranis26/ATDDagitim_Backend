@@ -167,46 +167,27 @@ namespace ATDBackend.Controllers
                     Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE")
                 );
                 MailjetRequest request = new MailjetRequest { Resource = Send.Resource, }
-                    .Property(Send.SandboxMode, "true")
+                    .Property(Send.FromEmail, "sehirbahceleri@gmail.com")
+                    .Property(Send.FromName, "Sehirbahceleri")
                     .Property(
-                        Send.Messages,
+                        Send.Recipients,
                         new JArray
                         {
                             new JObject
                             {
-                                {
-                                    "From",
-                                    new JArray
-                                    {
-                                        new JObject
-                                        {
-                                            { "Email", "sehirbahceleri@gmail.com" },
-                                            { "Name", "Your Mailjet Pilot" }
-                                        }
-                                    }
-                                },
-                                {
-                                    "HTMLPart",
-                                    "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!"
-                                },
-                                { "Subject", "Your email flight plan!" },
-                                {
-                                    "TextPart",
-                                    "Dear passenger, welcome to Mailjet! May the delivery force be with you!"
-                                },
-                                {
-                                    "To",
-                                    new JArray
-                                    {
-                                        new JObject
-                                        {
-                                            { "Email", "sehirbahceleri@gmail.com" },
-                                            { "Name", "sehirbahceleri" }
-                                        }
-                                    }
-                                }
+                                { "Email", "sehirbahceleri@gmail.com" },
+                                { "Name", "Bora" }
                             }
                         }
+                    )
+                    .Property(Send.Subject, "Uyduruk Bora")
+                    .Property(
+                        Send.TextPart,
+                        "Dear passenger, welcome to Mailjet! May the delivery force be with you!"
+                    )
+                    .Property(
+                        Send.HtmlPart,
+                        "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!"
                     );
                 MailjetResponse response = await client.PostAsync(request);
                 if (response.IsSuccessStatusCode)
