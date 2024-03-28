@@ -18,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ATDBackend.Security
 {
-    public class CheckAuth(string roleName = "") : ActionFilterAttribute
+    public class CheckAuth(string? roleName = null) : ActionFilterAttribute
     {
         public override async Task OnActionExecutionAsync(
             ActionExecutingContext context,
@@ -71,9 +71,13 @@ namespace ATDBackend.Security
                     await context.HttpContext.Response.WriteAsync("Unauthorized");
                     return;
                 }
-                if (roleName != null)
+                if (roleName != null || roleName != "")
                 {
-                    var role = dbContext.Roles.FirstOrDefault(x => x.Role_name == roleName);
+                    var role = dbContext
+                        .Roles
+                        .FirstOrDefault(
+                            x => x.Role_name.Equals(roleName, StringComparison.OrdinalIgnoreCase)
+                        );
                     int role_id = -1;
                     if (role == null)
                     {
