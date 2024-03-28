@@ -1,10 +1,14 @@
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security;
 using BCrypt.Net;
+using Mailjet.Client;
+using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Mvc; //You know what this is...
+using Newtonsoft.Json.Linq;
 
 namespace ATDBackend.Controllers
 {
@@ -61,7 +65,7 @@ namespace ATDBackend.Controllers
                 return BadRequest("Password length must be between 8 and 30 characters.");
             }
 
-            var user = new User
+            var user = new Database.Models.User
             {
                 Name = userDto.Name,
                 surname = userDto.Surname,
@@ -76,6 +80,79 @@ namespace ATDBackend.Controllers
 
             _context.Users.Add(user);
             _context.SaveChanges();
+
+            static async Task RunAsync()
+            {
+                MailjetClient client = new MailjetClient(
+                    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"),
+                    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE")
+                );
+                MailjetRequest request = new MailjetRequest { Resource = Send.Resource, }
+                    .Property(Send.SandboxMode, "true")
+                    .Property(
+                        Send.Messages,
+                        new JArray
+                        {
+                            new JObject
+                            {
+                                {
+                                    "From",
+                                    new JArray
+                                    {
+                                        new JObject
+                                        {
+                                            { "Email", "pilot@mailjet.com" },
+                                            { "Name", "Your Mailjet Pilot" }
+                                        }
+                                    }
+                                },
+                                {
+                                    "HTMLPart",
+                                    "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!"
+                                },
+                                { "Subject", "Your email flight plan!" },
+                                {
+                                    "TextPart",
+                                    "Dear passenger, welcome to Mailjet! May the delivery force be with you!"
+                                },
+                                {
+                                    "To",
+                                    new JArray
+                                    {
+                                        new JObject
+                                        {
+                                            { "Email", "sehirbahceleri@gmail.com" },
+                                            { "Name", "sehirbahceleri" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                MailjetResponse response = await client.PostAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine(
+                        string.Format(
+                            "Total: {0}, Count: {1}\n",
+                            response.GetTotal(),
+                            response.GetCount()
+                        )
+                    );
+                    Console.WriteLine(response.GetData());
+                }
+                else
+                {
+                    Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
+                    Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+                    Console.WriteLine(response.GetData());
+                    Console.WriteLine(
+                        string.Format("ErrorMessage: {0}\n", response.GetErrorMessage())
+                    );
+                }
+            }
+
+            RunAsync().Wait();
 
             return Ok(user);
         }
