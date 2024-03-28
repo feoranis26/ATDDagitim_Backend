@@ -1,19 +1,7 @@
-using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
-using ATDBackend.Database.Models; //DB Models
-using ATDBackend.Security; //login and register operations
-using ATDBackend.Utils; //Utilities
-using BCrypt.Net;
-using Microsoft.AspNetCore.Authorization; //You know what this is...
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ATDBackend.Security
