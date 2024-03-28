@@ -90,7 +90,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpGet("sendMail")]
-        [CheckAuth]
+        [CheckAuth("User")]
         public IActionResult MailSendTest()
         {
             try

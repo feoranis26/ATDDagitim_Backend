@@ -18,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ATDBackend.Security
 {
-    public class CheckAuth() : ActionFilterAttribute
+    public class CheckAuth(string roleName = "") : ActionFilterAttribute
     {
         public override async Task OnActionExecutionAsync(
             ActionExecutingContext context,
@@ -28,8 +28,8 @@ namespace ATDBackend.Security
             var configuration = context
                 .HttpContext
                 .RequestServices
-                .GetRequiredService<IConfiguration>();
-            var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDBContext>();
+                .GetRequiredService<IConfiguration>(); //Configuration
+            var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDBContext>(); //DB Context
             var token = context
                 .HttpContext
                 .Request
@@ -37,9 +37,10 @@ namespace ATDBackend.Security
                 .Authorization
                 .ToString()
                 .Replace("Bearer ", "");
-            token = token.Trim();
+            token = token.Trim(); //Get token
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(configuration["JWTToken:SecurityKey"]);
+
             try
             {
                 tokenHandler.ValidateToken(
@@ -56,6 +57,45 @@ namespace ATDBackend.Security
                     },
                     out SecurityToken validatedToken
                 );
+
+                var tokenUser = tokenHandler
+                    .ReadJwtToken(token)
+                    .Claims
+                    .First(claim => claim.Type == "sub")
+                    .Value;
+
+                var user = dbContext.Users.Find(Convert.ToInt32(tokenUser));
+                if (user == null)
+                {
+                    context.HttpContext.Response.StatusCode = 401;
+                    await context.HttpContext.Response.WriteAsync("Unauthorized");
+                    return;
+                }
+                if (roleName != null)
+                {
+                    var role = dbContext.Roles.FirstOrDefault(x => x.Role_name == roleName);
+                    int role_id = -1;
+                    if (role == null)
+                    {
+                        throw new Exception("Role not found");
+                    }
+                    else
+                    {
+                        role_id = role.Id;
+                        if (role_id != user.RoleId)
+                        {
+                            context.HttpContext.Response.StatusCode = 401;
+                            await context.HttpContext.Response.WriteAsync("Unauthorized");
+                            return;
+                        }
+                    }
+                    if (role_id != user.RoleId)
+                    {
+                        context.HttpContext.Response.StatusCode = 401;
+                        await context.HttpContext.Response.WriteAsync("Unauthorized");
+                        return;
+                    }
+                }
             }
             catch
             {
