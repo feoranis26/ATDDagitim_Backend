@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using ATDBackend.Database.DBContexts; //DB Contexts
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ATDBackend.Security
@@ -62,7 +63,10 @@ namespace ATDBackend.Security
                 .First(claim => claim.Type == "sub")
                 .Value;
 
-            var user = dbContext.Users.Find(Convert.ToInt32(tokenUser));
+            var user = dbContext
+                .Users
+                .Include(U => U.Role)
+                .FirstOrDefault(U => U.Id == Convert.ToInt32(tokenUser));
             if (user == null)
             {
                 Console.WriteLine("User not found");
@@ -70,32 +74,18 @@ namespace ATDBackend.Security
                 await context.HttpContext.Response.WriteAsync("Unauthorized_noUsr");
                 return;
             }
-            if (roleName != null || roleName != "")
+            if (roleName != null)
             {
-                Console.WriteLine("Checking role");
-                var role = dbContext
-                    .Roles
-                    .FirstOrDefault(x => x.Role_name.ToLower() == roleName.ToLower());
-                int role_id = -1;
-                if (role == null)
+                if (user.Role.Role_name != roleName)
                 {
-                    Console.WriteLine("Role not found");
-                    throw new Exception("Role not found");
+                    Console.WriteLine("Unauthorized_role");
+                    context.HttpContext.Response.StatusCode = 401;
+                    await context.HttpContext.Response.WriteAsync("Unauthorized_role");
+                    return;
                 }
                 else
                 {
-                    role_id = role.Id;
-                    if (role_id == user.RoleId)
-                    {
-                        await next();
-                    }
-                    else
-                    {
-                        Console.WriteLine("Unauthorized_role");
-                        context.HttpContext.Response.StatusCode = 401;
-                        await context.HttpContext.Response.WriteAsync("Unauthorized_role");
-                        return;
-                    }
+                    await next();
                 }
             }
             else
