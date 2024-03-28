@@ -12,22 +12,15 @@ namespace ATDBackend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController(
+        ILogger<AuthController> logger,
+        IConfiguration configuration,
+        AppDBContext context
+        ) : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthController> _logger;
-        private readonly AppDBContext _context;
-
-        public AuthController(
-            ILogger<AuthController> logger,
-            IConfiguration configuration,
-            AppDBContext context
-        )
-        {
-            _logger = logger;
-            _configuration = configuration;
-            _context = context;
-        }
+        private readonly IConfiguration _configuration = configuration;
+        private readonly ILogger<AuthController> _logger = logger;
+        private readonly AppDBContext _context = context;
 
         [HttpGet("login")]
         public IActionResult Login(string username, string pw)

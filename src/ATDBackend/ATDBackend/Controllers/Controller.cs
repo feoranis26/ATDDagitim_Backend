@@ -4,16 +4,10 @@ namespace ATDBackend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class Controller : ControllerBase
+    public class Controller(ILogger<AuthController> logger, IConfiguration configuration) : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthController> _logger;
-
-        public Controller(ILogger<AuthController> logger, IConfiguration configuration)
-        {
-            _logger = logger;
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
+        private readonly ILogger<AuthController> _logger = logger;
 
         [HttpGet]
         public IActionResult getDef()

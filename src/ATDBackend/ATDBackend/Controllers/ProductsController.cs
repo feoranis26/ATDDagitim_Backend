@@ -9,22 +9,15 @@ namespace ATDBackend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController(
+        ILogger<AuthController> logger,
+        IConfiguration configuration,
+        AppDBContext context
+        ) : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthController> _logger;
-        private readonly AppDBContext _context;
-
-        public ProductsController(
-            ILogger<AuthController> logger,
-            IConfiguration configuration,
-            AppDBContext context
-        )
-        {
-            _context = context;
-            _logger = logger;
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
+        private readonly ILogger<AuthController> _logger = logger;
+        private readonly AppDBContext _context = context;
 
         [HttpGet("all")]
         public IActionResult GetProducts() //ONLY FOR TESTING

@@ -3,11 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Database.DBContexts
 {
-    public class AppDBContext : DbContext
+    public class AppDBContext(DbContextOptions<AppDBContext> options) : DbContext(options)
     {
-        public AppDBContext(DbContextOptions<AppDBContext> options)
-            : base(options) { }
-
         public DbSet<Category> Categories { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Role> Roles { get; set; }

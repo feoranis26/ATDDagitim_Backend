@@ -73,20 +73,14 @@ namespace ATDBackend.Utils
         }
     }
 
-    public class MailException : Exception
+    /// <summary>
+    /// Custom exception for mail sending errors.
+    /// </summary>
+    /// <param name="errorMessage"></param>
+    /// <param name="errorCode"></param>
+    public class MailException(string errorMessage, int errorCode) : Exception
     {
-        public string ErrorMessage { get; set; }
-        public int ErrorCode { get; set; }
-
-        /// <summary>
-        /// Custom exception for mail sending errors.
-        /// </summary>
-        /// <param name="errorMessage"></param>
-        /// <param name="errorCode"></param>
-        public MailException(string errorMessage, int errorCode)
-        {
-            this.ErrorMessage = errorMessage;
-            this.ErrorCode = errorCode;
-        }
+        public string ErrorMessage { get; set; } = errorMessage;
+        public int ErrorCode { get; set; } = errorCode;
     }
 }
