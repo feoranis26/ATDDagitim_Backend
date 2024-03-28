@@ -16,6 +16,8 @@ namespace ATDBackend
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            //CORS Policy
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             builder
                 .Services
@@ -33,10 +35,11 @@ namespace ATDBackend
                     );
                 });
 
-            // Add services to the container.
+            //DB Context
             var conn = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-
             builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn)); //Default DB context
+
+            //Identity
             builder
                 .Services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -59,6 +62,9 @@ namespace ATDBackend
                             ClockSkew = TimeSpan.Zero
                         };
                 });
+
+            builder.Services.AddAuthorization();
+            builder.Services.AddIdentityApiEndpoints<IdentityUser>();
 
             builder.Services.AddControllers();
 
@@ -110,6 +116,7 @@ namespace ATDBackend
 
             app.UseHttpsRedirection();
             app.UseCors(MyAllowSpecificOrigins);
+            app.MapIdentityApi<IdentityUser>();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
