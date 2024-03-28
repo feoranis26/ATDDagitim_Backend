@@ -13,17 +13,11 @@ namespace ATDBackend.Controllers
         ILogger<AuthController> logger,
         IConfiguration configuration,
         AppDBContext context
-        ) : ControllerBase
+    ) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
-
-        [HttpGet("all")]
-        public IActionResult GetProducts() //ONLY FOR TESTING
-        {
-            return Ok(_context.Seeds);
-        }
 
         [HttpPost]
         public IActionResult AddProduct([FromBody] SeedDto seedDto) //REQUIRES AUTHENTICATION
@@ -92,9 +86,10 @@ namespace ATDBackend.Controllers
         /// </summary>
         /// <param name="Page">Page number</param>
         /// <param name="PageSize">Number of products should the page have</param>
+        /// <param name="CategoryId">CategoryId of the products you want to get</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult GetProduct(int Page, int PageSize)
+        public IActionResult GetProduct(int Page, int PageSize, int? CategoryId)
         {
             if (Page < 1)
             {
@@ -104,9 +99,21 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("Page Size cannot be bigger than 100");
             }
-            var products = _context.Seeds.Skip((Page - 1) * PageSize).Take(PageSize).ToList();
-
-            return Ok(products);
+            if (CategoryId != null)
+            {
+                var products = _context
+                    .Seeds
+                    .Where(x => x.CategoryId == CategoryId)
+                    .Skip((Page - 1) * PageSize)
+                    .Take(PageSize)
+                    .ToList();
+                return Ok(products);
+            }
+            else
+            {
+                var products = _context.Seeds.Skip((Page - 1) * PageSize).Take(PageSize).ToList();
+                return Ok(products);
+            }
         }
 
         [HttpGet("find")]
@@ -127,7 +134,7 @@ namespace ATDBackend.Controllers
 
             if (categoryId != null)
             {
-                Seed[] seeds = _context.Seeds.Where(x => x.CategoryId == categoryId).ToArray();
+                Seed[] seeds = [.. _context.Seeds.Where(x => x.CategoryId == categoryId)];
                 return Ok(seeds);
             }
 
