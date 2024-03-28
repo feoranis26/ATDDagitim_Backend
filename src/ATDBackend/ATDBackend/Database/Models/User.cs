@@ -38,7 +38,7 @@ namespace ATDBackend.Database.Models
 
         [Required]
         [ForeignKey("Role_Id")]
-        public Role Role_id { get; set; } //FOREIGN KEY
+        public Role Role { get; set; } //FOREIGN KEY
 
         [Required]
         public DateTime Register_date { get; set; }

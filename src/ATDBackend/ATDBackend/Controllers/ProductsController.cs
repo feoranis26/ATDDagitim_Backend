@@ -4,6 +4,7 @@ using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security;
 using Microsoft.AspNetCore.Cors; //You know what this is...
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Controllers
 {
@@ -99,10 +100,12 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("Page Size cannot be bigger than 100");
             }
+
             if (CategoryId != null)
             {
                 var products = _context
                     .Seeds
+                    .Include(s => s.Category)
                     .Where(x => x.CategoryId == CategoryId)
                     .Skip((Page - 1) * PageSize)
                     .Take(PageSize)
@@ -111,7 +114,7 @@ namespace ATDBackend.Controllers
             }
             else
             {
-                var products = _context.Seeds.Skip((Page - 1) * PageSize).Take(PageSize).ToList();
+                var products = _context.Seeds.Include(s => s.Category).Skip((Page - 1) * PageSize).Take(PageSize).ToList();
                 return Ok(products);
             }
         }

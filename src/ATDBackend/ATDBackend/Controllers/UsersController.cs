@@ -5,8 +5,7 @@ using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security; //login and register operations
 using ATDBackend.Utils; //Utilities
-using BCrypt.Net;
-using Microsoft.AspNetCore.Authorization; //You know what this is...
+using BCrypt.Net; //Hashing
 using Microsoft.AspNetCore.Mvc;
 
 namespace ATDBackend.Controllers
@@ -24,7 +23,7 @@ namespace ATDBackend.Controllers
         private readonly AppDBContext _context = context;
 
         [HttpGet]
-        public IActionResult getAllUsers()
+        public IActionResult GetAllUsers()
         {
             return Ok(_context.Users.ToList());
         }
@@ -57,7 +56,7 @@ namespace ATDBackend.Controllers
                 return BadRequest("Password length must be between 8 and 30 characters.");
             }
 
-            var user = new Database.Models.User
+            var user = new User
             {
                 Name = userDto.Name,
                 surname = userDto.Surname,
@@ -65,7 +64,7 @@ namespace ATDBackend.Controllers
                 Phone_number = userDto.Phone_number,
                 Hashed_PW = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
                 School_id = school,
-                Role_id = role,
+                Role = role,
                 Register_date = DateTime.UtcNow.AddHours(3),
                 Username = userDto.Username
             };
@@ -108,34 +107,6 @@ namespace ATDBackend.Controllers
                 }
                 return BadRequest();
             }
-        }
-
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] UserDto userDto) //ONLY FOR TESTING PURPOSES
-        {
-            return Ok(User);
-
-            var user = _context.Users.SingleOrDefault(u => u.Email == userDto.Email);
-
-            if (user == null)
-            {
-                return BadRequest("Invalid email or password.");
-            }
-
-            // Verify the password
-            bool validPassword = BCrypt.Net.BCrypt.Verify(userDto.Password, user.Hashed_PW);
-
-            if (!validPassword)
-            {
-                return Unauthorized("Invalid email or password.");
-            }
-            var tokenHandler = new Token();
-            var createdToken = TokenHandler.CreateToken(_configuration, user.Id);
-
-            // If we reach this point, the user is authenticated
-            // Here you might generate and return a JWT for the user, or just return a success message
-            var returnObject = new { token = createdToken.AccessToken, };
-            return Ok(returnObject);
         }
     }
 }
