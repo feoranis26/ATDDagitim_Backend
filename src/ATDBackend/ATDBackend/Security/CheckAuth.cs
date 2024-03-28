@@ -75,9 +75,7 @@ namespace ATDBackend.Security
                 Console.WriteLine("Checking role");
                 var role = dbContext
                     .Roles
-                    .FirstOrDefault(
-                        x => x.Role_name.Equals(roleName, StringComparison.OrdinalIgnoreCase)
-                    );
+                    .FirstOrDefault(x => x.Role_name.ToLower() == roleName.ToLower());
                 int role_id = -1;
                 if (role == null)
                 {
