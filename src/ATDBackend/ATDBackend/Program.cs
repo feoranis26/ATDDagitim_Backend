@@ -74,17 +74,17 @@ namespace ATDBackend
                         {
                             Version = "v1",
                             Title = "Sehirbahceleri API",
-                            Description = "An ASP.NET Core Web API for managing ToDo items",
-                            TermsOfService = new Uri("https://example.com/terms"),
+                            Description = "Backend API for https://sehirbahceleri.com.tr",
+                            TermsOfService = new Uri("https://www.sehirbahceleri.com.tr"),
                             Contact = new OpenApiContact
                             {
-                                Name = "Example Contact",
+                                Name = "Contact",
                                 Url = new Uri("https://www.sehirbahceleri.com.tr/")
                             },
                             License = new OpenApiLicense
                             {
-                                Name = "Example License",
-                                Url = new Uri("https://example.com/license")
+                                Name = " License",
+                                Url = new Uri("https://www.sehirbahceleri.com.tr")
                             }
                         }
                     );
