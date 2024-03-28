@@ -105,10 +105,10 @@ namespace ATDBackend
                 });
             }
             app.UseSwagger(); //FOR DEVELOPMENT ONLY
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/v1/swagger.json", "Web API V1");
-                });
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/v1/swagger.json", "Web API V1");
+            });
 
             app.UseHttpsRedirection();
             app.UseCors(MyAllowSpecificOrigins);
