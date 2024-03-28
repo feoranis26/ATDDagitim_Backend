@@ -17,8 +17,9 @@ namespace ATDBackend.Utils
         /// <param name="body">Mail body</param>
         /// <param name="bodyHtml">Mail body in HTML format</param>
         /// <param name="userName">Recipient username</param>
-        /// <returns></returns>
-        public static async Task SendMail(
+        /// <exception cref="MailException">If sending the mail fails, this exception is thrown with the error message and status code.</exception>
+        /// <returns>Returns an async task with a mailjet response.</returns>
+        public static async Task<MailjetResponse> SendMail(
             string email,
             string subject,
             string body,
@@ -51,27 +52,28 @@ namespace ATDBackend.Utils
             MailjetResponse response = await client.PostAsync(request);
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine(
-                    string.Format(
-                        "Total: {0}, Count: {1}\n",
-                        response.GetTotal(),
-                        response.GetCount()
-                    )
-                );
-                Console.WriteLine(response.GetData());
+                // Console.WriteLine(
+                //     string.Format(
+                //         "Total: {0}, Count: {1}\n",
+                //         response.GetTotal(),
+                //         response.GetCount()
+                //     )
+                // );
+                // Console.WriteLine(response.GetData());
+                return response;
             }
             else
             {
-                Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-                Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-                Console.WriteLine(response.GetData());
-                Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-                throw new mailException(response.GetErrorMessage(), response.StatusCode);
+                // Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
+                // Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+                // Console.WriteLine(response.GetData());
+                // Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
+                throw new MailException(response.GetErrorMessage(), response.StatusCode);
             }
         }
     }
 
-    public class mailException : Exception
+    public class MailException : Exception
     {
         public string ErrorMessage { get; set; }
         public int ErrorCode { get; set; }
@@ -81,7 +83,7 @@ namespace ATDBackend.Utils
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="errorCode"></param>
-        public mailException(string errorMessage, int errorCode)
+        public MailException(string errorMessage, int errorCode)
         {
             this.ErrorMessage = errorMessage;
             this.ErrorCode = errorCode;

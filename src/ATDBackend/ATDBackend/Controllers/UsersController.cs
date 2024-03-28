@@ -78,6 +78,20 @@ namespace ATDBackend.Controllers
 
             _context.Users.Add(user);
             _context.SaveChanges();
+            MailSender
+                .SendMail(
+                    user.Email,
+                    "Şehirbahçelerine Hoşgeldiniz!",
+                    "ŞehirBahçeleri Ailesine Hoşgeldiniz!",
+                    "<h1>Merhaba "
+                        + user.Name
+                        + " "
+                        + user.surname
+                        + "</h1>"
+                        + "<p>ŞehirBahçeleri ailesine hoşgeldiniz. Artık <a href='https://sehirbahceleri.com.tr'>sitemizdeki</a> bütün özelliklerden faydalanabilirsiniz.</p>",
+                    user.Name
+                )
+                .Wait();
             return Ok(user);
         }
 
