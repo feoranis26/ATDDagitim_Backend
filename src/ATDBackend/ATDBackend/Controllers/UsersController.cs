@@ -105,7 +105,7 @@ namespace ATDBackend.Controllers
                     .Wait();
                 return Ok("Mail sent successfully.");
             }
-            catch (mailException e)
+            catch (MailException e)
             {
                 if (e.ErrorCode > 200)
                 {
