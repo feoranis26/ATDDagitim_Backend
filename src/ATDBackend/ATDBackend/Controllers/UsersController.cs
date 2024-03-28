@@ -90,7 +90,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpGet("sendMail")]
-        [Authorize(Roles = "Admin")]
+        [CheckAuth]
         public IActionResult MailSendTest()
         {
             try

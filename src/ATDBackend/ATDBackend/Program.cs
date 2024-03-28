@@ -45,26 +45,20 @@ namespace ATDBackend
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters =
-                        new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                        {
-                            ValidateAudience = true,
-                            ValidateIssuer = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = builder.Configuration["JWTToken:Issuer"],
-                            ValidAudience = builder.Configuration["JWTToken:Audience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(
-                                Encoding
-                                    .UTF8
-                                    .GetBytes(builder.Configuration["JWTToken:SecurityKey"])
-                            ),
-                            ClockSkew = TimeSpan.Zero
-                        };
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateAudience = true,
+                        ValidateIssuer = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["JWTToken:Issuer"],
+                        ValidAudience = builder.Configuration["JWTToken:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(builder.Configuration["JWTToken:SecurityKey"])
+                        ),
+                        ClockSkew = TimeSpan.Zero
+                    };
                 });
-
-            builder.Services.AddAuthorization();
-            builder.Services.AddIdentityApiEndpoints<IdentityUser>();
 
             builder.Services.AddControllers();
 
@@ -116,7 +110,6 @@ namespace ATDBackend
 
             app.UseHttpsRedirection();
             app.UseCors(MyAllowSpecificOrigins);
-            app.MapIdentityApi<IdentityUser>();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
