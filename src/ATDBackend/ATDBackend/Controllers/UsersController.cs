@@ -22,12 +22,6 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
-        [HttpGet]
-        public IActionResult GetAllUsers()
-        {
-            return Ok(_context.Users.ToList());
-        }
-
         [HttpPost]
         public IActionResult Register([FromBody] UserDto userDto) //Register user
         {

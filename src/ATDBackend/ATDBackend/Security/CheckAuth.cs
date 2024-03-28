@@ -56,7 +56,7 @@ namespace ATDBackend.Security
                 if (user == null)
                 {
                     context.HttpContext.Response.StatusCode = 401;
-                    await context.HttpContext.Response.WriteAsync("Unauthorized");
+                    await context.HttpContext.Response.WriteAsync("Unauthorized_noUsr");
                     return;
                 }
                 if (roleName != null || roleName != "")
@@ -69,6 +69,7 @@ namespace ATDBackend.Security
                     int role_id = -1;
                     if (role == null)
                     {
+                        Console.WriteLine("Role not found");
                         throw new Exception("Role not found");
                     }
                     else
@@ -77,14 +78,14 @@ namespace ATDBackend.Security
                         if (role_id != user.RoleId)
                         {
                             context.HttpContext.Response.StatusCode = 401;
-                            await context.HttpContext.Response.WriteAsync("Unauthorized");
+                            await context.HttpContext.Response.WriteAsync("Unauthorized_role");
                             return;
                         }
                     }
                     if (role_id != user.RoleId)
                     {
                         context.HttpContext.Response.StatusCode = 401;
-                        await context.HttpContext.Response.WriteAsync("Unauthorized");
+                        await context.HttpContext.Response.WriteAsync("Unauthorized_role");
                         return;
                     }
                 }
@@ -92,7 +93,7 @@ namespace ATDBackend.Security
             catch
             {
                 context.HttpContext.Response.StatusCode = 401;
-                await context.HttpContext.Response.WriteAsync("Unauthorized");
+                await context.HttpContext.Response.WriteAsync("Unauthorized_tokenExp");
                 return;
             }
             await next();
