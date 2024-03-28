@@ -12,13 +12,14 @@ namespace ATDBackend.Controllers
         ILogger<AuthController> logger,
         IConfiguration configuration,
         AppDBContext context
-        ) : ControllerBase
+    ) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
         [HttpPost]
+        [CheckAuth("Admin")]
         public IActionResult AddSchool([FromBody] School school) //REQUIRES AUTHENTICATION
         {
             _context.Schools.Add(school);
@@ -27,7 +28,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpGet("all")]
-        public IActionResult getSchools() //REQUIRES AUTHENTICATION
+        public IActionResult GetSchools() //REQUIRES AUTHENTICATION
         {
             return Ok(_context.Schools.ToList());
         }

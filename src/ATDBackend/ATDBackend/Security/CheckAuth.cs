@@ -30,7 +30,6 @@ namespace ATDBackend.Security
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(configuration["JWTToken:SecurityKey"]);
 
-            Console.WriteLine("Checking token");
             try
             {
                 tokenHandler.ValidateToken(
@@ -51,7 +50,6 @@ namespace ATDBackend.Security
             }
             catch
             {
-                Console.WriteLine("Unauthorized_token");
                 context.HttpContext.Response.StatusCode = 401;
                 await context.HttpContext.Response.WriteAsync("Unauthorized_token");
                 return;
@@ -69,7 +67,6 @@ namespace ATDBackend.Security
                 .FirstOrDefault(U => U.Id == Convert.ToInt32(tokenUser));
             if (user == null)
             {
-                Console.WriteLine("User not found");
                 context.HttpContext.Response.StatusCode = 401;
                 await context.HttpContext.Response.WriteAsync("Unauthorized_noUsr");
                 return;
@@ -78,7 +75,6 @@ namespace ATDBackend.Security
             {
                 if (user.Role.Role_name != roleName)
                 {
-                    Console.WriteLine("Unauthorized_role");
                     context.HttpContext.Response.StatusCode = 401;
                     await context.HttpContext.Response.WriteAsync("Unauthorized_role");
                     return;

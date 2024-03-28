@@ -13,20 +13,22 @@ namespace ATDBackend.Controllers
         ILogger<AuthController> logger,
         IConfiguration configuration,
         AppDBContext context
-        ) : ControllerBase
+    ) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
         [HttpGet("all")]
-        public IActionResult getRoles() //REQUIRES AUTHENTICATION
+        [CheckAuth("Admin")]
+        public IActionResult GetRoles() //REQUIRES AUTHENTICATION
         {
             return Ok(_context.Roles.ToList());
         }
 
         [HttpPost]
-        public IActionResult addRole([FromBody] Role role)
+        [CheckAuth("Admin")]
+        public IActionResult AddRole([FromBody] Role role)
         {
             try
             {

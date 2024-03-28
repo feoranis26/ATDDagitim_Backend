@@ -21,6 +21,7 @@ namespace ATDBackend.Controllers
         private readonly AppDBContext _context = context;
 
         [HttpPost]
+        [CheckAuth("Admin")]
         public IActionResult AddProduct([FromBody] SeedDto seedDto) //REQUIRES AUTHENTICATION
         {
             var category = _context.Categories.Find(seedDto.CategoryId);
@@ -59,6 +60,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpPut]
+        [CheckAuth("Admin")]
         public IActionResult UpdateProduct(int Id, [FromBody] SeedUpdateDTO? seedDto)
         {
             if (seedDto == null || Id == 0)
@@ -114,7 +116,12 @@ namespace ATDBackend.Controllers
             }
             else
             {
-                var products = _context.Seeds.Include(s => s.Category).Skip((Page - 1) * PageSize).Take(PageSize).ToList();
+                var products = _context
+                    .Seeds
+                    .Include(s => s.Category)
+                    .Skip((Page - 1) * PageSize)
+                    .Take(PageSize)
+                    .ToList();
                 return Ok(products);
             }
         }

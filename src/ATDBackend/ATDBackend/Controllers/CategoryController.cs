@@ -20,13 +20,14 @@ namespace ATDBackend.Controllers
         private readonly AppDBContext _context = context;
 
         [HttpGet("all")]
-        public IActionResult getCategories() //REQUIRES AUTHENTICATION
+        public IActionResult GetCategories()
         {
             return Ok(_context.Categories.ToList());
         }
 
         [HttpPost]
-        public IActionResult addCategory([FromBody] Category category)
+        [CheckAuth("Admin")]
+        public IActionResult AddCategory([FromBody] Category category)
         {
             _context.Categories.Add(category);
             _context.SaveChanges();
