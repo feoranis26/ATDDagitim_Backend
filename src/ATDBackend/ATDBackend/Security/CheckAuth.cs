@@ -31,6 +31,7 @@ namespace ATDBackend.Security
 
             try
             {
+                Console.WriteLine("Checking token");
                 tokenHandler.ValidateToken(
                     token,
                     new TokenValidationParameters
@@ -55,12 +56,14 @@ namespace ATDBackend.Security
                 var user = dbContext.Users.Find(Convert.ToInt32(tokenUser));
                 if (user == null)
                 {
+                    Console.WriteLine("User not found");
                     context.HttpContext.Response.StatusCode = 401;
                     await context.HttpContext.Response.WriteAsync("Unauthorized_noUsr");
                     return;
                 }
                 if (roleName != null || roleName != "")
                 {
+                    Console.WriteLine("Checking role");
                     var role = dbContext
                         .Roles
                         .FirstOrDefault(
@@ -77,16 +80,11 @@ namespace ATDBackend.Security
                         role_id = role.Id;
                         if (role_id != user.RoleId)
                         {
+                            Console.WriteLine("Unauthorized_role");
                             context.HttpContext.Response.StatusCode = 401;
                             await context.HttpContext.Response.WriteAsync("Unauthorized_role");
                             return;
                         }
-                    }
-                    if (role_id != user.RoleId)
-                    {
-                        context.HttpContext.Response.StatusCode = 401;
-                        await context.HttpContext.Response.WriteAsync("Unauthorized_role");
-                        return;
                     }
                 }
             }
