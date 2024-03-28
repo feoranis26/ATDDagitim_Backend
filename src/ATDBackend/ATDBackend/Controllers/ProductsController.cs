@@ -4,6 +4,7 @@ using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security;
 using Microsoft.AspNetCore.Cors; //You know what this is...
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Controllers
 {
@@ -13,7 +14,7 @@ namespace ATDBackend.Controllers
         ILogger<AuthController> logger,
         IConfiguration configuration,
         AppDBContext context
-        ) : ControllerBase
+    ) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
@@ -104,7 +105,12 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("Page Size cannot be bigger than 100");
             }
-            var products = _context.Seeds.Skip((Page - 1) * PageSize).Take(PageSize).ToList();
+            var products = _context
+                .Seeds
+                .Include(s => s.Category)
+                .Skip((Page - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
 
             return Ok(products);
         }

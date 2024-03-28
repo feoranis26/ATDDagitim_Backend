@@ -114,7 +114,7 @@ namespace ATDBackend.Database.DBContexts
 
             modelBuilder
                 .Entity<User>()
-                .HasOne(p => p.Role_id)
+                .HasOne(p => p.Role)
                 .WithMany()
                 .HasForeignKey(p => p.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
