@@ -6,7 +6,8 @@ using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security; //login and register operations
 using ATDBackend.Utils; //Utilities
 using BCrypt.Net;
-using Microsoft.AspNetCore.Mvc; //You know what this is...
+using Microsoft.AspNetCore.Authorization; //You know what this is...
+using Microsoft.AspNetCore.Mvc;
 
 namespace ATDBackend.Controllers
 {
@@ -29,7 +30,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register([FromBody] UserDto userDto)
+        public IActionResult Register([FromBody] UserDto userDto) //Register user
         {
             var school = _context.Schools.Find(userDto.SchoolId);
             var role = _context.Roles.Find(userDto.RoleId);
@@ -81,7 +82,7 @@ namespace ATDBackend.Controllers
                         + " "
                         + user.surname
                         + "</h1>"
-                        + "<p>ŞehirBahçeleri ailesine hoşgeldiniz. Artık <a href='https://sehirbahceleri.com.tr'>sitemizdeki</a> bütün özelliklerden faydalanabilirsiniz.</p>",
+                        + "<h2>ŞehirBahçeleri ailesine hoşgeldiniz. Artık <a href='https://sehirbahceleri.com.tr'>sitemizdeki</a> bütün özelliklerden faydalanabilirsiniz.</h3><br><p>Şehirbahçeleri</p>",
                     user.Name
                 )
                 .Wait();
@@ -89,6 +90,7 @@ namespace ATDBackend.Controllers
         }
 
         [HttpGet("sendMail")]
+        [Authorize(Roles = "Admin")]
         public IActionResult MailSendTest()
         {
             try
@@ -111,7 +113,7 @@ namespace ATDBackend.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] UserDto userDto) //ONLY FOR TESTING PURPOSES
         {
-            return Ok("TEST");
+            return Ok(User);
 
             var user = _context.Users.SingleOrDefault(u => u.Email == userDto.Email);
 

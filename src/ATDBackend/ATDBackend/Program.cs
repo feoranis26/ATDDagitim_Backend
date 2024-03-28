@@ -2,6 +2,7 @@ using System.Text;
 using ATDBackend.Database.DBContexts;
 using ATDBackend.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -36,7 +37,6 @@ namespace ATDBackend
             var conn = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
             builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn)); //Default DB context
-
             builder
                 .Services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
