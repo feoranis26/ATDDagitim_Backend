@@ -20,7 +20,7 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
-        [HttpGet("login")]
+        [HttpPost("login")]
         public IActionResult Login(string username, string password)
         {
             var User = _context.Users.FirstOrDefault(u => u.Username == username);
