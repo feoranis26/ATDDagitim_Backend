@@ -34,7 +34,8 @@ namespace ATDBackend
                                     "https://*.sehirbahceleri.com.tr"
                                 )
                                 .AllowAnyHeader()
-                                .AllowAnyMethod();
+                                .AllowAnyMethod()
+                                .AllowCredentials();
                         }
                     );
                 });
