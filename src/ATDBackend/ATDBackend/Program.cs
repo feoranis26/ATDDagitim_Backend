@@ -28,7 +28,11 @@ namespace ATDBackend
                         policy =>
                         {
                             policy
-                                .WithOrigins("https://*.sehirbahceleri.com.tr")
+                                .WithOrigins(
+                                    "https://sehirbahceleri.com.tr",
+                                    "https://www.sehirbahceleri.com.tr",
+                                    "https://*.sehirbahceleri.com.tr"
+                                )
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
                         }
