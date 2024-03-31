@@ -40,7 +40,7 @@ namespace ATDBackend.Controllers
                     .Cookies
                     .Append(
                         "token",
-                        "Bearer" + token.AccessToken,
+                        "Bearer " + token.AccessToken,
                         new CookieOptions
                         {
                             Expires = DateTime.Now.AddMinutes(45),
