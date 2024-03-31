@@ -36,6 +36,18 @@ namespace ATDBackend.Controllers
             {
                 // Create a token (JWT)
                 Token token = TokenHandler.CreateToken(_configuration, User.Id);
+                Response
+                    .Cookies
+                    .Append(
+                        "token",
+                        token.AccessToken,
+                        new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.None
+                        }
+                    );
                 return Ok(token);
             }
             return StatusCode(500, "Internal Server Error");
