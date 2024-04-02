@@ -23,8 +23,8 @@ namespace ATDBackend.Utils
             string email,
             string subject,
             string body,
-            string? bodyHtml = null,
-            string userName
+            string userName,
+            string? bodyHtml = null
         )
         {
             String actualHtml = "<p>body</p>";

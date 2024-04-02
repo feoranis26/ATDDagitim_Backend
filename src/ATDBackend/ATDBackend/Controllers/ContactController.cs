@@ -39,7 +39,7 @@ namespace ATDBackend.Controllers
                     "sehirbahceleri@gmail.com",
                     "New sehirbahceleri.com.tr Contact Form from: " + formDetails.Name,
                     formDetails.Message,
-                    userName: "sehirbahceleri.com.tr"
+                    "sehirbahceleri.com.tr"
                 )
                 .Wait();
             return Ok();
