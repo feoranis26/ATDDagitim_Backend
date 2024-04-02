@@ -67,6 +67,7 @@ namespace ATDBackend.Security
                 .FirstOrDefault(U => U.Id == Convert.ToInt32(tokenUser));
             if (user != null)
             {
+                Console.WriteLine("USERID: ", user);
                 context.HttpContext.Items["User"] = user;
             }
             if (user == null)

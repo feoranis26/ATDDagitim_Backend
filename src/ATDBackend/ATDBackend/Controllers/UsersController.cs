@@ -103,11 +103,12 @@ namespace ATDBackend.Controllers
             }
         }
 
-        [HttpGet("getUser")]
+        [HttpGet("details")]
         [CheckAuth("User")]
         public IActionResult GetUserDetails()
         {
             var user = HttpContext.Items["User"];
+            Console.WriteLine("USER DETAILS: ", user);
             return Ok(user);
         }
     }
