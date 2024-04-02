@@ -102,5 +102,13 @@ namespace ATDBackend.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet("getUser")]
+        [CheckAuth("User")]
+        public IActionResult GetUserDetails()
+        {
+            var user = HttpContext.Items["User"];
+            return Ok(user);
+        }
     }
 }
