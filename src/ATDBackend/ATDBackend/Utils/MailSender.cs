@@ -23,7 +23,7 @@ namespace ATDBackend.Utils
             string email,
             string subject,
             string body,
-            string? bodyHtml,
+            string? bodyHtml = null,
             string userName
         )
         {

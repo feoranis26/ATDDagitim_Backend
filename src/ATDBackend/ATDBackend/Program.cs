@@ -2,7 +2,6 @@ using System.Text;
 using ATDBackend.Database.DBContexts;
 using ATDBackend.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -31,7 +30,12 @@ namespace ATDBackend
                                 .WithOrigins(
                                     "https://sehirbahceleri.com.tr",
                                     "https://www.sehirbahceleri.com.tr",
-                                    "https://*.sehirbahceleri.com.tr"
+                                    "https://*.sehirbahceleri.com.tr",
+                                    "http://localhost:3000",
+                                    "http://127.0.0.1:3000",
+                                    "http://localhost",
+                                    "127.0.0.1",
+                                    "localhost"
                                 )
                                 .AllowAnyHeader()
                                 .AllowAnyMethod()
@@ -39,7 +43,6 @@ namespace ATDBackend
                         }
                     );
                 });
-
             //DB Context
             var conn = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
             builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn)); //Default DB context

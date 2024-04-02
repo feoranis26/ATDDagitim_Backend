@@ -65,6 +65,10 @@ namespace ATDBackend.Security
                 .Users
                 .Include(U => U.Role)
                 .FirstOrDefault(U => U.Id == Convert.ToInt32(tokenUser));
+            if (user != null)
+            {
+                context.HttpContext.Items["User"] = user;
+            }
             if (user == null)
             {
                 context.HttpContext.Response.StatusCode = 401;
