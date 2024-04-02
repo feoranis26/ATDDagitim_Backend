@@ -46,7 +46,13 @@ namespace ATDBackend.Security
                     },
                     out SecurityToken validatedToken
                 );
-                await next();
+                var tokenUserTest = tokenHandler
+                    .ReadJwtToken(token)
+                    .Claims
+                    .First(claim => claim.Type == "sub")
+                    .Value;
+                Console.WriteLine("Token Claims: ", tokenHandler.ReadJwtToken(token).Claims);
+                Console.WriteLine("TOKEN USER: ", tokenUserTest);
             }
             catch
             {
