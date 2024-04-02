@@ -60,6 +60,8 @@ namespace ATDBackend.Security
                 .Claims
                 .First(claim => claim.Type == "sub")
                 .Value;
+            Console.WriteLine("Token Claims: ", tokenHandler.ReadJwtToken(token).Claims);
+            Console.WriteLine("TOKEN USER: ", tokenUser);
 
             var user = dbContext
                 .Users
