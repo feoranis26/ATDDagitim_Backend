@@ -92,7 +92,8 @@ namespace ATDBackend.Controllers
                 School_id = school,
                 Role = role,
                 Register_date = DateTime.UtcNow.AddHours(3),
-                Username = userDto.Username
+                Username = userDto.Username,
+                BasketJson = "[]"
             };
 
             _context.Users.Add(user);
