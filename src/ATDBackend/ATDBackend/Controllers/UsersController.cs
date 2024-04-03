@@ -160,7 +160,7 @@ namespace ATDBackend.Controllers
             {
                 _context.Users.Update(dbUser);
                 var basket =
-                    JsonSerializer.Deserialize<List<BasketSeed>>(dbUser.BasketJson)
+                    JsonSerializer.Deserialize<List<BasketSeed>>(dbUser.BasketJson ?? "[]")
                     ?? new List<BasketSeed>();
                 var alreadyInBasket = basket.FirstOrDefault(x => x.Id == productId);
 
