@@ -1,10 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ATDBackend.DTO;
 using ATDBackend.Database.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace ATDBackend.Database.Models
 {
@@ -17,7 +14,7 @@ namespace ATDBackend.Database.Models
         public string Name { get; set; }
 
         [Required]
-        public string surname { get; set; }
+        public string Surname { get; set; }
 
         [Required]
         public string Email { get; set; }
@@ -40,9 +37,12 @@ namespace ATDBackend.Database.Models
         [ForeignKey("Role_Id")]
         public Role Role { get; set; } //FOREIGN KEY
 
+        public BasketSeed[]? Basket { get; set; } //Seeds
+
         [Required]
         public DateTime Register_date { get; set; }
 
+        [Required]
         public string Username { get; set; }
     }
 }

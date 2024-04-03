@@ -111,5 +111,17 @@ namespace ATDBackend.Controllers
             Console.WriteLine("USER DETAILS: ", user);
             return Ok(user);
         }
+
+        [HttpGet("basket")]
+        [CheckAuth("User")]
+        public IActionResult GetBasket()
+        {
+            if (HttpContext.Items["User"] is not User user)
+            {
+                return BadRequest("User not found.");
+            }
+            var basket = _context.Users.Find(user.Id).Basket;
+            return Ok(basket);
+        }
     }
 }
