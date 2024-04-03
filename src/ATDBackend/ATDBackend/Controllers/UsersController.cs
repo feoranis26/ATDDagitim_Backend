@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
@@ -53,7 +54,7 @@ namespace ATDBackend.Controllers
             var user = new User
             {
                 Name = userDto.Name,
-                surname = userDto.Surname,
+                Surname = userDto.Surname,
                 Email = userDto.Email,
                 Phone_number = userDto.Phone_number,
                 Hashed_PW = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
@@ -73,7 +74,7 @@ namespace ATDBackend.Controllers
                     "<h1>Merhaba "
                         + user.Name
                         + " "
-                        + user.surname
+                        + user.Surname
                         + "</h1>"
                         + "<h2>ŞehirBahçeleri ailesine hoşgeldiniz. Artık <a href='https://sehirbahceleri.com.tr'>sitemizdeki</a> bütün özelliklerden faydalanabilirsiniz.</h3><br><p>Şehirbahçeleri</p>",
                     user.Name
@@ -83,14 +84,12 @@ namespace ATDBackend.Controllers
         }
 
         [HttpGet("sendMail")]
-        [CheckAuth("User")]
+        [CheckAuth("Admin")]
         public IActionResult MailSendTest()
         {
             try
             {
-                MailSender
-                    .SendMail("sehirbahceleri@gmail.com", "Test", "Test", null, "Test")
-                    .Wait();
+                MailSender.SendMail("sehirbahceleri@gmail.com", "Test", "Test", "Test").Wait();
                 return Ok("Mail sent successfully.");
             }
             catch (MailException e)
@@ -108,7 +107,7 @@ namespace ATDBackend.Controllers
         public IActionResult GetUserDetails()
         {
             var user = HttpContext.Items["User"];
-            Console.WriteLine("USER DETAILS: ", user);
+            Console.WriteLine("USER DETAILS: " + user);
             return Ok(user);
         }
 
@@ -120,8 +119,66 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("User not found.");
             }
-            var basket = _context.Users.Find(user.Id).Basket;
-            return Ok(basket);
+            var dbUser = _context.Users.Find(user.Id);
+            if (dbUser is not null)
+            {
+                var basket = dbUser.Basket;
+                return Ok(basket);
+            }
+            return BadRequest();
+        }
+
+        [HttpPost("basket")]
+        [CheckAuth("User")]
+        public IActionResult AddToBasket(int productId, int? quantity = 1)
+        {
+            var tempProduct = _context.Seeds.Find(productId); //Find the product
+            if (tempProduct is null)
+            {
+                return BadRequest("Product not found."); //If product not found return BadRequest
+            }
+            if (tempProduct.Stock < quantity)
+            {
+                return StatusCode(409, "Not enough stock."); //Don't request more product than the stock
+            }
+            var basketSeed = new BasketSeed
+            {
+                Id = tempProduct.Id,
+                Name = tempProduct.Name,
+                Price = tempProduct.Price,
+                Stock = tempProduct.Stock,
+                CategoryId = tempProduct.CategoryId,
+                Quantity = quantity
+            };
+            if (HttpContext.Items["User"] is not User user)
+            {
+                return BadRequest("User not found.");
+            }
+            var dbUser = _context.Users.Find(user.Id);
+            if (dbUser is not null)
+            {
+                var basket = dbUser.Basket ?? Array.Empty<BasketSeed>();
+                var alreadyInBasket = basket.FirstOrDefault(x => x.Id == productId);
+                int arrayIndex = Array.IndexOf(basket, alreadyInBasket);
+                if (alreadyInBasket is not null)
+                {
+                    alreadyInBasket.Quantity =
+                        quantity == 1 ? alreadyInBasket.Quantity + quantity : quantity;
+                    basket[arrayIndex] = alreadyInBasket;
+                    var newBasket = basket.ToArray();
+                    dbUser.Basket = newBasket;
+                    _context.SaveChanges();
+                    return Ok(dbUser.Basket);
+                }
+                else
+                {
+                    var newBasket = basket.Append(basketSeed).ToArray();
+                    dbUser.Basket = newBasket;
+                    _context.SaveChanges();
+                    return Ok(dbUser.Basket);
+                }
+            }
+            return StatusCode(500, "Houston, we have a problem.");
         }
     }
 }

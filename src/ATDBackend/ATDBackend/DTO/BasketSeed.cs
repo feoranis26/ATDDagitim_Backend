@@ -7,5 +7,6 @@ namespace ATDBackend.DTO
         public int CategoryId { get; set; } //category ID when the item was purchased
         public int Stock { get; set; } //stock when the item was purchased
         public float Price { get; set; } //price when the item was purchased
+        public int? Quantity { get; set; } //quantity of the seed added to basket
     }
 }
