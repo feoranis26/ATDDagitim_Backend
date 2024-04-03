@@ -1,6 +1,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text.Json;
 using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
@@ -122,7 +123,7 @@ namespace ATDBackend.Controllers
             var dbUser = _context.Users.Find(user.Id);
             if (dbUser is not null)
             {
-                var basket = dbUser.Basket;
+                var basket = dbUser.BasketJson ?? "[]";
                 return Ok(basket);
             }
             return BadRequest();
@@ -158,27 +159,34 @@ namespace ATDBackend.Controllers
             if (dbUser is not null)
             {
                 _context.Users.Update(dbUser);
-                var basket = dbUser.Basket ?? new List<BasketSeed>();
+                var basket =
+                    JsonSerializer.Deserialize<List<BasketSeed>>(dbUser.BasketJson)
+                    ?? new List<BasketSeed>();
                 var alreadyInBasket = basket.FirstOrDefault(x => x.Id == productId);
+
+                var newBasket = basket.ToList();
 
                 if (alreadyInBasket is null)
                 {
-                    if (dbUser.Basket is null)
+                    if (dbUser.BasketJson is null)
                     {
-                        dbUser.Basket = new List<BasketSeed>();
+                        dbUser.BasketJson = JsonSerializer.Serialize(new List<BasketSeed>());
                     }
-                    dbUser.Basket.Add(basketSeed);
+                    newBasket.Add(basketSeed);
+                    dbUser.BasketJson = JsonSerializer.Serialize(newBasket);
                 }
                 else
                 {
                     alreadyInBasket.Quantity =
                         quantity == 1 ? alreadyInBasket.Quantity + quantity : quantity;
-                    dbUser.Basket.FirstOrDefault(x => x.Id == productId).Quantity =
+
+                    newBasket.FirstOrDefault(x => x.Id == productId).Quantity =
                         alreadyInBasket.Quantity;
+                    dbUser.BasketJson = JsonSerializer.Serialize(newBasket);
                 }
 
                 _context.SaveChanges();
-                return Ok(dbUser.Basket);
+                return Ok(dbUser.BasketJson);
             }
             return StatusCode(500, "Houston, we have a problem.");
         }

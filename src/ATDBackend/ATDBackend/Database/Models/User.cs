@@ -37,7 +37,7 @@ namespace ATDBackend.Database.Models
         [ForeignKey("Role_Id")]
         public Role Role { get; set; } //FOREIGN KEY
 
-        public ICollection<BasketSeed> Basket { get; set; }
+        public string BasketJson { get; set; }
 
         [Required]
         public DateTime Register_date { get; set; }
