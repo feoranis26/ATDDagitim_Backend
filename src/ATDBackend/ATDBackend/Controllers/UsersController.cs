@@ -159,27 +159,25 @@ namespace ATDBackend.Controllers
             {
                 var basket = dbUser.Basket ?? Array.Empty<BasketSeed>();
                 var alreadyInBasket = basket.FirstOrDefault(x => x.Id == productId);
+                var newBasket = basket;
 
                 if (alreadyInBasket is not null)
                 {
                     alreadyInBasket.Quantity =
                         quantity == 1 ? alreadyInBasket.Quantity + quantity : quantity;
-                    var newBasket = basket
+                    newBasket = basket
                         .Select(x => x.Id == productId ? alreadyInBasket : x)
                         .ToArray();
-                    dbUser.Basket = newBasket;
-                    _context.Users.Update(dbUser);
-                    _context.SaveChanges();
-                    return Ok(dbUser.Basket);
                 }
                 else
                 {
-                    var newBasket = basket.Append(basketSeed).ToArray();
-                    dbUser.Basket = newBasket;
-                    _context.Users.Update(dbUser);
-                    _context.SaveChanges();
-                    return Ok(dbUser.Basket);
+                    newBasket = basket.Append(basketSeed).ToArray();
                 }
+
+                dbUser.Basket = newBasket;
+                _context.Users.Update(dbUser);
+                _context.SaveChanges();
+                return Ok(dbUser.Basket);
             }
             return StatusCode(500, "Houston, we have a problem.");
         }
