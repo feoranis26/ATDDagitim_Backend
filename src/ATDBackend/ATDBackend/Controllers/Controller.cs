@@ -10,9 +10,13 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
 
         [HttpGet]
-        public IActionResult getDef()
+        public IActionResult GetDefault()
         {
             return Ok("Hi!");
+        }
+        [httpPost]
+        public IActionResult PostDefault(){
+            return Ok("Test!");
         }
     }
 }
