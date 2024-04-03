@@ -157,6 +157,7 @@ namespace ATDBackend.Controllers
             var dbUser = _context.Users.Find(user.Id);
             if (dbUser is not null)
             {
+                _context.Users.Update(dbUser);
                 var basket = dbUser.Basket ?? new List<BasketSeed>();
                 var alreadyInBasket = basket.FirstOrDefault(x => x.Id == productId);
 
@@ -176,7 +177,6 @@ namespace ATDBackend.Controllers
                         alreadyInBasket.Quantity;
                 }
 
-                _context.Users.Update(dbUser);
                 _context.SaveChanges();
                 return Ok(dbUser.Basket);
             }
