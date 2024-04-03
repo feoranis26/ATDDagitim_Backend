@@ -168,6 +168,7 @@ namespace ATDBackend.Controllers
                         .Select(x => x.Id == productId ? alreadyInBasket : x)
                         .ToArray();
                     dbUser.Basket = newBasket;
+                    _context.Users.Update(dbUser);
                     _context.SaveChanges();
                     return Ok(dbUser.Basket);
                 }
