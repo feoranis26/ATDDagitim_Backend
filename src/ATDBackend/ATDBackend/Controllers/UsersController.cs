@@ -135,7 +135,7 @@ namespace ATDBackend.Controllers
             var tempProduct = _context.Seeds.Find(productId); //Find the product
             if (tempProduct is null)
             {
-                return BadRequest("Product not found."); //If product not found return BadRequest
+                return NotFound("Product not found."); //If product not found return BadRequest
             }
             if (tempProduct.Stock < quantity)
             {
@@ -159,22 +159,19 @@ namespace ATDBackend.Controllers
             {
                 var basket = dbUser.Basket ?? Array.Empty<BasketSeed>();
                 var alreadyInBasket = basket.FirstOrDefault(x => x.Id == productId);
-                var newBasket = basket;
 
-                if (alreadyInBasket is not null)
+                if (alreadyInBasket is null)
                 {
-                    alreadyInBasket.Quantity =
-                        quantity == 1 ? alreadyInBasket.Quantity + quantity : quantity;
-                    newBasket = basket
-                        .Select(x => x.Id == productId ? alreadyInBasket : x)
-                        .ToArray();
+                    dbUser.Basket.Add(basketSeed);
                 }
                 else
                 {
-                    newBasket = basket.Append(basketSeed).ToArray();
+                    alreadyInBasket.Quantity =
+                        quantity == 1 ? alreadyInBasket.Quantity + quantity : quantity;
+                    dbUser.Basket.FirstOrDefault(x => x.Id == productId).Quantity =
+                        alreadyInBasket.Quantity;
                 }
 
-                dbUser.Basket = newBasket;
                 _context.Users.Update(dbUser);
                 _context.SaveChanges();
                 return Ok(dbUser.Basket);
