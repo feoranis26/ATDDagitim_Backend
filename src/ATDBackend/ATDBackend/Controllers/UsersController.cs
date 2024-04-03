@@ -190,5 +190,42 @@ namespace ATDBackend.Controllers
             }
             return StatusCode(500, "Houston, we have a problem.");
         }
+
+        [HttpDelete("basket")]
+        [CheckAuth("User")]
+        public IActionResult RemoveFromBasket(int ProductId, int? Quantity = 1)
+        {
+            if (HttpContext.Items["User"] is not User user)
+            {
+                return BadRequest("User not found.");
+            }
+            var dbUser = _context.Users.Find(user.Id);
+            if (dbUser is not null)
+            {
+                var basket =
+                    JsonSerializer.Deserialize<List<BasketSeed>>(dbUser.BasketJson ?? "[]")
+                    ?? new List<BasketSeed>();
+                var alreadyInBasket = basket.FirstOrDefault(x => x.Id == ProductId);
+                if (alreadyInBasket is null)
+                {
+                    return NotFound("Product not found in basket.");
+                }
+                var newBasket = basket.ToList();
+                if (Quantity == 1)
+                {
+                    newBasket.Remove(alreadyInBasket);
+                }
+                else
+                {
+                    alreadyInBasket.Quantity -= Quantity;
+                    newBasket.FirstOrDefault(x => x.Id == ProductId).Quantity =
+                        alreadyInBasket.Quantity;
+                }
+                dbUser.BasketJson = JsonSerializer.Serialize(newBasket);
+                _context.SaveChanges();
+                return Ok(dbUser.BasketJson);
+            }
+            return StatusCode(500, "Houston, we have a problem.");
+        }
     }
 }
