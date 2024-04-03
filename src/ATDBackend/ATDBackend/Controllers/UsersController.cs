@@ -193,7 +193,7 @@ namespace ATDBackend.Controllers
 
         [HttpDelete("basket")]
         [CheckAuth("User")]
-        public IActionResult RemoveFromBasket(int ProductId, int? Quantity = 1)
+        public IActionResult RemoveFromBasket(int ProductId, int? Quantity = 0)
         {
             if (HttpContext.Items["User"] is not User user)
             {
@@ -211,7 +211,7 @@ namespace ATDBackend.Controllers
                     return NotFound("Product not found in basket.");
                 }
                 var newBasket = basket.ToList();
-                if (Quantity == 1)
+                if (Quantity == 0 || Quantity >= alreadyInBasket.Quantity)
                 {
                     newBasket.Remove(alreadyInBasket);
                 }
