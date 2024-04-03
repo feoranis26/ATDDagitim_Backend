@@ -159,13 +159,14 @@ namespace ATDBackend.Controllers
             {
                 var basket = dbUser.Basket ?? Array.Empty<BasketSeed>();
                 var alreadyInBasket = basket.FirstOrDefault(x => x.Id == productId);
-                int arrayIndex = Array.IndexOf(basket, alreadyInBasket);
+
                 if (alreadyInBasket is not null)
                 {
                     alreadyInBasket.Quantity =
                         quantity == 1 ? alreadyInBasket.Quantity + quantity : quantity;
-                    basket[arrayIndex] = alreadyInBasket;
-                    var newBasket = basket.ToArray();
+                    var newBasket = basket
+                        .Select(x => x.Id == productId ? alreadyInBasket : x)
+                        .ToArray();
                     dbUser.Basket = newBasket;
                     _context.SaveChanges();
                     return Ok(dbUser.Basket);
