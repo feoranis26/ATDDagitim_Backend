@@ -176,6 +176,7 @@ namespace ATDBackend.Controllers
                 {
                     var newBasket = basket.Append(basketSeed).ToArray();
                     dbUser.Basket = newBasket;
+                    _context.Users.Update(dbUser);
                     _context.SaveChanges();
                     return Ok(dbUser.Basket);
                 }
