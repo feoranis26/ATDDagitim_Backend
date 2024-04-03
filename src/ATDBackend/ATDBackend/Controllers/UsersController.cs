@@ -157,11 +157,15 @@ namespace ATDBackend.Controllers
             var dbUser = _context.Users.Find(user.Id);
             if (dbUser is not null)
             {
-                var basket = dbUser.Basket ?? Array.Empty<BasketSeed>();
+                var basket = dbUser.Basket ?? new List<BasketSeed>();
                 var alreadyInBasket = basket.FirstOrDefault(x => x.Id == productId);
 
                 if (alreadyInBasket is null)
                 {
+                    if (dbUser.Basket is null)
+                    {
+                        dbUser.Basket = new List<BasketSeed>();
+                    }
                     dbUser.Basket.Add(basketSeed);
                 }
                 else
