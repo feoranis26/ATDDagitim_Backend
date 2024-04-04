@@ -1,12 +1,6 @@
-using System.Security.Claims;
-using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
-using ATDBackend.Database.Models; //DB Models
-using ATDBackend.Security;
 using ATDBackend.Utils;
-using Microsoft.AspNetCore.Authorization; //You know what this is...
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ATDBackend.Controllers
 {
@@ -31,7 +25,6 @@ namespace ATDBackend.Controllers
         private readonly AppDBContext _context = context;
 
         [HttpPost]
-        [CheckAuth]
         public IActionResult SendContact([FromBody] ContactForm formDetails) //REQUIRES AUTHENTICATION
         {
             MailSender

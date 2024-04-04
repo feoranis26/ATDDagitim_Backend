@@ -1,6 +1,3 @@
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Text.Json;
 using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
@@ -168,10 +165,7 @@ namespace ATDBackend.Controllers
 
                 if (alreadyInBasket is null)
                 {
-                    if (dbUser.BasketJson is null)
-                    {
-                        dbUser.BasketJson = JsonSerializer.Serialize(new List<BasketSeed>());
-                    }
+                    dbUser.BasketJson ??= JsonSerializer.Serialize(new List<BasketSeed>());
                     newBasket.Add(basketSeed);
                     dbUser.BasketJson = JsonSerializer.Serialize(newBasket);
                 }

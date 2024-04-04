@@ -2,9 +2,7 @@
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc; //You know what this is...
-using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Controllers
 {

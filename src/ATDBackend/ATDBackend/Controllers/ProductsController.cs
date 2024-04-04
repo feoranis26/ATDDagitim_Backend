@@ -2,7 +2,6 @@
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security;
-using Microsoft.AspNetCore.Cors; //You know what this is...
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
