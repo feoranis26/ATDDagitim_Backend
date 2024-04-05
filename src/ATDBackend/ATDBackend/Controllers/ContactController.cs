@@ -1,4 +1,5 @@
 using ATDBackend.Database.DBContexts; //DB Contexts
+using ATDBackend.Security;
 using ATDBackend.Utils;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,7 @@ namespace ATDBackend.Controllers
         private readonly AppDBContext _context = context;
 
         [HttpPost]
+        [Captcha]
         public IActionResult SendContact([FromBody] ContactForm formDetails) //REQUIRES AUTHENTICATION
         {
             if (formDetails == null)
