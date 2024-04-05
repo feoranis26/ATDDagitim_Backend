@@ -15,7 +15,6 @@ namespace ATDBackend.Security
         }
 
         private async Task<CaptchaResult> VerifyCaptcha(string cliResp)
-        public static async Task<CaptchaResult> VerifyCaptcha(string cliResp)
         {
             try
             {
