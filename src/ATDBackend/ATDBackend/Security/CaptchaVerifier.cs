@@ -21,20 +21,26 @@ namespace ATDBackend.Security
                 HttpClient client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(5);
                 string? CaptchaSecret = Environment.GetEnvironmentVariable("CAPTCHASECRET");
+                Console.WriteLine("OMG ENV VARIABLE REVEALED: " + CaptchaSecret);
                 if (CaptchaSecret == null)
                     return CaptchaResult.ERROR;
 
                 object obj = new { secret = CaptchaSecret, response = cliResp };
 
                 var content = JsonContent.Create(obj);
+
+                Console.WriteLine("What JSON req body looks like: " + content);
                 var response = await client.PostAsync(
                     "https://www.google.com/recaptcha/api/siteverify",
                     content
                 );
-
+                Console.WriteLine("This is response: " + response);
                 dynamic json = JObject.Parse(response.Content.ReadAsStringAsync().Result);
+                Console.WriteLine("This is response json: " + json);
 
                 bool suc = json.success;
+
+                Console.WriteLine("This is suc who ccalls a variable suc?: " + suc);
 
                 client.Dispose();
 
