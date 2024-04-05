@@ -54,18 +54,18 @@ namespace ATDBackend.Security
             string? cliresp = context.HttpContext.Request.Query["captcha"];
             Console.WriteLine("CAPTCHING RN");
             Console.WriteLine(cliresp);
-            Console.WriteLine("That captched hah");
 
             if (cliresp == null)
             {
                 context.HttpContext.Response.StatusCode = 400;
                 await context.HttpContext.Response.WriteAsync("IncorrectCaptcha");
-                Console.WriteLine("Incorrect Captcha");
+                Console.WriteLine("Null Captcha");
                 return;
             }
 
             CaptchaResult result = await VerifyCaptcha(cliresp);
-
+            Console.WriteLine("THIS IS RESULT: " + result);
+            Console.WriteLine("This is valid captcha should be like: " + CaptchaResult.VALID);
             if (result == CaptchaResult.VALID)
             {
                 await next();
@@ -75,7 +75,7 @@ namespace ATDBackend.Security
             {
                 context.HttpContext.Response.StatusCode = 400;
                 await context.HttpContext.Response.WriteAsync("IncorrectCaptcha");
-                Console.WriteLine("Incorrect Captcha");
+                Console.WriteLine("actually Incorrect Captcha ");
                 return;
             }
         }
