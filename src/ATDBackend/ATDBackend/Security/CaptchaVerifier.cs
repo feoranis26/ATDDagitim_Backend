@@ -1,24 +1,25 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json.Linq;
 
 namespace ATDBackend.Security
 {
-    public static class CaptchaVerifier
+    public class Captcha : ActionFilterAttribute
     {
-        public enum CaptchaResult
+        private enum CaptchaResult
         {
             ERROR = 0,
             VALID,
             INVALID
         }
 
-
-        public static async Task<CaptchaResult> VerifyCaptcha(string cliResp)
+        private async Task<CaptchaResult> VerifyCaptcha(string cliResp)
         {
             try
             {
                 HttpClient client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(5);
                 string? CaptchaSecret = Environment.GetEnvironmentVariable("CAPTCHASECRET");
                 if (CaptchaSecret == null) return CaptchaResult.ERROR;
 
@@ -35,11 +36,39 @@ namespace ATDBackend.Security
 
                 bool suc = json.success;
 
+                client.Dispose();
+
                 return suc ? CaptchaResult.VALID : CaptchaResult.INVALID;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return CaptchaResult.ERROR;
+            }
+        }
+
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        {
+            string? cliresp = context.HttpContext.Request.Query["captcha"];
+
+            if (cliresp == null)
+            {
+
+                context.HttpContext.Response.StatusCode = 400;
+                await context.HttpContext.Response.WriteAsync("IncorrectCaptcha");
+                return;
+            }
+
+            CaptchaResult result = await VerifyCaptcha(cliresp);
+
+            if (result == CaptchaResult.VALID)
+            {
+                await next();
+            }
+            else
+            {
+                context.HttpContext.Response.StatusCode = 400;
+                await context.HttpContext.Response.WriteAsync("IncorrectCaptcha");
+                return;
             }
         }
     }
