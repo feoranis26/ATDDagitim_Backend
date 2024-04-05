@@ -20,7 +20,7 @@ namespace ATDBackend.Security
             {
                 HttpClient client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(5);
-                string? CaptchaSecret = Environment.GetEnvironmentVariable("CAPTCHASECRET");
+                string? CaptchaSecret = Environment.GetEnvironmentVariable("CAPTCHA_SECRET");
                 Console.WriteLine("OMG ENV VARIABLE REVEALED: " + CaptchaSecret);
                 if (CaptchaSecret == null)
                     return CaptchaResult.ERROR;

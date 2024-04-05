@@ -19,6 +19,7 @@ services:
       - "ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}"
       - "MJ_APIKEY_PUBLIC=${MJ_APIKEY_PUBLIC}"
       - "MJ_APIKEY_PRIVATE=${MJ_APIKEY_PRIVATE}"
+      - "CAPTCHA_SECRET=${CAPTCHA_SECRET}"
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
