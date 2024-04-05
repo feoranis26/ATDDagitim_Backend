@@ -46,15 +46,21 @@ namespace ATDBackend.Security
             }
         }
 
-        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public override async Task OnActionExecutionAsync(
+            ActionExecutingContext context,
+            ActionExecutionDelegate next
+        )
         {
             string? cliresp = context.HttpContext.Request.Query["captcha"];
+            Console.WriteLine("CAPTCHING RN");
+            Console.WriteLine(cliresp);
+            Console.WriteLine("That captched hah");
 
             if (cliresp == null)
             {
-
                 context.HttpContext.Response.StatusCode = 400;
                 await context.HttpContext.Response.WriteAsync("IncorrectCaptcha");
+                Console.WriteLine("Incorrect Captcha");
                 return;
             }
 
@@ -63,11 +69,13 @@ namespace ATDBackend.Security
             if (result == CaptchaResult.VALID)
             {
                 await next();
+                Console.WriteLine("Next");
             }
             else
             {
                 context.HttpContext.Response.StatusCode = 400;
                 await context.HttpContext.Response.WriteAsync("IncorrectCaptcha");
+                Console.WriteLine("Incorrect Captcha");
                 return;
             }
         }
