@@ -26,6 +26,26 @@ namespace ATDBackend.Controllers
         [HttpPost]
         public IActionResult SendContact([FromBody] ContactForm formDetails) //REQUIRES AUTHENTICATION
         {
+            if (formDetails == null)
+            {
+                return BadRequest("Invalid form data.");
+            }
+            if (
+                string.IsNullOrEmpty(formDetails.Name)
+                || string.IsNullOrEmpty(formDetails.Email)
+                || string.IsNullOrEmpty(formDetails.Message)
+            )
+            {
+                return BadRequest("Invalid form data.");
+            }
+            if (!formDetails.Email.Contains("@") || !formDetails.Email.Contains("."))
+            {
+                return BadRequest("Invalid email address.");
+            }
+            if (formDetails.Message.Length < 10)
+            {
+                return BadRequest("Message is too short.");
+            }
             MailSender
                 .SendMail(
                     "sehirbahceleri@gmail.com",
