@@ -1,8 +1,4 @@
-﻿using System.Text;
-using System.Web;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json.Linq;
 
 namespace ATDBackend.Security
@@ -25,12 +21,6 @@ namespace ATDBackend.Security
                 string? CaptchaSecret = Environment.GetEnvironmentVariable("CAPTCHA_SECRET");
                 if (CaptchaSecret == null)
                     return CaptchaResult.ERROR;
-
-                // object obj = new { secret = CaptchaSecret, response = cliResp };
-                // var content = JsonContent.Create(obj);
-                // var stringContent = await content.ReadAsStringAsync();
-                // byte[] byteArrayContent = Encoding.ASCII.GetBytes(stringContent);
-                // var newContent = HttpUtility.UrlEncode(byteArrayContent);
 
                 var data = new Dictionary<string, string>
                 {
