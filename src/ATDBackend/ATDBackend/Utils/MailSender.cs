@@ -2,7 +2,6 @@ using System;
 using BCrypt.Net;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json.Linq;
 
 namespace ATDBackend.Utils
@@ -24,7 +23,8 @@ namespace ATDBackend.Utils
             string subject,
             string body,
             string userName,
-            string? bodyHtml = null
+            string? bodyHtml = null,
+            string? senderMail = "sehirbahceleri@gmail.com"
         )
         {
             String actualHtml = "<p>" + body + "</p>";
@@ -37,7 +37,7 @@ namespace ATDBackend.Utils
                 Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE")
             );
             MailjetRequest request = new MailjetRequest { Resource = Send.Resource, }
-                .Property(Send.FromEmail, "sehirbahceleri@gmail.com")
+                .Property(Send.FromEmail, senderMail)
                 .Property(Send.FromName, "Şehirbahçeleri")
                 .Property(
                     Send.Recipients,
