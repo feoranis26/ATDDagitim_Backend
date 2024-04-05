@@ -51,8 +51,7 @@ namespace ATDBackend.Controllers
                     "sehirbahceleri@gmail.com",
                     "New sehirbahceleri.com.tr Contact Form from: " + formDetails.Name,
                     "USER MAIL: " + formDetails.Email + ", \n\n" + formDetails.Message,
-                    "sehirbahceleri.com.tr",
-                    senderMail: formDetails.Email
+                    "sehirbahceleri.com.tr"
                 )
                 .Wait();
             return Ok("Message sent!");

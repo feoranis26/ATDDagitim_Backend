@@ -15,22 +15,23 @@ namespace ATDBackend.Security
         }
 
         private async Task<CaptchaResult> VerifyCaptcha(string cliResp)
+        public static async Task<CaptchaResult> VerifyCaptcha(string cliResp)
         {
             try
             {
                 HttpClient client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(5);
                 string? CaptchaSecret = Environment.GetEnvironmentVariable("CAPTCHASECRET");
-                if (CaptchaSecret == null) return CaptchaResult.ERROR;
+                if (CaptchaSecret == null)
+                    return CaptchaResult.ERROR;
 
-                object obj = new
-                {
-                    secret = CaptchaSecret,
-                    response = cliResp
-                };
+                object obj = new { secret = CaptchaSecret, response = cliResp };
 
                 var content = JsonContent.Create(obj);
-                var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
+                var response = await client.PostAsync(
+                    "https://www.google.com/recaptcha/api/siteverify",
+                    content
+                );
 
                 dynamic json = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 
