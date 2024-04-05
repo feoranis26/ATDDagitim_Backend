@@ -7,7 +7,6 @@ namespace ATDBackend.Controllers
     public class ContactForm()
     {
         public string Name { get; set; }
-        public string Surname { get; set; }
         public string Email { get; set; }
         public string Message { get; set; }
     }
@@ -35,7 +34,7 @@ namespace ATDBackend.Controllers
                     "sehirbahceleri.com.tr"
                 )
                 .Wait();
-            return Ok();
+            return Ok("Message sent!");
         }
     }
 }

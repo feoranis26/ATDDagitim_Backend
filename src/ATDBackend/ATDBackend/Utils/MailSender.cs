@@ -27,7 +27,7 @@ namespace ATDBackend.Utils
             string? bodyHtml = null
         )
         {
-            String actualHtml = "<p>body</p>";
+            String actualHtml = "<p>" + body + "</p>";
             if (bodyHtml != null)
             {
                 actualHtml = bodyHtml;
