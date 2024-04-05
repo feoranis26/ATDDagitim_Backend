@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ATDBackend.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240403091348_good?basket")]
+    [Migration("20240403091348_good_basket")]
     partial class goodbasket
     {
         /// <inheritdoc />
