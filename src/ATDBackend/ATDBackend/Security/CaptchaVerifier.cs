@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using System.Text;
+using System.Web;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json.Linq;
@@ -21,18 +23,27 @@ namespace ATDBackend.Security
                 HttpClient client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(5);
                 string? CaptchaSecret = Environment.GetEnvironmentVariable("CAPTCHA_SECRET");
-                Console.WriteLine("OMG ENV VARIABLE REVEALED: " + CaptchaSecret);
                 if (CaptchaSecret == null)
                     return CaptchaResult.ERROR;
 
-                object obj = new { secret = CaptchaSecret, response = cliResp };
+                // object obj = new { secret = CaptchaSecret, response = cliResp };
+                // var content = JsonContent.Create(obj);
+                // var stringContent = await content.ReadAsStringAsync();
+                // byte[] byteArrayContent = Encoding.ASCII.GetBytes(stringContent);
+                // var newContent = HttpUtility.UrlEncode(byteArrayContent);
 
-                var content = JsonContent.Create(obj);
+                var data = new Dictionary<string, string>
+                {
+                    { "secret", CaptchaSecret },
+                    { "response", cliResp }
+                };
 
-                Console.WriteLine("What JSON req body looks like: " + content);
+                var newerContent = new FormUrlEncodedContent(data);
+
+                Console.WriteLine("What JSON req body looks like: " + data);
                 var response = await client.PostAsync(
                     "https://www.google.com/recaptcha/api/siteverify",
-                    content
+                    newerContent
                 );
                 Console.WriteLine("This is response: " + response);
                 dynamic json = JObject.Parse(response.Content.ReadAsStringAsync().Result);
