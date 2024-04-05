@@ -6,10 +6,10 @@ class unittestTest(unittest.TestCase):
         response = requests.get('https://api.sehirbahceleri.com.tr')
         self.assertEqual(response.status_code, 200, "Backend unreachable")
     def test_backProducts(self):
-        response = requests.get('https://api.sehirbahceleri.com.tr/products')
+        response = requests.get('https://api.sehirbahceleri.com.tr/products?Page=1&PageSize=10')
         self.assertEqual(response.status_code, 200, "Products unreachable")
-    def test_backSeeds(self):
-        response = requests.get('https://api.sehirbahceleri.com.tr/seeds')
+    def test_backCategories(self):
+        response = requests.get('https://api.sehirbahceleri.com.tr/Category/all')
         self.assertEqual(response.status_code, 200, "Seeds unreachable")
     
 

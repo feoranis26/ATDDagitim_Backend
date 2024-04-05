@@ -4,7 +4,8 @@ namespace ATDBackend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class Controller(ILogger<AuthController> logger, IConfiguration configuration) : ControllerBase
+    public class Controller(ILogger<AuthController> logger, IConfiguration configuration)
+        : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
@@ -14,8 +15,10 @@ namespace ATDBackend.Controllers
         {
             return Ok("Hi!");
         }
-        [httpPost]
-        public IActionResult PostDefault(){
+
+        [HttpPost]
+        public IActionResult PostDefault()
+        {
             return Ok("Test!");
         }
     }
