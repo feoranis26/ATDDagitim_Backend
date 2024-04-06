@@ -96,6 +96,9 @@ namespace ATDBackend
                             }
                         }
                     );
+
+                    var filePath = Path.Combine(System.AppContext.BaseDirectory, "ATDBackend.xml");
+                    options.IncludeXmlComments(filePath);
                 });
             builder
                 .Services
