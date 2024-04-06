@@ -60,7 +60,12 @@ namespace ATDBackend.Controllers
         public IActionResult CreateOrder([FromBody] OrderDTO order)
         {
             //Check if order is valid
-            if (HttpContext.Items["User"] is not User user)
+            if (HttpContext.Items["User"] is not User tempUser)
+            {
+                return Unauthorized("No User");
+            }
+            var user = _context.Users.Find(tempUser.Id);
+            if (user is null)
             {
                 return Unauthorized("No User");
             }
@@ -79,6 +84,12 @@ namespace ATDBackend.Controllers
             if (user.BasketJson is null)
             {
                 return BadRequest("No Basket");
+            }
+
+            School? userSchool = _context.Schools.Find(user.SchoolId); //Declare School
+            if (userSchool is null)
+            {
+                return BadRequest("No School");
             }
             //Create basketSeeds
             List<BasketSeed>? basketSeeds = JsonSerializer.Deserialize<List<BasketSeed>>(
@@ -118,6 +129,14 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("Invalid Order Price");
             }
+            if (userSchool.Credit < totalOrderPrice)
+            {
+                return StatusCode(402, "Not enough Credits.");
+            }
+            else
+            {
+                userSchool.Credit -= (float)totalOrderPrice; //Deduct the price from the school
+            }
 
             var newOrder = new Order
             {
@@ -132,6 +151,10 @@ namespace ATDBackend.Controllers
                 Seeds = seedIds,
                 OrderDetails = JsonSerializer.Serialize(basketSeeds)
             };
+            List<Order>? schoolOrders = JsonSerializer.Deserialize<List<Order>>(userSchool.Orders);
+            schoolOrders ??= [];
+            schoolOrders.Add(newOrder);
+            userSchool.Orders = JsonSerializer.Serialize(schoolOrders); //Add the order to the school's orders
 
             _context.Orders.Add(newOrder);
             _context.SaveChanges();
@@ -189,6 +212,19 @@ namespace ATDBackend.Controllers
             order.Address = orderToModify.Address ?? order.Address;
             order.PhoneNumber = orderToModify.PhoneNumber ?? order.PhoneNumber;
             order.Email = orderToModify.Email ?? order.Email;
+
+            var orderSchool = _context.Schools.Find(order.User.School_id);
+            if (orderSchool is null)
+            {
+                return BadRequest("No School");
+            }
+            List<Order>? schoolOrders = JsonSerializer.Deserialize<List<Order>>(orderSchool.Orders);
+            int schoolOrderIndex = schoolOrders.FindIndex(o => o.Id == order.Id);
+            if (schoolOrders is null || schoolOrderIndex == -1)
+            {
+                return StatusCode(500, "School Orders not found");
+            }
+            schoolOrders[schoolOrderIndex] = order;
             _context.SaveChanges();
             return Ok(order);
         }
