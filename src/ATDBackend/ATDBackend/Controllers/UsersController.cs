@@ -138,6 +138,34 @@ namespace ATDBackend.Controllers
             if (dbUser is not null)
             {
                 var basket = dbUser.BasketJson ?? "[]";
+                //Also checks everything in basket
+                List<BasketSeed>? deserializedBasket = JsonSerializer.Deserialize<List<BasketSeed>>(
+                    basket
+                );
+                if (deserializedBasket is null)
+                {
+                    return Ok(new List<BasketSeed>());
+                }
+                List<BasketSeed> finalBasket = deserializedBasket;
+                foreach (var product in deserializedBasket)
+                {
+                    var tempProduct = _context.Seeds.Find(product.Id);
+                    if (tempProduct is null)
+                    {
+                        finalBasket.Remove(product);
+                        continue;
+                    }
+                    if (tempProduct.Stock < product.Quantity)
+                    {
+                        deserializedBasket.FirstOrDefault(x => x.Id == product.Id).Quantity =
+                            tempProduct.Stock;
+                    }
+                    if (tempProduct.Is_active == false || tempProduct.Price <= 0)
+                    {
+                        finalBasket.Remove(product);
+                    }
+                }
+                dbUser.BasketJson = JsonSerializer.Serialize(finalBasket);
                 return Ok(basket);
             }
             return BadRequest();
