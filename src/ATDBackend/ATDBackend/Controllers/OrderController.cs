@@ -124,6 +124,15 @@ namespace ATDBackend.Controllers
                     }
                 }
             }
+            foreach (var seedId in seedIds)
+            {
+                var seed = _context.Seeds.Find(seedId);
+                if (seed is null)
+                {
+                    return BadRequest("Invalid Seed in basket");
+                }
+                seed.Stock -= 1; //Reduce stock
+            }
             //All checks passed, create order
             if (totalOrderPrice <= 0 || totalOrderPrice > 1000000 || totalOrderPrice is null)
             {
