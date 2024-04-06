@@ -22,6 +22,8 @@ namespace ATDBackend.Database.Models
         [ForeignKey("UserId")]
         public User User { get; set; } //FOREIGN KEY
 
+        public string? OrderDetails { get; set; }
+
         [Required]
         public List<int> Seeds { get; set; }
 
@@ -41,6 +43,6 @@ namespace ATDBackend.Database.Models
         public string Status { get; set; }
 
         [Required]
-        public int Price { get; set; }
+        public float Price { get; set; }
     }
 }

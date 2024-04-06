@@ -55,7 +55,7 @@ namespace ATDBackend.Controllers
             _context.Seeds.Add(seed);
             _context.SaveChanges();
 
-            return Ok();
+            return CreatedAtAction(nameof(GetOneProduct), new { productId = seed.Id }, seed);
         }
 
         [HttpPut]
