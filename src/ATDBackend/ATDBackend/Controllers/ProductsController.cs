@@ -101,6 +101,7 @@ namespace ATDBackend.Controllers
         /// You can get a list of products by providing a page number and page size.
         /// You can also filter the products by providing a CategoryId (OPTIONAL).
         /// Page number should be incremented by 1 on the frontend. Otherwise the user will not see the products that come after pagesize.
+        /// </remarks>
         /// <param name="Page">Page number</param>
         /// <param name="PageSize">Number of products should the page have</param>
         /// <param name="CategoryId">CategoryId of the products you want to get</param>
@@ -140,6 +141,16 @@ namespace ATDBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get a single product.
+        /// </summary>
+        /// <remarks>
+        /// You can get a single product by providing a productId.
+        /// you can also get a list of products by providing a categoryId.
+        /// </remarks>
+        /// <param name="productId"></param>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
         [HttpGet("find")]
         public IActionResult GetOneProduct(int? productId, int? categoryId)
         {
