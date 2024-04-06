@@ -139,6 +139,10 @@ namespace ATDBackend.Controllers
             {
                 return StatusCode(409, "Not enough stock."); //Don't request more product than the stock
             }
+            if (tempProduct.Is_active == false || tempProduct.Price <= 0)
+            {
+                return BadRequest("Product can't be purchased."); //Don't request inactive products
+            }
             var basketSeed = new BasketSeed
             {
                 Id = tempProduct.Id,

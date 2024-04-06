@@ -19,12 +19,13 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
+        private readonly string[] _status = ["Pending", "Processing", "Shipped", "Delivered"];
+
         [HttpGet]
         [CheckAuth]
         public IActionResult GetOrder()
         {
-            var user = HttpContext.Items["User"] as User;
-            if (user is null)
+            if (HttpContext.Items["User"] is not User user)
             {
                 return Unauthorized("No User");
             }
@@ -106,7 +107,7 @@ namespace ATDBackend.Controllers
                 Address = order.Address,
                 PhoneNumber = order.PhoneNumber,
                 Email = order.Email,
-                Status = "Pending",
+                Status = _status[0],
                 Price = (float)totalOrderPrice,
                 Timestamp = DateTime.UtcNow,
                 Seeds = seedIds,
@@ -116,6 +117,58 @@ namespace ATDBackend.Controllers
             _context.Orders.Add(newOrder);
             _context.SaveChanges();
             return CreatedAtAction(nameof(GetOrder), new { orderId = newOrder.Id }, newOrder);
+        }
+
+        [HttpPatch("{orderId}")]
+        [CheckAuth("admin")]
+        public IActionResult ModifyOrder(int orderId, [FromBody] OrderToModifyDTO orderToModify)
+        {
+            var order = _context.Orders.Find(orderId);
+            if (order is null)
+            {
+                return NotFound("Order not found");
+            }
+            if (HttpContext.Items["User"] is not User user)
+            {
+                return Unauthorized("No User");
+            }
+            if (orderToModify == null)
+            {
+                return BadRequest("No Order to modify");
+            }
+            if (orderToModify.StatusId != null && orderToModify.StatusName != null)
+            {
+                return BadRequest("Can't have both StatusId and StatusName");
+            }
+            if (orderToModify.StatusId != null)
+            {
+                order.Status = _status[(int)orderToModify.StatusId];
+            }
+            if (orderToModify.StatusName != null)
+            {
+                if (!_status.Contains(orderToModify.StatusName))
+                {
+                    return BadRequest("Invalid Status Name");
+                }
+                else
+                {
+                    order.Status = orderToModify.StatusName;
+                }
+            }
+            if (orderToModify.Address != null)
+            {
+                order.Address = orderToModify.Address;
+            }
+            if (orderToModify.PhoneNumber != null)
+            {
+                order.PhoneNumber = orderToModify.PhoneNumber;
+            }
+            if (orderToModify.Email != null)
+            {
+                order.Email = orderToModify.Email;
+            }
+            _context.SaveChanges();
+            return Ok(order);
         }
     }
 }
