@@ -27,6 +27,7 @@ namespace ATDBackend.Controllers
         /// <remarks>
         /// This endpoint requires authentication. Only authenticated users can access this endpoint.
         /// This endpoint does not take any parameters and returns the orders of the authenticated user.
+        /// </remarks>
         /// <returns>All orders of the authenticated user.</returns>
         [HttpGet]
         [CheckAuth]
@@ -51,6 +52,7 @@ namespace ATDBackend.Controllers
         /// This endpoint requires a JSON object in the request body. The JSON object should contain the following fields:
         /// Email, PhoneNumber, Address
         /// The order does not take the products as parameters. Instead, it takes them directly from the authenticated user. Please make sure that the user's basket is up to date before calling this endpoint.
+        /// </remarks>
         /// <param name="order"></param>
         /// <returns>The order object with a status code of 201</returns>
         [HttpPost]

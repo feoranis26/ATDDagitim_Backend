@@ -21,6 +21,11 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
+        /// <summary>
+        /// Register a new user.
+        /// </summary>
+        /// <param name="userDto"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Register([FromBody] UserDto userDto) //Register user
         {
