@@ -57,58 +57,5 @@ namespace ATDBackend.Controllers
             }
             return StatusCode(500, "Internal Server Error");
         }
-
-        /// <summary>
-        /// Register endpoint
-        /// </summary>
-        /// <param name="userDto"></param>
-        /// <returns></returns>
-        [HttpPost("Register")]
-        public IActionResult Register([FromBody] UserDto userDto) //Register user
-        {
-            var school = _context.Schools.Find(userDto.SchoolId);
-            var role = _context.Roles.Find(userDto.RoleId);
-
-            if (school == null || role == null)
-            {
-                return BadRequest("Invalid SchoolId or RoleId");
-            }
-
-            if (userDto.Username.Length < 3 || userDto.Username.Length > 20)
-            {
-                return BadRequest("Username length must be between 3 and 20 characters.");
-            }
-            if (userDto.Email.Length < 3 || userDto.Email.Length > 50)
-            {
-                return BadRequest("Email length must be between 3 and 50 characters.");
-            }
-            if (!userDto.Email.Contains("@"))
-            {
-                return BadRequest("Email must be real. Duuh!");
-            }
-            if (userDto.Password.Length < 8 || userDto.Password.Length > 30)
-            {
-                return BadRequest("Password length must be between 8 and 30 characters.");
-            }
-
-            var user = new User
-            {
-                Name = userDto.Name,
-                Surname = userDto.Surname,
-                Email = userDto.Email,
-                Phone_number = userDto.Phone_number,
-                Hashed_PW = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
-                School_id = school,
-                Role = role,
-                Register_date = DateTime.UtcNow.AddHours(3),
-                Username = userDto.Username,
-                BasketJson = "[]"
-            };
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
-
-            return Ok("User registered successfully");
-        }
     }
 }
