@@ -108,7 +108,7 @@ namespace ATDBackend.Controllers
                 Email = order.Email,
                 Status = "Pending",
                 Price = (float)totalOrderPrice,
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.UtcNow,
                 Seeds = seedIds,
                 OrderDetails = JsonSerializer.Serialize(basketSeeds)
             };

@@ -46,7 +46,7 @@ namespace ATDBackend.Controllers
                 Description = seedDto.Description,
                 User_id = user,
                 Stock = seedDto.Stock,
-                Date_added = DateTime.UtcNow.AddHours(3),
+                Date_added = DateTime.UtcNow,
                 Price = seedDto.Price,
                 Is_active = seedDto.Is_active,
                 Image = seedDto.Image
