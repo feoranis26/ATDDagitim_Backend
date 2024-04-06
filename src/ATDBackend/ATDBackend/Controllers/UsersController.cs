@@ -166,7 +166,8 @@ namespace ATDBackend.Controllers
                     }
                 }
                 dbUser.BasketJson = JsonSerializer.Serialize(finalBasket);
-                return Ok(basket);
+                _context.SaveChanges();
+                return Ok(finalBasket);
             }
             return BadRequest();
         }
