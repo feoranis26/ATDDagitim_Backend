@@ -155,18 +155,9 @@ namespace ATDBackend.Controllers
                     order.Status = orderToModify.StatusName;
                 }
             }
-            if (orderToModify.Address != null)
-            {
-                order.Address = orderToModify.Address;
-            }
-            if (orderToModify.PhoneNumber != null)
-            {
-                order.PhoneNumber = orderToModify.PhoneNumber;
-            }
-            if (orderToModify.Email != null)
-            {
-                order.Email = orderToModify.Email;
-            }
+            order.Address = orderToModify.Address ?? order.Address;
+            order.PhoneNumber = orderToModify.PhoneNumber ?? order.PhoneNumber;
+            order.Email = orderToModify.Email ?? order.Email;
             _context.SaveChanges();
             return Ok(order);
         }
