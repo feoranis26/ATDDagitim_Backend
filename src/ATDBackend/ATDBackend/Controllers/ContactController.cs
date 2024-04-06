@@ -24,6 +24,16 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
+        /// <summary>
+        /// Send a contact form
+        /// </summary>
+        /// <remarks>
+        /// This endpoint requires captcha. To see how to send captcha, please refer to the documentation.
+        /// Contact form should include Name, Email and Message fields. None of these fields can be empty or null.
+        /// Email field should contain a valid email address and the message length should be at least 50 characters.
+        /// </remarks>
+        /// <param name="formDetails"></param>
+        /// <returns></returns>
         [HttpPost]
         [Captcha]
         public IActionResult SendContact([FromBody] ContactForm formDetails) //REQUIRES AUTHENTICATION

@@ -18,6 +18,11 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
+        /// <summary>
+        /// Add a new school. ADMIN ONLY
+        /// </summary>
+        /// <param name="school"></param>
+        /// <returns></returns>
         [HttpPost]
         [CheckAuth("Admin")]
         public IActionResult AddSchool([FromBody] School school) //REQUIRES AUTHENTICATION
@@ -27,6 +32,10 @@ namespace ATDBackend.Controllers
             return Ok(school);
         }
 
+        /// <summary>
+        /// Get all schools.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("all")]
         public IActionResult GetSchools() //REQUIRES AUTHENTICATION
         {

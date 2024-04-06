@@ -19,6 +19,11 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
+        /// <summary>
+        /// Add a new product. ADMIN ONLY
+        /// </summary>
+        /// <param name="seedDto"></param>
+        /// <returns></returns>
         [HttpPost]
         [CheckAuth("Admin")]
         public IActionResult AddProduct([FromBody] SeedDto seedDto) //REQUIRES AUTHENTICATION
@@ -58,6 +63,12 @@ namespace ATDBackend.Controllers
             return CreatedAtAction(nameof(GetOneProduct), new { productId = seed.Id }, seed);
         }
 
+        /// <summary>
+        /// Update a product. ADMIN ONLY
+        /// </summary>
+        /// <param name="Id">Product to update</param>
+        /// <param name="seedDto"></param>
+        /// <returns></returns>
         [HttpPut]
         [CheckAuth("Admin")]
         public IActionResult UpdateProduct(int Id, [FromBody] SeedUpdateDTO? seedDto)
@@ -86,6 +97,10 @@ namespace ATDBackend.Controllers
         /// <summary>
         /// Get a list of products.
         /// </summary>
+        /// <remarks>
+        /// You can get a list of products by providing a page number and page size.
+        /// You can also filter the products by providing a CategoryId (OPTIONAL).
+        /// Page number should be incremented by 1 on the frontend. Otherwise the user will not see the products that come after pagesize.
         /// <param name="Page">Page number</param>
         /// <param name="PageSize">Number of products should the page have</param>
         /// <param name="CategoryId">CategoryId of the products you want to get</param>

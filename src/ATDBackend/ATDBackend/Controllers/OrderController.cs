@@ -21,6 +21,13 @@ namespace ATDBackend.Controllers
 
         private readonly string[] _status = ["Pending", "Processing", "Shipped", "Delivered"];
 
+        /// <summary>
+        /// Get all orders
+        /// </summary>
+        /// <remarks>
+        /// This endpoint requires authentication. Only authenticated users can access this endpoint.
+        /// This endpoint does not take any parameters and returns the orders of the authenticated user.
+        /// <returns>All orders of the authenticated user.</returns>
         [HttpGet]
         [CheckAuth]
         public IActionResult GetOrder()
@@ -36,6 +43,16 @@ namespace ATDBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Create new order.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint requires authentication. Only authenticated users can access this endpoint.
+        /// This endpoint requires a JSON object in the request body. The JSON object should contain the following fields:
+        /// Email, PhoneNumber, Address
+        /// The order does not take the products as parameters. Instead, it takes them directly from the authenticated user. Please make sure that the user's basket is up to date before calling this endpoint.
+        /// <param name="order"></param>
+        /// <returns>The order object with a status code of 201</returns>
         [HttpPost]
         [CheckAuth]
         public IActionResult CreateOrder([FromBody] OrderDTO order)
@@ -119,6 +136,18 @@ namespace ATDBackend.Controllers
             return CreatedAtAction(nameof(GetOrder), new { orderId = newOrder.Id }, newOrder);
         }
 
+        /// <summary>
+        /// Modify an order. ADMIN ONLY
+        /// </summary>
+        /// <remarks>
+        /// This endpoint requires admin authentication. Only authenticated admins can access this endpoint.
+        /// You can provide any of the following parameters in the request body:
+        /// Address, PhoneNumber, Email, StatusId, StatusName
+        /// You cannot provide both StatusId and StatusName at the same time. That will result in an error.
+        /// </remarks>
+        /// <param name="orderId">Order ID to modify</param>
+        /// <param name="orderToModify">Modified order details</param>
+        /// <returns></returns>
         [HttpPatch("{orderId}")]
         [CheckAuth("admin")]
         public IActionResult ModifyOrder(int orderId, [FromBody] OrderToModifyDTO orderToModify)

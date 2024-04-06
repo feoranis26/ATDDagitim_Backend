@@ -19,25 +19,63 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
+        /// <summary>
+        /// Get all categories
+        /// </summary>
+        /// <returns>200 with all the categories in a json object.</returns>
         [HttpGet("all")]
         public IActionResult GetCategories()
         {
             return Ok(_context.Categories.ToList());
         }
 
+        /// <summary>
+        /// Adds a new category to the database. ADMIN ONLY
+        /// </summary>
+        /// <param name="category">Include this in the request body.</param>
+        /// <remarks>
+        /// This endpoint requires admin authentication. Also you should provide all parameters of the category object:
+        /// CategoryName, Description
+        /// </remarks>
+        /// <returns>Status code 201 with the created category.</returns>
         [HttpPost]
         [CheckAuth("Admin")]
         public IActionResult AddCategory([FromBody] Category category)
         {
-            _context.Categories.Add(category);
+            var actualCategory = new Category
+            {
+                CategoryName = category.CategoryName,
+                Description = category.Description
+            };
+            _context.Categories.Add(actualCategory);
             _context.SaveChanges();
-            return Ok(category);
+            return CreatedAtAction(
+                nameof(getCategory),
+                new { categoryID = actualCategory.Id },
+                actualCategory
+            );
         }
 
+        /// <summary>
+        /// Get a category by ID
+        /// </summary>
+        /// <remarks>
+        /// Please make sure that the category ID exists before calling this endpoint.
+        /// </remarks>
+        /// <param name="categoryID">Id of the category</param>
+        /// <returns>Status code 200 with the category object.</returns>
         [HttpGet]
         public IActionResult getCategory(int categoryID)
         {
-            return Ok(_context.Categories.Where(x => x.Id == categoryID).FirstOrDefault());
+            var category = _context.Categories.Find(categoryID);
+            if (category is null)
+            {
+                return BadRequest("Category not found");
+            }
+            else
+            {
+                return Ok(category);
+            }
         }
     }
 }

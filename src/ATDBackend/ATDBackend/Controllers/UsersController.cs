@@ -81,6 +81,10 @@ namespace ATDBackend.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// Send a mail TESTING PURPOSES. ADMIN ONLY
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("sendMail")]
         [CheckAuth("Admin")]
         public IActionResult MailSendTest()
@@ -100,6 +104,10 @@ namespace ATDBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get user details. USER ONLY
+        /// </summary>
+        /// <returns>The user object with all fields.</returns>
         [HttpGet("details")]
         [CheckAuth("User")]
         public IActionResult GetUserDetails()
@@ -109,6 +117,10 @@ namespace ATDBackend.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// Get the basket of the user. USER ONLY
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("basket")]
         [CheckAuth("User")]
         public IActionResult GetBasket()
@@ -126,6 +138,12 @@ namespace ATDBackend.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Add a product to the basket. USER ONLY
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
         [HttpPost("basket")]
         [CheckAuth("User")]
         public IActionResult AddToBasket(int productId, int? quantity = 1)
@@ -189,6 +207,12 @@ namespace ATDBackend.Controllers
             return StatusCode(500, "Houston, we have a problem.");
         }
 
+        /// <summary>
+        /// Remove a product from the basket. USER ONLY
+        /// </summary>
+        /// <param name="ProductId">Id of the product to remove.</param>
+        /// <param name="Quantity">How many products to remove.</param>
+        /// <returns></returns>
         [HttpDelete("basket")]
         [CheckAuth("User")]
         public IActionResult RemoveFromBasket(int ProductId, int? Quantity = 0)
@@ -220,6 +244,28 @@ namespace ATDBackend.Controllers
                         alreadyInBasket.Quantity;
                 }
                 dbUser.BasketJson = JsonSerializer.Serialize(newBasket);
+                _context.SaveChanges();
+                return Ok(dbUser.BasketJson);
+            }
+            return StatusCode(500, "Houston, we have a problem.");
+        }
+
+        /// <summary>
+        /// Delete all products from the basket. USER ONLY
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("basket/all")]
+        [CheckAuth("User")]
+        public IActionResult DeleteBasket()
+        {
+            if (HttpContext.Items["User"] is not User user)
+            {
+                return BadRequest("User not found.");
+            }
+            var dbUser = _context.Users.Find(user.Id);
+            if (dbUser is not null)
+            {
+                dbUser.BasketJson = JsonSerializer.Serialize(new List<BasketSeed>());
                 _context.SaveChanges();
                 return Ok(dbUser.BasketJson);
             }

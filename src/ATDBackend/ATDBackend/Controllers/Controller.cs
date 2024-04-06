@@ -10,12 +10,20 @@ namespace ATDBackend.Controllers
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
 
+        /// <summary>
+        /// Testing uptime
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetDefault()
         {
             return Ok("Hi!");
         }
 
+        /// <summary>
+        /// Testing uptime with POST
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult PostDefault()
         {

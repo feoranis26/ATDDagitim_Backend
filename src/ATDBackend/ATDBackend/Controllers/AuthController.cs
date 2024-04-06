@@ -18,6 +18,12 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
+        /// <summary>
+        /// Login endpoint
+        /// </summary>
+        /// <param name="username">username of the user</param>
+        /// <param name="password">plain text password of the user</param>
+        /// <returns>Status code 200 and SetCookie header with the token.</returns>
         [HttpPost("login")]
         public IActionResult Login(string username, string password)
         {
@@ -52,6 +58,11 @@ namespace ATDBackend.Controllers
             return StatusCode(500, "Internal Server Error");
         }
 
+        /// <summary>
+        /// Register endpoint
+        /// </summary>
+        /// <param name="userDto"></param>
+        /// <returns></returns>
         [HttpPost("Register")]
         public IActionResult Register([FromBody] UserDto userDto) //Register user
         {
@@ -97,7 +108,7 @@ namespace ATDBackend.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            return Ok();
+            return Ok("User registered successfully");
         }
     }
 }
