@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+Visual\ Studio\ 2022/
 
 # MacOS auto-generated files
 .DS_Store
