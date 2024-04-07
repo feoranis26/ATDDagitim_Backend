@@ -38,35 +38,22 @@ namespace ATDBackend.Controllers
         [Captcha]
         public IActionResult SendContact([FromBody] ContactForm formDetails) //REQUIRES AUTHENTICATION
         {
-            if (formDetails == null)
-            {
-                return BadRequest("Invalid form data.");
-            }
-            if (
-                string.IsNullOrEmpty(formDetails.Name)
+            if (formDetails == null
                 || string.IsNullOrEmpty(formDetails.Email)
                 || string.IsNullOrEmpty(formDetails.Message)
-            )
-            {
-                return BadRequest("Invalid form data.");
-            }
-            if (!formDetails.Email.Contains("@") || !formDetails.Email.Contains("."))
-            {
-                return BadRequest("Invalid email address.");
-            }
-            if (formDetails.Message.Length < 10)
-            {
-                return BadRequest("Message is too short.");
-            }
-            MailSender
-                .SendMail(
+            ) return BadRequest("invalidform");
+
+            if (!PatternVerifier.VerifyEmail(formDetails.Email)) return BadRequest("invalidemail");
+            if (formDetails.Message.Length < 10) return BadRequest("messageshort");
+
+            MailSender.SendMail(
                     "sehirbahceleri@gmail.com",
                     "New sehirbahceleri.com.tr Contact Form from: " + formDetails.Name,
                     "USER MAIL: " + formDetails.Email + ", \n\n" + formDetails.Message,
                     "sehirbahceleri.com.tr"
-                )
-                .Wait();
-            return Ok("Message sent!");
+                ).Wait();
+
+            return Ok("OK");
         }
     }
 }
