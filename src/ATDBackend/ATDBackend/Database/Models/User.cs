@@ -28,13 +28,13 @@ namespace ATDBackend.Database.Models
         public int SchoolId { get; set; } //FOREIGN KEY
 
         [Required]
-        [ForeignKey("School_Id")]
-        public School School_id { get; set; } //FOREIGN KEY
+        [ForeignKey("SchoolId")]
+        public School School { get; set; } //FOREIGN KEY
 
         public int RoleId { get; set; } //FOREIGN KEY
 
         [Required]
-        [ForeignKey("Role_Id")]
+        [ForeignKey("RoleId")]
         public Role Role { get; set; } //FOREIGN KEY
 
         public string BasketJson { get; set; }
