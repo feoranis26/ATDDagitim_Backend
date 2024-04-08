@@ -35,6 +35,8 @@ namespace ATDBackend.Modules
             {
                 if (username == null || Client == null) return false;
 
+                logger?.LogInformation($"Sending mail / {username} / {to} / {subject} / {body}");
+
                 MailMessage msg = new MailMessage(username, to)
                 {
                     From = new MailAddress(username),
