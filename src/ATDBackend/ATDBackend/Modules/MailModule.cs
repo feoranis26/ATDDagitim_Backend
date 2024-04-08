@@ -37,6 +37,7 @@ namespace ATDBackend.Modules
 
                 MailMessage msg = new MailMessage(username, to)
                 {
+                    From = new MailAddress(username),
                     Subject = subject,
                     Body = body
                 };
