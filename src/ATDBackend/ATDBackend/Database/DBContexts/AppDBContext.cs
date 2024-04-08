@@ -17,7 +17,7 @@ namespace ATDBackend.Database.DBContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder) //Define relationships and indexes here
         {
             //Unique indexes
-            modelBuilder.Entity<Role>().HasIndex(e => e.Role_name).IsUnique();
+            modelBuilder.Entity<Role>().HasIndex(e => e.RoleName).IsUnique();
             modelBuilder.Entity<School>().HasIndex(e => e.Name).IsUnique();
             modelBuilder.Entity<Seed>().HasIndex(e => e.Name).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.Email).IsUnique();

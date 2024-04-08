@@ -8,6 +8,8 @@ namespace ATDBackend.Database.Models{
         public int Id { get; set; }
 
         [Required]
-        public string Role_name { get; set; }
+        public string RoleName { get; set; }
+
+        public ulong Permissions { get; set; }
     }
 }
