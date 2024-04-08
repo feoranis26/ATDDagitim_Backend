@@ -45,8 +45,9 @@ namespace ATDBackend.Modules
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger?.LogError(ex, null);
                 return false;
             }
         }
