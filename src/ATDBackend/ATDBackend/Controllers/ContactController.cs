@@ -1,15 +1,15 @@
 using ATDBackend.Database.DBContexts; //DB Contexts
+using ATDBackend.Modules;
 using ATDBackend.Security;
-using ATDBackend.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ATDBackend.Controllers
 {
     public class ContactForm()
     {
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Message { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public string? Message { get; set; }
     }
 
     [ApiController]
@@ -46,14 +46,16 @@ namespace ATDBackend.Controllers
             if (!PatternVerifier.VerifyEmail(formDetails.Email)) return BadRequest("invalidemail");
             if (formDetails.Message.Length < 10) return BadRequest("messageshort");
 
-            MailSender.SendMail(
-                    "sehirbahceleri@gmail.com",
-                    "New sehirbahceleri.com.tr Contact Form from: " + formDetails.Name,
-                    "USER MAIL: " + formDetails.Email + ", \n\n" + formDetails.Message,
-                    "sehirbahceleri.com.tr"
-                ).Wait();
+            if (formDetails.Name == "") formDetails.Name = null;
 
-            return Ok("OK");
+            bool suc = MailModule.SendMail(
+                "sehirbahceleri+contact@gmail.com", $"Contact Form ({formDetails.Name ?? "No Name"})",
+                $"Email: {formDetails.Email}\n" +
+                $"Name: {formDetails.Name}\n" +
+                $"Message: {formDetails.Message}"
+                );
+
+            return suc ? Ok("OK") : StatusCode(500, "fail");
         }
     }
 }

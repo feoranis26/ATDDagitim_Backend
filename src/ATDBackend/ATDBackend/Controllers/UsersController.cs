@@ -2,10 +2,11 @@ using System.Text.Json;
 using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
-using ATDBackend.Security; //login and register operations
-using ATDBackend.Utils; //Utilities
+using ATDBackend.Security; //login and register operation
 using BCrypt.Net; //Hashing
 using Microsoft.AspNetCore.Mvc;
+using ATDBackend.Modules;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ATDBackend.Controllers
 {
@@ -69,6 +70,11 @@ namespace ATDBackend.Controllers
 
             _context.Users.Add(user);
             _context.SaveChanges();
+
+
+            // TODO: Add a function to send HTML as mail body
+
+            /*
             MailSender
                 .SendMail(
                     user.Email,
@@ -83,6 +89,8 @@ namespace ATDBackend.Controllers
                     user.Name
                 )
                 .Wait();
+            */
+
             return Ok(user);
         }
 
@@ -94,19 +102,8 @@ namespace ATDBackend.Controllers
         [CheckAuth("Admin")]
         public IActionResult MailSendTest()
         {
-            try
-            {
-                MailSender.SendMail("sehirbahceleri@gmail.com", "Test", "Test", "Test").Wait();
-                return Ok("Mail sent successfully.");
-            }
-            catch (MailException e)
-            {
-                if (e.ErrorCode > 200)
-                {
-                    return StatusCode(e.ErrorCode, "Mail could not be sent.");
-                }
-                return BadRequest();
-            }
+            bool suc = MailModule.SendMail("sehirbahceleri@gmail.com", "Test subject", "Test body");
+            return suc ? Ok("Mail sent") : StatusCode(500, "An error occured while sending mail");
         }
 
         /// <summary>

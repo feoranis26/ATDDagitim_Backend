@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using ATDBackend.Database.DBContexts;
 using ATDBackend.Swagger;
@@ -12,6 +13,55 @@ namespace ATDBackend
 {
     public class Program
     {
+        private static void InitModules(ILogger logger, IConfiguration config)
+        {
+            Assembly asm = Assembly.GetExecutingAssembly();
+            List<Type> moduleTypes = asm.GetTypes().Where(x =>
+            x.IsClass && x.IsAbstract && x.IsSealed &&
+            x.Namespace == "ATDBackend.Modules"
+            ).ToList();
+
+            int sucCount = 0;
+            foreach (Type moduleType in moduleTypes)
+            {
+                moduleType.GetProperties().Where(x => x.CanWrite && x.PropertyType == typeof(IConfiguration)).ToList().ForEach(x => x.SetValue(null, config));
+                moduleType.GetProperties().Where(x => x.CanWrite && x.PropertyType == typeof(ILogger)).ToList().ForEach(x => x.SetValue(null, logger));
+
+                MethodInfo? initmethod = moduleType.GetMethod("Initialize");
+                if(initmethod == null || !initmethod.IsStatic ||initmethod.ReturnType != typeof(bool))
+                {
+                    logger.Log(LogLevel.Error, $"The module {moduleType.Name} does not contain a proper Initialize method (2)");
+                    continue;
+                }
+                bool? suc = null;
+
+                try
+                {
+                    suc = (bool?)initmethod.Invoke(null, null);
+                }
+                catch(Exception ex)
+                {
+                    logger.Log(LogLevel.Error, $"The module {moduleType.Name} failed to initialize");
+                    continue;
+                }
+
+                if(suc == null)
+                {
+                    logger.Log(LogLevel.Error, $"The module {moduleType.Name} does not contain a proper Initialize method (2)");
+                    continue;
+                }
+
+                if(!suc.Value) logger.Log(LogLevel.Error, $"The module {moduleType.Name} failed to initialize");
+                else
+                {
+                    logger.Log(LogLevel.Information, $"Initialized {moduleType.Name}");
+                    sucCount++;
+                }
+            }
+
+            logger.Log(LogLevel.Information, $"Initialized {sucCount}/{moduleTypes.Count} modules");
+        }
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -105,6 +155,8 @@ namespace ATDBackend
                 .AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
             var app = builder.Build();
+
+            InitModules(app.Logger, app.Configuration);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
