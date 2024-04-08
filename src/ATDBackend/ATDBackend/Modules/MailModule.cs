@@ -18,11 +18,16 @@ namespace ATDBackend.Modules
             if (config == null || logger == null) return false;
 
             username = Environment.GetEnvironmentVariable("MAIL_USERNAME");
+            string? pw = Environment.GetEnvironmentVariable("MAIL_PASSWORD");
+
+            logger.LogInformation($"Mail Init / {username} / {pw}");
+
+            if(username == null || pw == null) return false;
 
             Client = new SmtpClient(config.GetValue<string>("Mail:SMTPHost"))
             {
                 Port = config.GetValue<int>("Mail:SMTPPort"),
-                Credentials = new NetworkCredential(username, Environment.GetEnvironmentVariable("MAIL_PASSWORD")),
+                Credentials = new NetworkCredential(username, pw),
                 EnableSsl = true
             };
 
