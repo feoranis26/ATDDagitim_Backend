@@ -16,21 +16,41 @@ namespace ATDBackend
         private static void InitModules(ILogger logger, IConfiguration config)
         {
             Assembly asm = Assembly.GetExecutingAssembly();
-            List<Type> moduleTypes = asm.GetTypes().Where(x =>
-            x.IsClass && x.IsAbstract && x.IsSealed &&
-            x.Namespace == "ATDBackend.Modules"
-            ).ToList();
+            List<Type> moduleTypes = asm.GetTypes()
+                .Where(
+                    x =>
+                        x.IsClass
+                        && x.IsAbstract
+                        && x.IsSealed
+                        && x.Namespace == "ATDBackend.Modules"
+                )
+                .ToList();
 
             int sucCount = 0;
             foreach (Type moduleType in moduleTypes)
             {
-                moduleType.GetProperties().Where(x => x.CanWrite && x.PropertyType == typeof(IConfiguration)).ToList().ForEach(x => x.SetValue(null, config));
-                moduleType.GetProperties().Where(x => x.CanWrite && x.PropertyType == typeof(ILogger)).ToList().ForEach(x => x.SetValue(null, logger));
+                moduleType
+                    .GetProperties()
+                    .Where(x => x.CanWrite && x.PropertyType == typeof(IConfiguration))
+                    .ToList()
+                    .ForEach(x => x.SetValue(null, config));
+                moduleType
+                    .GetProperties()
+                    .Where(x => x.CanWrite && x.PropertyType == typeof(ILogger))
+                    .ToList()
+                    .ForEach(x => x.SetValue(null, logger));
 
                 MethodInfo? initmethod = moduleType.GetMethod("Initialize");
-                if(initmethod == null || !initmethod.IsStatic ||initmethod.ReturnType != typeof(bool))
+                if (
+                    initmethod == null
+                    || !initmethod.IsStatic
+                    || initmethod.ReturnType != typeof(bool)
+                )
                 {
-                    logger.Log(LogLevel.Error, $"The module {moduleType.Name} does not contain a proper Initialize method (2)");
+                    logger.Log(
+                        LogLevel.Error,
+                        $"The module {moduleType.Name} does not contain a proper Initialize method (2)"
+                    );
                     continue;
                 }
                 bool? suc = null;
@@ -39,19 +59,29 @@ namespace ATDBackend
                 {
                     suc = (bool?)initmethod.Invoke(null, null);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    logger.Log(LogLevel.Error, $"The module {moduleType.Name} failed to initialize");
+                    logger.Log(
+                        LogLevel.Error,
+                        $"The module {moduleType.Name} failed to initialize"
+                    );
                     continue;
                 }
 
-                if(suc == null)
+                if (suc == null)
                 {
-                    logger.Log(LogLevel.Error, $"The module {moduleType.Name} does not contain a proper Initialize method (2)");
+                    logger.Log(
+                        LogLevel.Error,
+                        $"The module {moduleType.Name} does not contain a proper Initialize method (2)"
+                    );
                     continue;
                 }
 
-                if(!suc.Value) logger.Log(LogLevel.Error, $"The module {moduleType.Name} failed to initialize");
+                if (!suc.Value)
+                    logger.Log(
+                        LogLevel.Error,
+                        $"The module {moduleType.Name} failed to initialize"
+                    );
                 else
                 {
                     logger.Log(LogLevel.Information, $"Initialized {moduleType.Name}");
@@ -147,7 +177,7 @@ namespace ATDBackend
                         }
                     );
 
-                    var filePath = Path.Combine(System.AppContext.BaseDirectory, "ATDBackend.xml");
+                    var filePath = Path.Combine(AppContext.BaseDirectory, "ATDBackend.xml");
                     options.IncludeXmlComments(filePath);
                 });
             builder

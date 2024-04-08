@@ -2,10 +2,10 @@ using System.Text.Json;
 using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
+using ATDBackend.Modules;
 using ATDBackend.Security; //login and register operation
 using BCrypt.Net; //Hashing
 using Microsoft.AspNetCore.Mvc;
-using ATDBackend.Modules;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ATDBackend.Controllers
@@ -42,13 +42,9 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("Username length must be between 3 and 20 characters.");
             }
-            if (userDto.Email.Length < 3 || userDto.Email.Length > 50)
+            if (PatternVerifier.VerifyEmail(userDto.Email))
             {
-                return BadRequest("Email length must be between 3 and 50 characters.");
-            }
-            if (!userDto.Email.Contains("@"))
-            {
-                return BadRequest("Email must be real. Duuh!");
+                return BadRequest("Email must be real!");
             }
             if (userDto.Password.Length < 8 || userDto.Password.Length > 30)
             {
@@ -70,7 +66,6 @@ namespace ATDBackend.Controllers
 
             _context.Users.Add(user);
             _context.SaveChanges();
-
 
             // TODO: Add a function to send HTML as mail body
 
