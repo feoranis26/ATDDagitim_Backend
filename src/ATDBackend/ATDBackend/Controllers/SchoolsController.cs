@@ -24,7 +24,7 @@ namespace ATDBackend.Controllers
         /// <param name="school"></param>
         /// <returns></returns>
         [HttpPost]
-        [CheckAuth("Admin")]
+        [RequireAuth(Permission.SCHOOL_GLOBAL_CREATE)]
         public IActionResult AddSchool([FromBody] School school) //REQUIRES AUTHENTICATION
         {
             _context.Schools.Add(school);
@@ -37,6 +37,7 @@ namespace ATDBackend.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
+        [RequireAuth(Permission.SCHOOL_GLOBAL_READ)]
         public IActionResult GetSchools() //REQUIRES AUTHENTICATION
         {
             return Ok(_context.Schools.ToList());

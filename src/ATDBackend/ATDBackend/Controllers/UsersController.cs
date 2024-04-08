@@ -7,6 +7,7 @@ using ATDBackend.Security; //login and register operation
 using BCrypt.Net; //Hashing
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace ATDBackend.Controllers
 {
@@ -58,7 +59,7 @@ namespace ATDBackend.Controllers
                 Email = userDto.Email,
                 Phone_number = userDto.Phone_number,
                 Hashed_PW = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
-                School_id = school,
+                SchoolId = school.Id,
                 Role = role,
                 Register_date = DateTime.UtcNow.AddHours(3),
                 Username = userDto.Username
@@ -94,7 +95,7 @@ namespace ATDBackend.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("sendMail")]
-        [CheckAuth("Admin")]
+        [RequireAuth(Permission.PERMISSION_ADMIN)]
         public IActionResult MailSendTest()
         {
             bool suc = MailModule.SendMail("sehirbahceleri@gmail.com", "Test subject", "Test body");
@@ -106,7 +107,7 @@ namespace ATDBackend.Controllers
         /// </summary>
         /// <returns>The user object with all fields.</returns>
         [HttpGet("details")]
-        [CheckAuth("User")]
+        [RequireAuth(Permission.USER_SELF_READ)]
         public IActionResult GetUserDetails()
         {
             var user = HttpContext.Items["User"];
@@ -115,11 +116,11 @@ namespace ATDBackend.Controllers
         }
 
         /// <summary>
-        /// Get the basket of the user. USER ONLY
+        /// Get the basket of the user. SCHOOL USER ONLY
         /// </summary>
         /// <returns></returns>
         [HttpGet("basket")]
-        [CheckAuth("User")]
+        [RequireAuth(Permission.USER_SELF_BASKET)]
         public IActionResult GetBasket()
         {
             if (HttpContext.Items["User"] is not User user)
@@ -171,7 +172,7 @@ namespace ATDBackend.Controllers
         /// <param name="quantity"></param>
         /// <returns></returns>
         [HttpPost("basket")]
-        [CheckAuth("User")]
+        [RequireAuth(Permission.USER_SELF_BASKET)]
         public IActionResult AddToBasket(int productId, int? quantity = 1)
         {
             var tempProduct = _context.Seeds.Find(productId); //Find the product
@@ -240,7 +241,7 @@ namespace ATDBackend.Controllers
         /// <param name="Quantity">How many products to remove.</param>
         /// <returns></returns>
         [HttpDelete("basket")]
-        [CheckAuth("User")]
+        [RequireAuth(Permission.USER_SELF_BASKET)]
         public IActionResult RemoveFromBasket(int ProductId, int? Quantity = 0)
         {
             if (HttpContext.Items["User"] is not User user)
@@ -281,7 +282,7 @@ namespace ATDBackend.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpDelete("basket/all")]
-        [CheckAuth("User")]
+        [RequireAuth(Permission.USER_SELF_BASKET)]
         public IActionResult DeleteBasket()
         {
             if (HttpContext.Items["User"] is not User user)

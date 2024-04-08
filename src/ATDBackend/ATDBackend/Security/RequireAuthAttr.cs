@@ -12,9 +12,23 @@ namespace ATDBackend.Security
     {
         None = 0,
 
-        PERMISSION_ADMIN = 1 << 0,
+        PERMISSION_ADMIN =  1 << 0,  // 1
 
+        ORDER_SELF_READ       = 1 << 1,
+        ORDER_SELF_CREATE     = 1 << 2,
+        ORDER_GLOBAL_READ     = 1 << 3,
+        ORDER_GLOBAL_MODIFY   = 1 << 4,
 
+        PRODUCT_CREATE        = 1 << 5,
+        PRODUCT_MODIFY        = 1 << 6,
+
+        SCHOOL_SELF_READ      = 1 << 7,
+        SCHOOL_GLOBAL_CREATE  = 1 << 8,
+        SCHOOL_GLOBAL_READ    = 1 << 9,
+        SCHOOL_GLOBAL_MODIFY  = 1 << 10,
+
+        USER_SELF_READ        = 1 << 11,
+        USER_SELF_BASKET      = 1 << 12,
 
     }
 

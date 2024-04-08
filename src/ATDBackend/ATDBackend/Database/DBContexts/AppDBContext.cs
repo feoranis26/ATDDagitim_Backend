@@ -107,7 +107,7 @@ namespace ATDBackend.Database.DBContexts
 
             modelBuilder
                 .Entity<User>()
-                .HasOne(p => p.School_id)
+                .HasOne(p => p.School)
                 .WithMany()
                 .HasForeignKey(p => p.SchoolId)
                 .OnDelete(DeleteBehavior.Restrict);
