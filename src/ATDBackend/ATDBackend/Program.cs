@@ -142,7 +142,7 @@ namespace ATDBackend
                         ValidIssuer = builder.Configuration["JWTToken:Issuer"],
                         ValidAudience = builder.Configuration["JWTToken:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(builder.Configuration["JWTToken:SecurityKey"])
+                            Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECURITYKEY"))
                         ),
                         ClockSkew = TimeSpan.Zero
                     };
