@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,22 +10,17 @@ namespace ATDBackend.Database.Models
         [Key]
         public int Id { get; set; }
 
-
         public int SchoolId { get; set; } // Foreign key property for School
 
         [Required]
-        [ForeignKey(nameof(SchoolId))]
-        [DeleteBehavior(DeleteBehavior.Restrict)]
+        [ForeignKey("SchoolId")]
         public School School { get; set; } //FOREIGN KEY
-
 
         public int UserId { get; set; } // Foreign key property for User
 
         [Required]
-        [ForeignKey(nameof(UserId))]
-        [DeleteBehavior(DeleteBehavior.Restrict)]
+        [ForeignKey("UserId")]
         public User User { get; set; } //FOREIGN KEY
-
 
         public string? OrderDetails { get; set; }
 

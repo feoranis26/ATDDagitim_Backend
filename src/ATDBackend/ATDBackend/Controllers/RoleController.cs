@@ -24,7 +24,7 @@ namespace ATDBackend.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
-        [RequireAuth(Permission.PERMISSION_ADMIN)]
+        [CheckAuth("Admin")]
         public IActionResult GetRoles() //REQUIRES AUTHENTICATION
         {
             return Ok(_context.Roles.ToList());
@@ -36,7 +36,7 @@ namespace ATDBackend.Controllers
         /// <param name="role"></param>
         /// <returns></returns>
         [HttpPost]
-        [RequireAuth(Permission.PERMISSION_ADMIN)]
+        [CheckAuth("Admin")]
         public IActionResult AddRole([FromBody] Role role)
         {
             try

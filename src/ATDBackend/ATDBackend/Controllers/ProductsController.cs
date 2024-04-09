@@ -25,7 +25,7 @@ namespace ATDBackend.Controllers
         /// <param name="seedDto"></param>
         /// <returns></returns>
         [HttpPost]
-        [RequireAuth(Permission.PRODUCT_CREATE)]
+        [CheckAuth("Admin")]
         public IActionResult AddProduct([FromBody] SeedDto seedDto) //REQUIRES AUTHENTICATION
         {
             var category = _context.Categories.Find(seedDto.CategoryId);
@@ -49,7 +49,7 @@ namespace ATDBackend.Controllers
                 Name = seedDto.Name,
                 Category = category,
                 Description = seedDto.Description,
-                UserId = user.Id,
+                User_id = user,
                 Stock = seedDto.Stock,
                 Date_added = DateTime.UtcNow,
                 Price = seedDto.Price,
@@ -70,7 +70,7 @@ namespace ATDBackend.Controllers
         /// <param name="seedDto"></param>
         /// <returns></returns>
         [HttpPut]
-        [RequireAuth(Permission.PRODUCT_MODIFY)]
+        [CheckAuth("Admin")]
         public IActionResult UpdateProduct(int Id, [FromBody] SeedUpdateDTO? seedDto)
         {
             if (seedDto == null || Id == 0)

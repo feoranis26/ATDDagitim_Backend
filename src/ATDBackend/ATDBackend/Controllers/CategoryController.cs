@@ -39,7 +39,7 @@ namespace ATDBackend.Controllers
         /// </remarks>
         /// <returns>Status code 201 with the created category.</returns>
         [HttpPost]
-        [RequireAuth(Permission.PERMISSION_ADMIN)]
+        [CheckAuth("Admin")]
         public IActionResult AddCategory([FromBody] Category category)
         {
             var actualCategory = new Category
