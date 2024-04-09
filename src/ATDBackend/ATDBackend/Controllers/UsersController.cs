@@ -59,7 +59,7 @@ namespace ATDBackend.Controllers
                 Hashed_PW = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
                 SchoolId = school.Id,
                 Role = role,
-                Register_date = DateTime.UtcNow.AddHours(3),
+                Register_date = DateTime.UtcNow,
                 Username = userDto.Username,
                 BasketJson = "[]"
             };
@@ -85,8 +85,11 @@ namespace ATDBackend.Controllers
                 )
                 .Wait();
             */
+            //! FOR TESTING ONLY
+            return Created(nameof(GetUserDetails), user);//FOR TESTING ONLY REPLACE IN FULL APP. 
 
-            return Ok(user);
+            //PRODUCTION:
+            //return Created();
         }
 
         /// <summary>
