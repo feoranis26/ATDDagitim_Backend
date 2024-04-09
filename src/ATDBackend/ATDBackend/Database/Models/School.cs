@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace ATDBackend.Database.Models
 {
+    [Index(nameof(Name), IsUnique = true)]
     public class School
     {
         [Key]

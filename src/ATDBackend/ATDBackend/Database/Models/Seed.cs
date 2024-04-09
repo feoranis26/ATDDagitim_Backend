@@ -5,6 +5,7 @@ using Microsoft.VisualBasic;
 
 namespace ATDBackend.Database.Models
 {
+    [Index(nameof(Name), IsUnique = true)]
     public class Seed
     {
         [Key]
@@ -14,20 +15,25 @@ namespace ATDBackend.Database.Models
         [Required]
         public String Name { get; set; }
 
+        [Required]
+        public string Description { get; set; }
+
+
         public int CategoryId { get; set; } //FOREIGN KEY
 
         [Required]
-        [ForeignKey("Category_Id")]
+        [ForeignKey(nameof(CategoryId))]
+        [DeleteBehavior(DeleteBehavior.Restrict)]
         public Category Category { get; set; } //FOREIGN KEY
 
-        [Required]
-        public string Description { get; set; }
 
         public int UserId { get; set; } //FOREIGN KEY
 
         [Required]
-        [ForeignKey("User_Id")]
-        public User User_id { get; set; } //FOREIGN KEY
+        [ForeignKey(nameof(UserId))]
+        [DeleteBehavior(DeleteBehavior.Restrict)]
+        public User User { get; set; } //FOREIGN KEY
+
 
         [Required]
         public int Stock { get; set; }
