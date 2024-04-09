@@ -49,7 +49,7 @@ namespace ATDBackend.Controllers
                 Name = seedDto.Name,
                 Category = category,
                 Description = seedDto.Description,
-                User_id = user,
+                UserId = user.Id,
                 Stock = seedDto.Stock,
                 Date_added = DateTime.UtcNow,
                 Price = seedDto.Price,
