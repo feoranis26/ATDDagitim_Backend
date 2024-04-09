@@ -37,6 +37,7 @@ namespace ATDBackend.Database.Models
         [Required]
         public DateTime Register_date { get; set; }
 
+
         public int SchoolId { get; set; } //FOREIGN KEY
 
         [Required]
