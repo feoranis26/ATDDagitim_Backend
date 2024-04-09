@@ -30,7 +30,7 @@ namespace ATDBackend.Controllers
         /// </remarks>
         /// <returns>All orders of the authenticated user.</returns>
         [HttpGet]
-        [CheckAuth]
+        [RequireAuth(Permission.ORDER_SELF_READ)]
         public IActionResult GetOrder()
         {
             if (HttpContext.Items["User"] is not User user)
@@ -56,7 +56,7 @@ namespace ATDBackend.Controllers
         /// <param name="order"></param>
         /// <returns>The order object with a status code of 201</returns>
         [HttpPost]
-        [CheckAuth]
+        [RequireAuth(Permission.ORDER_SELF_CREATE)]
         public IActionResult CreateOrder([FromBody] OrderDTO order)
         {
             //Check if order is valid
@@ -183,7 +183,7 @@ namespace ATDBackend.Controllers
         /// <param name="orderToModify">Modified order details</param>
         /// <returns></returns>
         [HttpPatch("{orderId}")]
-        [CheckAuth("admin")]
+        [RequireAuth(Permission.PERMISSION_ADMIN)]
         public IActionResult ModifyOrder(int orderId, [FromBody] OrderToModifyDTO orderToModify)
         {
             var order = _context.Orders.Find(orderId);
@@ -222,7 +222,7 @@ namespace ATDBackend.Controllers
             order.PhoneNumber = orderToModify.PhoneNumber ?? order.PhoneNumber;
             order.Email = orderToModify.Email ?? order.Email;
 
-            var orderSchool = _context.Schools.Find(order.User.School_id);
+            var orderSchool = _context.Schools.Find(order.User.SchoolId);
             if (orderSchool is null)
             {
                 return BadRequest("No School");

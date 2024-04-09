@@ -5,31 +5,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Database.Models
 {
-    public class School_Seed
+    public class SchoolSeed
     {
         [Key]
         public int Id { get; set; }
 
+
         public int SchoolId { get; set; } 
 
         [Required]
-        [ForeignKey("SchoolId")]
+        [ForeignKey(nameof(SchoolId))]
+        [DeleteBehavior(DeleteBehavior.Restrict)]
         public School School { get; set; }
+
 
         public int UserId { get; set; } // Foreign key property for User
 
-        [ForeignKey("UserId")]
+        [ForeignKey(nameof(UserId))]
+        [DeleteBehavior(DeleteBehavior.Restrict)]
         public User User { get; set; }
+
 
         public int CategoryId { get; set; } // Foreign key property for Category
 
-        [ForeignKey("CategoryId")]
+        [ForeignKey(nameof(CategoryId))]
+        [DeleteBehavior(DeleteBehavior.Restrict)]
         public Category? Category { get; set; }
+
 
         public int SeedId { get; set; } // Foreign key property for Seed
 
-        [ForeignKey("SeedId")]
+        [ForeignKey(nameof(SeedId))]
+        [DeleteBehavior(DeleteBehavior.Restrict)]
         public Seed Seed { get; set; }
+
 
         [Required]
         [StringLength(255)]
