@@ -55,7 +55,7 @@ namespace ATDBackend.Security
 
             token = token.Trim(); //Get token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(configuration["JWTToken:SecurityKey"]);
+            var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECURITYKEY"));
 
             try
             {

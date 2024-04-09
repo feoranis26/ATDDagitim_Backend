@@ -14,7 +14,7 @@ namespace ATDBackend.Security
             Token token = new();
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(configuration["JWTToken:SecurityKey"])
+                Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECURITYKEY"))
             );
 
             SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
