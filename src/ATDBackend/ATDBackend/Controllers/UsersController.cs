@@ -7,7 +7,6 @@ using ATDBackend.Security; //login and register operation
 using BCrypt.Net; //Hashing
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace ATDBackend.Controllers
 {
@@ -31,25 +30,24 @@ namespace ATDBackend.Controllers
         [HttpPost]
         public IActionResult Register([FromBody] UserDto userDto) //Register user
         {
+            if (!PatternVerifier.VerifyEmail(userDto.Email))
+            {
+                return BadRequest("Email must be real!");
+            }
+            if (userDto.Username.Length < 3 || userDto.Username.Length > 20)
+            {
+                return BadRequest("Username length must be between 3 and 20 characters.");
+            }
+            if (userDto.Password.Length < 8 || userDto.Password.Length > 30)
+            {
+                return BadRequest("Password length must be between 8 and 30 characters.");
+            }
             var school = _context.Schools.Find(userDto.SchoolId);
             var role = _context.Roles.Find(userDto.RoleId);
 
             if (school == null || role == null)
             {
                 return BadRequest("Invalid SchoolId or RoleId");
-            }
-
-            if (userDto.Username.Length < 3 || userDto.Username.Length > 20)
-            {
-                return BadRequest("Username length must be between 3 and 20 characters.");
-            }
-            if (PatternVerifier.VerifyEmail(userDto.Email))
-            {
-                return BadRequest("Email must be real!");
-            }
-            if (userDto.Password.Length < 8 || userDto.Password.Length > 30)
-            {
-                return BadRequest("Password length must be between 8 and 30 characters.");
             }
 
             var user = new User
@@ -62,7 +60,8 @@ namespace ATDBackend.Controllers
                 SchoolId = school.Id,
                 Role = role,
                 Register_date = DateTime.UtcNow.AddHours(3),
-                Username = userDto.Username
+                Username = userDto.Username,
+                BasketJson = "[]"
             };
 
             _context.Users.Add(user);
