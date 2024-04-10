@@ -28,7 +28,7 @@
 
             foreach(KeyValuePair<RandomParts, string> pair in map)
             {
-                if ((parts & pair.Key) == pair.Key) chars += pair.Value;
+                if ((parts & pair.Key) != 0) chars += pair.Value;
             }
 
             if(chars.Length == 0) return string.Empty;
