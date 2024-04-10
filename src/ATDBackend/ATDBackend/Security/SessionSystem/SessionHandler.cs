@@ -4,7 +4,8 @@ namespace ATDBackend.Security.SessionSystem
 {
     public static class SessionHandler
     {
-        const int ExpireMinutes = 1;
+        const int ExpireMinutes = 10;
+        const int SIDLength = 150;
 
         private static List<Session> sessions = new List<Session>();
 
@@ -13,7 +14,7 @@ namespace ATDBackend.Security.SessionSystem
             string sid = string.Empty;
             do
             {
-                sid = RandomGenerator.Generate(100, RandomGenerator.RandomParts.All);
+                sid = RandomGenerator.Generate(SIDLength, RandomGenerator.RandomParts.All);
 
             } while (sessions.Where(x => x.SessionID == sid).FirstOrDefault() != null);
 
