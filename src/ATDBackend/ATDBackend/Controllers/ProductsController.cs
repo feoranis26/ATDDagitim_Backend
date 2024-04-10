@@ -66,10 +66,10 @@ namespace ATDBackend.Controllers
 
 
         /// <summary>
-        /// 
+        /// Add contributor school to a product
         /// </summary>
-        /// <param name="productId"></param>
-        /// <param name="schoolId"></param>
+        /// <param name="productId">Product ID</param>
+        /// <param name="schoolId">School ID</param>
         /// <returns></returns>
         [HttpPost("contributor")]
         [RequireAuth(Permission.PRODUCT_CONTRIBUTOR_MODIFY)]
@@ -90,10 +90,10 @@ namespace ATDBackend.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Remove a contributor school from a product
         /// </summary>
-        /// <param name="productId"></param>
-        /// <param name="schoolId"></param>
+        /// <param name="productId">Product ID</param>
+        /// <param name="schoolId">School ID</param>
         /// <returns></returns>
         [HttpDelete("contributor")]
         [RequireAuth(Permission.PRODUCT_CONTRIBUTOR_MODIFY)]
