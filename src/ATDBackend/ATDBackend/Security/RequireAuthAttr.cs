@@ -21,7 +21,7 @@ namespace ATDBackend.Security
 
         PRODUCT_CREATE        = 1 << 5,
         PRODUCT_MODIFY        = 1 << 6,
-        PRODUCT_CONTRIBUTOR_MODIFY = 1 << 13
+        PRODUCT_CONTRIBUTOR_MODIFY = 1 << 13,
 
         SCHOOL_SELF_READ      = 1 << 7,
         SCHOOL_GLOBAL_CREATE  = 1 << 8,
