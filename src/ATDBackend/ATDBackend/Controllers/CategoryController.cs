@@ -1,9 +1,9 @@
 using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
-using ATDBackend.Security;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc; //You know what this is...
+using Microsoft.AspNetCore.Mvc;
+using ATDBackend.Security.SessionSystem; //You know what this is...
 
 namespace ATDBackend.Controllers
 {

@@ -7,6 +7,7 @@ using ATDBackend.Security; //login and register operation
 using BCrypt.Net; //Hashing
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using ATDBackend.Security.SessionSystem;
 
 namespace ATDBackend.Controllers
 {

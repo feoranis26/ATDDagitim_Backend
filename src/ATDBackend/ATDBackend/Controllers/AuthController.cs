@@ -3,7 +3,8 @@ using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security;
 using Microsoft.AspNetCore.Mvc;
-using ATDBackend.Utils; //You know what this is...
+using ATDBackend.Utils;
+using ATDBackend.Security.SessionSystem; //You know what this is...
 
 namespace ATDBackend.Controllers
 {
@@ -33,29 +34,27 @@ namespace ATDBackend.Controllers
                 return Unauthorized("invalidcredentials");
             }
 
-            var User = _context.Users.FirstOrDefault(u => u.Username == username);
+            User? user = _context.Users.FirstOrDefault(u => u.Username == username);
 
-            if (User == null || !BCrypt.Net.BCrypt.Verify(password, User.Hashed_PW))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Hashed_PW))
             {
                 return Unauthorized("invalidcredentials");
             }
 
+            Session ses = SessionHandler.CreateSession(user.Id);
 
-            // Create a token (JWT)
-            Token token = TokenHandler.CreateToken(_configuration, User.Id);
             Response.Cookies.Append(
-                    "token",
-                    "Bearer " + token.AccessToken,
+                    "sid",
+                    ses.SessionID,
                     new CookieOptions
                     {
-                        Expires = DateTime.Now.AddMinutes(45),
                         HttpOnly = true,
                         Secure = true,
                         SameSite = SameSiteMode.None
                     }
                 );
 
-            return Ok(token);
+            return Ok();
         }
     }
 }

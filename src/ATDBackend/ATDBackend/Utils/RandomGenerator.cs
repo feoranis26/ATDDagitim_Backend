@@ -7,7 +7,10 @@
         {
             Numbers = 1,
             Uppercase = 2,
-            Lowercase = 4
+            Lowercase = 4,
+            
+
+            All = 7
         }
 
         private static Dictionary<RandomParts, string> map = new Dictionary<RandomParts, string>()
