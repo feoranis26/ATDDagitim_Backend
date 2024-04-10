@@ -28,7 +28,7 @@
 
             foreach(KeyValuePair<RandomParts, string> pair in map)
             {
-                if ((parts & pair.Key) != 0) chars += pair.Value;
+                if ((parts & pair.Key) == pair.Key) chars += pair.Value;
             }
 
             if(chars.Length == 0) return string.Empty;
@@ -38,7 +38,7 @@
 
             for(int i = 0; i < length; i++)
             {
-                result += Random.Shared.Next(0, chars.Length);
+                result += chars[Random.Shared.Next(0, chars.Length)];
             }
 
             return result;
