@@ -80,6 +80,7 @@ namespace ATDBackend.Controllers
 
             if (seed == null) return NotFound("seednotfound");
             if (school == null) return NotFound("schoolnotfound");
+            if (seed.ContributorSchoolIds.Contains(schoolId)) return BadRequest("contributorexists");
 
             seed.ContributorSchoolIds.Add(schoolId);
             _context.Seeds.Update(seed);
