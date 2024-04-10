@@ -2,7 +2,8 @@
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using ATDBackend.Security;
-using Microsoft.AspNetCore.Mvc; //You know what this is...
+using Microsoft.AspNetCore.Mvc;
+using ATDBackend.Utils; //You know what this is...
 
 namespace ATDBackend.Controllers
 {
@@ -27,35 +28,34 @@ namespace ATDBackend.Controllers
         [HttpPost("login")]
         public IActionResult Login(string username, string password)
         {
+            if (username.IsNullOrEmpty() || password.IsNullOrEmpty())
+            {
+                return Unauthorized("invalidcredentials");
+            }
+
             var User = _context.Users.FirstOrDefault(u => u.Username == username);
-            if (User == null)
+
+            if (User == null || !BCrypt.Net.BCrypt.Verify(password, User.Hashed_PW))
             {
-                return Unauthorized("Invalid Username");
+                return Unauthorized("invalidcredentials");
             }
-            if (!BCrypt.Net.BCrypt.Verify(password, User.Hashed_PW))
-            {
-                return Unauthorized("Invalid Password");
-            }
-            if (User != null && BCrypt.Net.BCrypt.Verify(password, User.Hashed_PW))
-            {
-                // Create a token (JWT)
-                Token token = TokenHandler.CreateToken(_configuration, User.Id);
-                Response
-                    .Cookies
-                    .Append(
-                        "token",
-                        "Bearer " + token.AccessToken,
-                        new CookieOptions
-                        {
-                            Expires = DateTime.Now.AddMinutes(45),
-                            HttpOnly = true,
-                            Secure = true,
-                            SameSite = SameSiteMode.None
-                        }
-                    );
-                return Ok(token);
-            }
-            return StatusCode(500, "Internal Server Error");
+
+
+            // Create a token (JWT)
+            Token token = TokenHandler.CreateToken(_configuration, User.Id);
+            Response.Cookies.Append(
+                    "token",
+                    "Bearer " + token.AccessToken,
+                    new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMinutes(45),
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None
+                    }
+                );
+
+            return Ok(token);
         }
     }
 }

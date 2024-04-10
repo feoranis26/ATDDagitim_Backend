@@ -7,28 +7,31 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ATDBackend.Security
 {
-    [Flags]
+    [Flags] //!!!!!!! LAST SHIFT: 13
     public enum Permission : ulong
     {
         None = 0,
 
-        PERMISSION_ADMIN =  1 << 0,  // 1
+        PERMISSION_ADMIN = 1 << 0,  // 1
 
-        ORDER_SELF_READ       = 1 << 1,//2
-        ORDER_SELF_CREATE     = 1 << 2,//4
-        ORDER_GLOBAL_READ     = 1 << 3,//8
-        ORDER_GLOBAL_MODIFY   = 1 << 4,//16
+        ORDER_SELF_READ = 1 << 1,//2
+        ORDER_SELF_CREATE = 1 << 2,//4
+        ORDER_GLOBAL_READ = 1 << 3,//8
+        ORDER_GLOBAL_MODIFY = 1 << 4,//16
 
-        PRODUCT_CREATE        = 1 << 5,//32
-        PRODUCT_MODIFY        = 1 << 6,//64
 
-        SCHOOL_SELF_READ      = 1 << 7,//128
-        SCHOOL_GLOBAL_CREATE  = 1 << 8,//256
-        SCHOOL_GLOBAL_READ    = 1 << 9,//512
-        SCHOOL_GLOBAL_MODIFY  = 1 << 10,//1024
+        PRODUCT_CREATE = 1 << 5,//32
+        PRODUCT_MODIFY = 1 << 6,//64
+        PRODUCT_CONTRIBUTOR_MODIFY = 1 << 13,//8192
 
-        USER_SELF_READ        = 1 << 11,//2048
-        USER_SELF_BASKET      = 1 << 12,//4096
+        SCHOOL_SELF_READ = 1 << 7,//128
+        SCHOOL_GLOBAL_CREATE = 1 << 8,//256
+        SCHOOL_GLOBAL_READ = 1 << 9,//512
+        SCHOOL_GLOBAL_MODIFY = 1 << 10,//1024
+
+        USER_SELF_READ = 1 << 11,//2048
+        USER_SELF_BASKET = 1 << 12,//4096
+
 
     }
 
@@ -93,7 +96,7 @@ namespace ATDBackend.Security
 
             var user = dbContext.Users.Include(U => U.Role).FirstOrDefault(U => U.Id == userID);
 
-            
+
             if (user != null && user.Role != null)
             {
                 Console.WriteLine("USERID: ", user);

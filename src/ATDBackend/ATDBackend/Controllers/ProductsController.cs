@@ -26,14 +26,15 @@ namespace ATDBackend.Controllers
         /// <returns></returns>
         [HttpPost]
         [RequireAuth(Permission.PRODUCT_CREATE)]
-        public IActionResult AddProduct([FromBody] SeedDto seedDto) //REQUIRES AUTHENTICATION
+        public IActionResult AddProduct([FromBody] NewSeedDTO seedDto) //REQUIRES AUTHENTICATION
         {
             var category = _context.Categories.Find(seedDto.CategoryId);
-            var user = _context.Users.Find(seedDto.UserId);
 
-            if (category == null || user == null)
+            var school = _context.Schools.Find(seedDto.SchooolId);
+
+            if (category == null || school == null)
             {
-                return BadRequest("Invalid CategoryId or UserId");
+                return BadRequest("Invalid CategoryId or SchoolId");
             }
             if (seedDto.Name.Length < 3)
             {
@@ -49,7 +50,7 @@ namespace ATDBackend.Controllers
                 Name = seedDto.Name,
                 Category = category,
                 Description = seedDto.Description,
-                UserId = user.Id,
+                ContributorSchoolIds = new List<int>() { seedDto.SchooolId },
                 Stock = seedDto.Stock,
                 Date_added = DateTime.UtcNow,
                 Price = seedDto.Price,
@@ -62,6 +63,56 @@ namespace ATDBackend.Controllers
 
             return CreatedAtAction(nameof(GetOneProduct), new { productId = seed.Id }, seed);
         }
+
+
+        /// <summary>
+        /// Add contributor school to a product
+        /// </summary>
+        /// <param name="productId">Product ID</param>
+        /// <param name="schoolId">School ID</param>
+        /// <returns></returns>
+        [HttpPost("contributor")]
+        [RequireAuth(Permission.PRODUCT_CONTRIBUTOR_MODIFY)]
+        public IActionResult AddContributor(int productId, int schoolId) //REQUIRES AUTHENTICATION
+        {
+            Seed? seed = _context.Seeds.Find(productId);
+            School? school = _context.Schools.Find(schoolId);
+
+            if (seed == null) return NotFound("seednotfound");
+            if (school == null) return NotFound("schoolnotfound");
+            if (seed.ContributorSchoolIds.Contains(schoolId)) return BadRequest("contributorexists");
+
+            seed.ContributorSchoolIds.Add(schoolId);
+            _context.Seeds.Update(seed);
+            _context.SaveChanges();
+
+            return Ok("OK"); // TODO: Check if save changes successful
+        }
+
+        /// <summary>
+        /// Remove a contributor school from a product
+        /// </summary>
+        /// <param name="productId">Product ID</param>
+        /// <param name="schoolId">School ID</param>
+        /// <returns></returns>
+        [HttpDelete("contributor")]
+        [RequireAuth(Permission.PRODUCT_CONTRIBUTOR_MODIFY)]
+        public IActionResult RemoveContributor(int productId, int schoolId) //REQUIRES AUTHENTICATION
+        {
+            Seed? seed = _context.Seeds.Find(productId);
+            School? school = _context.Schools.Find(schoolId);
+
+            if (seed == null) return NotFound("seednotfound");
+            if (school == null) return NotFound("schoolnotfound");
+            if (!seed.ContributorSchoolIds.Contains(schoolId)) return NotFound("contributornotfound");
+
+            seed.ContributorSchoolIds.Remove(schoolId);
+            _context.Seeds.Update(seed);
+            _context.SaveChanges();
+
+            return Ok("OK"); // TODO: Check if save changes successful
+        }
+
 
         /// <summary>
         /// Update a product. ADMIN ONLY
