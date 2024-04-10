@@ -89,5 +89,10 @@ namespace ATDBackend.Controllers
 
             return Ok();
         }
+
+
+        [HttpGet]
+        [RequireAuth(Permission.None)]
+        public IActionResult CheckAuth() => Ok();
     }
 }
