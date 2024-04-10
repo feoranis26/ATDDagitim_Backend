@@ -1,6 +1,6 @@
 namespace ATDBackend.DTO
 {
-    public class SeedDto
+    public class NewSeedDTO
     {
         public string Name { get; set; }
         public int CategoryId { get; set; }

@@ -26,7 +26,7 @@ namespace ATDBackend.Controllers
         /// <returns></returns>
         [HttpPost]
         [RequireAuth(Permission.PRODUCT_CREATE)]
-        public IActionResult AddProduct([FromBody] SeedDto seedDto) //REQUIRES AUTHENTICATION
+        public IActionResult AddProduct([FromBody] NewSeedDTO seedDto) //REQUIRES AUTHENTICATION
         {
             var category = _context.Categories.Find(seedDto.CategoryId);
 
