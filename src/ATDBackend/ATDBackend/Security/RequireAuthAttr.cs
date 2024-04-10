@@ -7,11 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ATDBackend.Security
 {
-    [Flags]
+    [Flags] //!!!!!!! LAST SHIFT: 13
     public enum Permission : ulong
     {
         None = 0,
-
+        
         PERMISSION_ADMIN =  1 << 0,  // 1
 
         ORDER_SELF_READ       = 1 << 1,
@@ -21,6 +21,7 @@ namespace ATDBackend.Security
 
         PRODUCT_CREATE        = 1 << 5,
         PRODUCT_MODIFY        = 1 << 6,
+        PRODUCT_CONTRIBUTOR_MODIFY = 1 << 13
 
         SCHOOL_SELF_READ      = 1 << 7,
         SCHOOL_GLOBAL_CREATE  = 1 << 8,
@@ -29,6 +30,7 @@ namespace ATDBackend.Security
 
         USER_SELF_READ        = 1 << 11,
         USER_SELF_BASKET      = 1 << 12,
+
 
     }
 
