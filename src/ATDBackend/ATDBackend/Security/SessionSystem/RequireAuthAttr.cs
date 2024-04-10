@@ -66,6 +66,14 @@ namespace ATDBackend.Security.SessionSystem
             if(session.IsExpired)
             {
                 SessionHandler.RemoveSession(session);
+                context.HttpContext.Response.Cookies.Append(
+                    "loggedin",
+                    "false",
+                    new CookieOptions
+                    {
+                        SameSite = SameSiteMode.None
+                    }
+                );
                 context.Result = UnauthorizedResponse("expired");
                 return;
             }

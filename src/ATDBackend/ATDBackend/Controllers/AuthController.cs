@@ -54,6 +54,39 @@ namespace ATDBackend.Controllers
                     }
                 );
 
+
+            Response.Cookies.Append(
+                    "loggedin",
+                    "true",
+                    new CookieOptions
+                    {
+                        SameSite = SameSiteMode.None
+                    }
+                );
+
+            return Ok();
+        }
+
+        [HttpPost("logout")]
+        [RequireAuth(Permission.None)]
+        public IActionResult Logout()
+        {
+            var user = (Database.Models.User?)HttpContext.Items["User"];
+
+            Session? ses = SessionHandler.GetSessionByUserID(user.Id);
+
+            if(ses != null) SessionHandler.RemoveSession(ses);
+
+
+            Response.Cookies.Append(
+                    "loggedin",
+                    "false",
+                    new CookieOptions
+                    {
+                        SameSite = SameSiteMode.None
+                    }
+                );
+
             return Ok();
         }
     }
