@@ -80,7 +80,8 @@ namespace ATDBackend.Security.SessionSystem
 
 
             User? user = dbContext.Users.Include(x => x.Role).FirstOrDefault(x => x.Id == session.UserID);
-            
+            context.HttpContext.Items.Add("User", user);
+
             if(user == null)
             {
                 context.Result = UnauthorizedResponse("unauthorized");
