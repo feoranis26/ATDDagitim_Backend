@@ -94,5 +94,10 @@ namespace ATDBackend.Controllers
         [HttpGet]
         [RequireAuth(Permission.None)]
         public IActionResult CheckAuth() => Ok();
+
+
+        [HttpGet("mastertest")]
+        [RequireMASTER]
+        public IActionResult masterTest() => Ok();
     }
 }
