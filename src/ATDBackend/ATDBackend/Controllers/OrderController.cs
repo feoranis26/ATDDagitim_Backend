@@ -2,8 +2,8 @@ using System.Text.Json; //You know what this is
 using ATDBackend.DTO;
 using ATDBackend.Database.DBContexts;
 using ATDBackend.Database.Models;
-using ATDBackend.Security;
 using Microsoft.AspNetCore.Mvc;
+using ATDBackend.Security.SessionSystem;
 
 namespace ATDBackend.Controllers
 {

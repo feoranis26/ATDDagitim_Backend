@@ -7,7 +7,10 @@
         {
             Numbers = 1,
             Uppercase = 2,
-            Lowercase = 4
+            Lowercase = 4,
+            
+
+            All = 7
         }
 
         private static Dictionary<RandomParts, string> map = new Dictionary<RandomParts, string>()
@@ -35,7 +38,7 @@
 
             for(int i = 0; i < length; i++)
             {
-                result += Random.Shared.Next(0, chars.Length);
+                result += chars[Random.Shared.Next(0, chars.Length)];
             }
 
             return result;
