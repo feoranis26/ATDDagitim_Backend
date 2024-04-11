@@ -25,7 +25,7 @@ namespace ATDBackend.Security
 
             if(masterSecret.IsNullOrEmpty() || masterPw.IsNullOrEmpty())
             {
-                context.Result = UnauthorizedResponse("EV");
+                context.Result = UnauthorizedResponse();
                 return;
             }
 
@@ -35,7 +35,7 @@ namespace ATDBackend.Security
 
             if (signatureStr.IsNullOrEmpty())
             {
-                context.Result = UnauthorizedResponse("SNOE");
+                context.Result = UnauthorizedResponse();
                 return;
             }
 
@@ -43,7 +43,7 @@ namespace ATDBackend.Security
 
             if(signature == null || signature.Value.Password != masterPw)
             {
-                context.Result = UnauthorizedResponse("SN/PW");
+                context.Result = UnauthorizedResponse();
                 return;
             }
 
@@ -54,7 +54,7 @@ namespace ATDBackend.Security
 
             if(signTime > max || signTime < min)
             {
-                context.Result = UnauthorizedResponse("DT");
+                context.Result = UnauthorizedResponse();
                 return;
             }
 
@@ -105,7 +105,6 @@ namespace ATDBackend.Security
             }
             catch (Exception)
             {
-                Console.WriteLine("MASTER DEC ERR");
                 return null;
             }
         }
