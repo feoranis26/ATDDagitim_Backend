@@ -3,7 +3,8 @@ using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ATDBackend.Security.SessionSystem; //You know what this is...
+using ATDBackend.Security.SessionSystem;
+using ATDBackend.Security; //You know what this is...
 
 namespace ATDBackend.Controllers
 {
@@ -19,36 +20,81 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
-        /// <summary>
-        /// Get all roles. ADMIN ONLY
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("all")]
-        [RequireAuth(Permission.PERMISSION_ADMIN)]
+        [RequireMASTER]
         public IActionResult GetRoles() //REQUIRES AUTHENTICATION
         {
             return Ok(_context.Roles.ToList());
         }
 
-        /// <summary>
-        /// Add a new role. ADMIN ONLY
-        /// </summary>
-        /// <param name="role"></param>
-        /// <returns></returns>
+
         [HttpPost]
-        [RequireAuth(Permission.PERMISSION_ADMIN)]
-        public IActionResult AddRole([FromBody] Role role)
+        [RequireMASTER]
+        public IActionResult AddRole(string roleName, ulong permissionss)
         {
             try
             {
+                Role role = new Role()
+                {
+                    RoleName = roleName,
+                    Permissions = permissionss
+                };
+
                 _context.Roles.Add(role);
                 _context.SaveChanges();
+
+                return Ok(role);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return StatusCode(500, (e));
+                return StatusCode(500);
             }
-            return Ok(role);
+        }
+
+        [HttpPatch]
+        [RequireMASTER]
+        public IActionResult ModifyRole(int ID, string roleName, ulong permissionss)
+        {
+            try
+            {
+                Role role = new Role()
+                {
+                    Id = ID,
+                    RoleName = roleName,
+                    Permissions = permissionss
+                };
+
+                _context.Roles.Update(role);
+                _context.SaveChanges();
+
+                return Ok(role);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete]
+        [RequireMASTER]
+        public IActionResult DeleteRole(int roleID)
+        {
+            try
+            {
+                Role? role = _context.Roles.Find(roleID);
+                if (role == null) return NotFound();
+
+                _context.Roles.Remove(role);
+
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+
         }
     }
 }
