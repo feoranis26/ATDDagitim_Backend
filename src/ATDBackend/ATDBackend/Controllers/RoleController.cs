@@ -30,14 +30,14 @@ namespace ATDBackend.Controllers
 
         [HttpPost]
         [RequireMASTER]
-        public IActionResult AddRole(string roleName, ulong permissionss)
+        public IActionResult AddRole(string rolename, ulong permissions)
         {
             try
             {
                 Role role = new Role()
                 {
-                    RoleName = roleName,
-                    Permissions = permissionss
+                    RoleName = rolename,
+                    Permissions = permissions
                 };
 
                 _context.Roles.Add(role);
@@ -53,15 +53,15 @@ namespace ATDBackend.Controllers
 
         [HttpPatch]
         [RequireMASTER]
-        public IActionResult ModifyRole(int ID, string roleName, ulong permissionss)
+        public IActionResult ModifyRole(int id, string rolename, ulong permissions)
         {
             try
             {
                 Role role = new Role()
                 {
-                    Id = ID,
-                    RoleName = roleName,
-                    Permissions = permissionss
+                    Id = id,
+                    RoleName = rolename,
+                    Permissions = permissions
                 };
 
                 _context.Roles.Update(role);
@@ -77,11 +77,11 @@ namespace ATDBackend.Controllers
 
         [HttpDelete]
         [RequireMASTER]
-        public IActionResult DeleteRole(int roleID)
+        public IActionResult DeleteRole(int id)
         {
             try
             {
-                Role? role = _context.Roles.Find(roleID);
+                Role? role = _context.Roles.Find(id);
                 if (role == null) return NotFound();
 
                 _context.Roles.Remove(role);
