@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using static ATDBackend.Security.SessionSystem.Permissions;
 
 namespace ATDBackend.Security.SessionSystem
 {
+    /*
     [Flags] //!!!!!!! LAST SHIFT: 13
     public enum Permission : ulong
     {
@@ -34,9 +36,13 @@ namespace ATDBackend.Security.SessionSystem
 
 
     }
+    */
 
 
-    public class RequireAuth(Permission requiredPermissions) : ActionFilterAttribute
+    
+
+
+    public class RequireAuth(params Permission[] requiredPerms_Arr) : ActionFilterAttribute
     {
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
@@ -89,6 +95,7 @@ namespace ATDBackend.Security.SessionSystem
             }
 
             ulong userperms = user.Role.Permissions;
+            ulong requiredPermissions = ConvertPermissionsToBitwise(requiredPerms_Arr);
 
             if (UserHasPerm(userperms, (ulong)requiredPermissions))
             {
