@@ -29,7 +29,6 @@ namespace ATDBackend.Database.Models
 
         public List<int> ContributorSchoolIds { get; set; } //FOREIGN KEY
 
-        [Required]
         [ForeignKey(nameof(ContributorSchoolIds))]
         [DeleteBehavior(DeleteBehavior.Restrict)]
         public List<School> ContributorSchools { get; set; } //FOREIGN KEY

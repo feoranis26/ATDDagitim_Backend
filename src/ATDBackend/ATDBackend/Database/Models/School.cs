@@ -25,7 +25,6 @@ namespace ATDBackend.Database.Models
 
         public List<int> ContributedSeedIds { get; set; } //FOREIGN KEY
 
-        [Required]
         [ForeignKey(nameof(ContributedSeedIds))]
         [DeleteBehavior(DeleteBehavior.Restrict)]
         public List<Seed> ContributedSeeds { get; set; } //FOREIGN KEY
