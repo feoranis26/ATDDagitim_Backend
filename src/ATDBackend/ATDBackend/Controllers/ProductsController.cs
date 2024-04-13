@@ -30,7 +30,7 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.PRODUCT_CREATE)]
         public IActionResult AddProduct([FromForm] NewSeedDTO seedDto) //REQUIRES AUTHENTICATION
         {
-            /*
+            
             var category = _context.Categories.Find(seedDto.CategoryId);
 
             var school = _context.Schools.Find(seedDto.SchooolId);
@@ -53,7 +53,7 @@ namespace ATDBackend.Controllers
                 Name = seedDto.Name,
                 Category = category,
                 Description = seedDto.Description,
-                ContributorSchoolIds = new List<int>() { seedDto.SchooolId },
+                SeedContributors = new List<SeedContributor> { new SeedContributor { School = school } },
                 Stock = seedDto.Stock,
                 Date_added = DateTime.UtcNow,
                 Price = seedDto.Price,
@@ -65,9 +65,6 @@ namespace ATDBackend.Controllers
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetOneProduct), new { productId = seed.Id }, seed);
-            */
-
-            return StatusCode(500);
         }
 
 
@@ -92,7 +89,7 @@ namespace ATDBackend.Controllers
             _context.Seeds.Update(seed);
             _context.SaveChanges();
 
-            return Ok("OK"); // TODO: Check if save changes successful
+            return Ok("OK");
         }
 
         /// <summary>
@@ -104,22 +101,21 @@ namespace ATDBackend.Controllers
         [HttpDelete("contributor")]
         [RequireAuth(Permission.PRODUCT_CONTRIBUTOR_MODIFY)]
         public IActionResult RemoveContributor(int productId, int schoolId) //REQUIRES AUTHENTICATION
-        {/*
+        {
             Seed? seed = _context.Seeds.Find(productId);
             School? school = _context.Schools.Find(schoolId);
 
             if (seed == null) return NotFound("seednotfound");
             if (school == null) return NotFound("schoolnotfound");
-            if (!seed.ContributorSchoolIds.Contains(schoolId)) return NotFound("contributornotfound");
 
-            seed.ContributorSchoolIds.Remove(schoolId);
+            SeedContributor? contributor = seed.SeedContributors.Where(x => x.SchoolId == schoolId).FirstOrDefault();
+            if (contributor == null) return NotFound("contributornotfound");
+
+            seed.SeedContributors.Remove(contributor);
             _context.Seeds.Update(seed);
             _context.SaveChanges();
 
             return Ok("OK"); // TODO: Check if save changes successful
-            */
-
-            return StatusCode(500);
         }
 
 
@@ -232,12 +228,23 @@ namespace ATDBackend.Controllers
                 Stock = x.Stock
             }).FirstOrDefault();
 
-            if(seed == null)
+            if (seed == null)
             {
                 return NotFound("seednotfound");
             }
 
             return Ok(seed);
+        }
+
+        [HttpGet("{productId}/image")]
+        public IActionResult GetProductImage(int productId)
+        {
+            Seed? seed = _context.Seeds.Find(productId);
+
+            if(seed == null)
+            return NotFound("seednotfound");
+
+            return File(seed.Image, "image/jpeg");
         }
     }
 }
