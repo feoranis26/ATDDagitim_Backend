@@ -21,6 +21,8 @@ services:
       - "MAIL_PASSWORD=${MAIL_PASSWORD}"
       - "CAPTCHA_SECRET=${CAPTCHA_SECRET}"
       - "JWT_SECURITYKEY=${JWT_SECURITYKEY}"
+      - "MASTER_SECRET=${MASTER_SECRET}"
+      - "MASTER_PW=${MASTER_PW}"
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
