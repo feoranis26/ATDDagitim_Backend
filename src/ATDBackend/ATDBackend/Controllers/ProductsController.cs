@@ -170,6 +170,14 @@ namespace ATDBackend.Controllers
             }
 
 
+            var a = _context
+                .Seeds
+                .Include(s => s.Category)
+                .Include(s => s.ContributorSchools)
+                .ToList();
+
+            return Ok(a);
+
             var products = _context
                 .Seeds
                 .Include(s => s.Category)
