@@ -184,7 +184,7 @@ namespace ATDBackend.Controllers
                 .Include(s => s.SeedContributors)
                 .ToList();
 
-            return Ok("AAA");
+            return Ok(a);
            // return Ok(a);
 /*
             var products = _context
