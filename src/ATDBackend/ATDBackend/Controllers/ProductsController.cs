@@ -26,7 +26,7 @@ namespace ATDBackend.Controllers
         /// <returns></returns>
         [HttpPost]
         [RequireAuth(Permission.PRODUCT_CREATE)]
-        public IActionResult AddProduct([FromBody] NewSeedDTO seedDto) //REQUIRES AUTHENTICATION
+        public IActionResult AddProduct([FromForm] NewSeedDTO seedDto) //REQUIRES AUTHENTICATION
         {
             var category = _context.Categories.Find(seedDto.CategoryId);
 
@@ -122,7 +122,7 @@ namespace ATDBackend.Controllers
         /// <returns></returns>
         [HttpPut]
         [RequireAuth(Permission.PRODUCT_MODIFY)]
-        public IActionResult UpdateProduct(int Id, [FromBody] SeedUpdateDTO? seedDto)
+        public IActionResult UpdateProduct(int Id, [FromForm] SeedUpdateDTO? seedDto)
         {
             if (seedDto == null || Id == 0)
                 return BadRequest("Invalid Id or SeedDto");
@@ -164,32 +164,34 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("Page number cannot be smaller than 1");
             }
-            if (PageSize > 100)
+            if (PageSize < 1 || PageSize > 100)
             {
-                return BadRequest("Page Size cannot be bigger than 100");
+                return BadRequest("Page Size must be between 1 and 100");
             }
 
-            if (CategoryId != null)
-            {
-                var products = _context
-                    .Seeds
-                    .Include(s => s.Category)
-                    .Where(x => x.CategoryId == CategoryId)
-                    .Skip((Page - 1) * PageSize)
-                    .Take(PageSize)
-                    .ToList();
-                return Ok(products);
-            }
-            else
-            {
-                var products = _context
-                    .Seeds
-                    .Include(s => s.Category)
-                    .Skip((Page - 1) * PageSize)
-                    .Take(PageSize)
-                    .ToList();
-                return Ok(products);
-            }
+
+            var products = _context
+                .Seeds
+                .Include(s => s.Category)
+                .Include(s => s.ContributorSchools)
+                .Where(x => CategoryId == null ? true : x.CategoryId == CategoryId)
+                .Select(x => new SeedFetchDTO
+                {
+                    CategoryName = x.Category.CategoryName,
+                    Id = x.Id,
+                    ContributorSchoolNames = x.ContributorSchools.Select(s => s.Name).ToArray(),
+                    Description = x.Description,
+                    Is_active = x.Is_active,
+                    Name = x.Name,
+                    Price = x.Price,
+                    Stock = x.Stock
+                })
+                .Skip((Page - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
+            return Ok(products);
+
         }
 
         /// <summary>

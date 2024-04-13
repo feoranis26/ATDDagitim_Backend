@@ -48,6 +48,6 @@ namespace ATDBackend.Database.Models
         public bool Is_active { get; set; }
 
         [Required]
-        public string Image { get; set; }
+        public byte[] Image { get; set; }
     }
 }
