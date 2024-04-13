@@ -87,36 +87,12 @@ namespace ATDBackend.Controllers
                 .Wait();
             */
             //! FOR TESTING ONLY
-            return Created(nameof(GetUserDetails), user);//FOR TESTING ONLY REPLACE IN FULL APP. 
+            //return Created(nameof(GetUserDetails), user);//FOR TESTING ONLY REPLACE IN FULL APP. 
 
             //PRODUCTION:
-            //return Created();
+            return Created();
         }
 
-        /// <summary>
-        /// Send a mail TESTING PURPOSES. ADMIN ONLY
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("sendMail")]
-        [RequireAuth(Permission.PERMISSION_ADMIN)]
-        public IActionResult MailSendTest()
-        {
-            bool suc = MailModule.SendMail("sehirbahceleri@gmail.com", "Test subject", "Test body");
-            return suc ? Ok("Mail sent") : StatusCode(500, "An error occured while sending mail");
-        }
-
-        /// <summary>
-        /// Get user details. USER ONLY
-        /// </summary>
-        /// <returns>The user object with all fields.</returns>
-        [HttpGet("details")]
-        [RequireAuth(Permission.USER_SELF_READ)]
-        public IActionResult GetUserDetails()
-        {
-            var user = HttpContext.Items["User"];
-            Console.WriteLine("USER DETAILS: " + user);
-            return Ok(user);
-        }
 
         /// <summary>
         /// Get the basket of the user. SCHOOL USER ONLY
