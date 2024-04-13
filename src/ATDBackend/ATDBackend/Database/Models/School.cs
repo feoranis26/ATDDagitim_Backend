@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ATDBackend.Database.Models
 {
@@ -19,5 +20,15 @@ namespace ATDBackend.Database.Models
 
         [Required]
         public float Credit { get; set; }
+
+
+
+        public List<int> ContributedSeedIds { get; set; } //FOREIGN KEY
+
+        [Required]
+        [ForeignKey(nameof(ContributedSeedIds))]
+        [DeleteBehavior(DeleteBehavior.Restrict)]
+        public List<Seed> ContributedSeeds { get; set; } //FOREIGN KEY
+
     }
 }
