@@ -4,6 +4,7 @@ using ATDBackend.Database.Models; //DB Models
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ATDBackend.Security.SessionSystem;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ATDBackend.Controllers
 {
@@ -28,6 +29,7 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.PRODUCT_CREATE)]
         public IActionResult AddProduct([FromForm] NewSeedDTO seedDto) //REQUIRES AUTHENTICATION
         {
+            /*
             var category = _context.Categories.Find(seedDto.CategoryId);
 
             var school = _context.Schools.Find(seedDto.SchooolId);
@@ -62,6 +64,9 @@ namespace ATDBackend.Controllers
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetOneProduct), new { productId = seed.Id }, seed);
+            */
+
+            return StatusCode(500);
         }
 
 
@@ -75,14 +80,14 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.PRODUCT_CONTRIBUTOR_MODIFY)]
         public IActionResult AddContributor(int productId, int schoolId) //REQUIRES AUTHENTICATION
         {
-            Seed? seed = _context.Seeds.Find(productId);
+            Seed? seed = _context.Seeds.Include(x => x.SeedContributors).Where(x => x.Id == productId).FirstOrDefault();
             School? school = _context.Schools.Find(schoolId);
 
             if (seed == null) return NotFound("seednotfound");
             if (school == null) return NotFound("schoolnotfound");
-            if (seed.ContributorSchoolIds.Contains(schoolId)) return BadRequest("contributorexists");
+            if (!seed.SeedContributors.Where(x => x.SchoolId == schoolId).IsNullOrEmpty()) return BadRequest("contributorexists");
 
-            seed.ContributorSchoolIds.Add(schoolId);
+            seed.SeedContributors.Add(new SeedContributor() { SeedId = productId, SchoolId = schoolId});
             _context.Seeds.Update(seed);
             _context.SaveChanges();
 
@@ -98,7 +103,7 @@ namespace ATDBackend.Controllers
         [HttpDelete("contributor")]
         [RequireAuth(Permission.PRODUCT_CONTRIBUTOR_MODIFY)]
         public IActionResult RemoveContributor(int productId, int schoolId) //REQUIRES AUTHENTICATION
-        {
+        {/*
             Seed? seed = _context.Seeds.Find(productId);
             School? school = _context.Schools.Find(schoolId);
 
@@ -111,6 +116,9 @@ namespace ATDBackend.Controllers
             _context.SaveChanges();
 
             return Ok("OK"); // TODO: Check if save changes successful
+            */
+
+            return StatusCode(500);
         }
 
 
@@ -173,11 +181,11 @@ namespace ATDBackend.Controllers
             var a = _context
                 .Seeds
                 .Include(s => s.Category)
-                .Include(s => s.ContributorSchools)
+                .Include(s => s.SeedContributors)
                 .ToList();
 
             return Ok(a);
-
+/*
             var products = _context
                 .Seeds
                 .Include(s => s.Category)
@@ -199,6 +207,7 @@ namespace ATDBackend.Controllers
                 .ToList();
 
             return Ok(products);
+*/
 
         }
 

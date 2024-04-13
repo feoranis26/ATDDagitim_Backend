@@ -27,11 +27,13 @@ namespace ATDBackend.Database.Models
         public Category Category { get; set; } //FOREIGN KEY
 
 
-        public List<int> ContributorSchoolIds { get; set; } //FOREIGN KEY
 
-        [ForeignKey(nameof(ContributorSchoolIds))]
+        public List<int> SeedContributorIds { get; set; } //FOREIGN KEY
+
+
+        [ForeignKey(nameof(SeedContributorIds))]
         [DeleteBehavior(DeleteBehavior.Restrict)]
-        public List<School> ContributorSchools { get; set; } //FOREIGN KEY
+        public List<SeedContributor> SeedContributors { get; set; } //FOREIGN KEY
 
 
         [Required]
