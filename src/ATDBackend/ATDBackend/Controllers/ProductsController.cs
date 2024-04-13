@@ -102,7 +102,7 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.PRODUCT_CONTRIBUTOR_MODIFY)]
         public IActionResult RemoveContributor(int productId, int schoolId) //REQUIRES AUTHENTICATION
         {
-            Seed? seed = _context.Seeds.Find(productId);
+            Seed? seed = _context.Seeds.Include(x => x.SeedContributors).Where(x => x.Id == productId).FirstOrDefault();
             School? school = _context.Schools.Find(schoolId);
 
             if (seed == null) return NotFound("seednotfound");
