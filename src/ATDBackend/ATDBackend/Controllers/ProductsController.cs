@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ATDBackend.Security.SessionSystem;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ATDBackend.Controllers
 {
@@ -178,26 +179,16 @@ namespace ATDBackend.Controllers
             }
 
 
-            var a = _context
-                .Seeds
-                .Include(s => s.Category)
-                .Include(s => s.SeedContributors)
-                .ThenInclude(x => x.School)
-                .ToList();
-
-            return Ok(a);
-           // return Ok(a);
-/*
             var products = _context
                 .Seeds
                 .Include(s => s.Category)
-                .Include(s => s.ContributorSchools)
+                .Include(s => s.SeedContributors).ThenInclude(x => x.School)
                 .Where(x => CategoryId == null ? true : x.CategoryId == CategoryId)
                 .Select(x => new SeedFetchDTO
                 {
                     CategoryName = x.Category.CategoryName,
                     Id = x.Id,
-                    ContributorSchoolNames = x.ContributorSchools.Select(s => s.Name).ToArray(),
+                    ContributorSchoolNames = x.SeedContributors.Select(s => s.School.Name).ToArray(),
                     Description = x.Description,
                     Is_active = x.Is_active,
                     Name = x.Name,
@@ -209,7 +200,7 @@ namespace ATDBackend.Controllers
                 .ToList();
 
             return Ok(products);
-*/
+
 
         }
 
@@ -221,31 +212,32 @@ namespace ATDBackend.Controllers
         /// you can also get a list of products by providing a categoryId.
         /// </remarks>
         /// <param name="productId"></param>
-        /// <param name="categoryId"></param>
         /// <returns></returns>
-        [HttpGet("find")]
-        public IActionResult GetOneProduct(int? productId, int? categoryId)
+        [HttpGet("{productId}")]
+        public IActionResult GetOneProduct(int productId)
         {
-            if ((productId == null) == (categoryId == null))
-                return BadRequest(
-                    "Why the fuck are you filling (or leaving them empty) the both integers at the same time?"
-                );
-
-            if (productId != null)
+            SeedFetchDTO? seed = _context.Seeds
+            .Include(s => s.Category)
+            .Include(s => s.SeedContributors).ThenInclude(x => x.School)
+            .Where(x => x.Id == productId)
+            .Select(x => new SeedFetchDTO
             {
-                Seed? seed = _context.Seeds.Where(x => x.Id == productId).FirstOrDefault();
-                if (seed == null)
-                    return BadRequest("Seed not found");
-                return Ok(seed);
+                CategoryName = x.Category.CategoryName,
+                Id = x.Id,
+                ContributorSchoolNames = x.SeedContributors.Select(s => s.School.Name).ToArray(),
+                Description = x.Description,
+                Is_active = x.Is_active,
+                Name = x.Name,
+                Price = x.Price,
+                Stock = x.Stock
+            }).FirstOrDefault();
+
+            if(seed == null)
+            {
+                return NotFound("seednotfound");
             }
 
-            if (categoryId != null)
-            {
-                Seed[] seeds = [.. _context.Seeds.Where(x => x.CategoryId == categoryId)];
-                return Ok(seeds);
-            }
-
-            return BadRequest("This shouldn't have happend...");
+            return Ok(seed);
         }
     }
 }
