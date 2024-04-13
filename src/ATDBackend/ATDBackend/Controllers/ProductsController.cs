@@ -182,7 +182,7 @@ namespace ATDBackend.Controllers
                 .Seeds
                 .Include(s => s.Category)
                 .Include(s => s.SeedContributors)
-                .Include($"{nameof(Seed)}.{nameof(Seed.SeedContributors)}.{nameof(SeedContributor.School)}")
+                .ThenInclude(x => x.School)
                 .ToList();
 
             return Ok(a);
