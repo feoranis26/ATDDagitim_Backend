@@ -22,12 +22,8 @@ namespace ATDBackend.Database.Models
         public float Credit { get; set; }
 
 
+        public List<SeedContributor> SeedContributors { get; set; } //FOREIGN KEY
 
-        public List<int> ContributedSeedIds { get; set; } //FOREIGN KEY
-
-        [ForeignKey(nameof(ContributedSeedIds))]
-        [DeleteBehavior(DeleteBehavior.Restrict)]
-        public List<Seed> ContributedSeeds { get; set; } //FOREIGN KEY
 
     }
 }

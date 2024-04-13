@@ -28,11 +28,6 @@ namespace ATDBackend.Database.Models
 
 
 
-        public List<int> SeedContributorIds { get; set; } //FOREIGN KEY
-
-
-        [ForeignKey(nameof(SeedContributorIds))]
-        [DeleteBehavior(DeleteBehavior.Restrict)]
         public List<SeedContributor> SeedContributors { get; set; } //FOREIGN KEY
 
 
