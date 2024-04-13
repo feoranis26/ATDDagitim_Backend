@@ -9,6 +9,6 @@ namespace ATDBackend.DTO
         public int? Stock { get; set; }
         public float? Price { get; set; }
         public bool? Is_active { get; set; }
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
     }
 }

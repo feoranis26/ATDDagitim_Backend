@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ATDBackend.Database.DBContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ATDBackend.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240413123156_seed img_deltemp")]
+    partial class seedimg_deltemp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,6 +134,9 @@ namespace ATDBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("ContributorSchoolIds")
+                        .HasColumnType("integer");
+
                     b.Property<float>("Credit")
                         .HasColumnType("real");
 
@@ -143,6 +149,8 @@ namespace ATDBackend.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ContributorSchoolIds");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -220,16 +228,16 @@ namespace ATDBackend.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
+                    b.Property<List<int>>("ContributorSchoolIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<DateTime>("Date_added")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<byte[]>("Image")
-                        .IsRequired()
-                        .HasColumnType("bytea");
 
                     b.Property<bool>("Is_active")
                         .HasColumnType("boolean");
@@ -252,21 +260,6 @@ namespace ATDBackend.Migrations
                         .IsUnique();
 
                     b.ToTable("Seeds");
-                });
-
-            modelBuilder.Entity("ATDBackend.Database.Models.SeedContributor", b =>
-                {
-                    b.Property<int>("SeedId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SchoolId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SeedId", "SchoolId");
-
-                    b.HasIndex("SchoolId");
-
-                    b.ToTable("SeedContributor");
                 });
 
             modelBuilder.Entity("ATDBackend.Database.Models.Seed_in", b =>
@@ -397,6 +390,14 @@ namespace ATDBackend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ATDBackend.Database.Models.School", b =>
+                {
+                    b.HasOne("ATDBackend.Database.Models.Seed", null)
+                        .WithMany("ContributorSchools")
+                        .HasForeignKey("ContributorSchoolIds")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("ATDBackend.Database.Models.SchoolSeed", b =>
                 {
                     b.HasOne("ATDBackend.Database.Models.Category", "Category")
@@ -441,25 +442,6 @@ namespace ATDBackend.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ATDBackend.Database.Models.SeedContributor", b =>
-                {
-                    b.HasOne("ATDBackend.Database.Models.School", "School")
-                        .WithMany("SeedContributors")
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ATDBackend.Database.Models.Seed", "Seed")
-                        .WithMany("SeedContributors")
-                        .HasForeignKey("SeedId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("School");
-
-                    b.Navigation("Seed");
                 });
 
             modelBuilder.Entity("ATDBackend.Database.Models.Seed_in", b =>
@@ -515,14 +497,9 @@ namespace ATDBackend.Migrations
                     b.Navigation("School");
                 });
 
-            modelBuilder.Entity("ATDBackend.Database.Models.School", b =>
-                {
-                    b.Navigation("SeedContributors");
-                });
-
             modelBuilder.Entity("ATDBackend.Database.Models.Seed", b =>
                 {
-                    b.Navigation("SeedContributors");
+                    b.Navigation("ContributorSchools");
                 });
 #pragma warning restore 612, 618
         }

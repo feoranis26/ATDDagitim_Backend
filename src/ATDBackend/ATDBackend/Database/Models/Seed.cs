@@ -27,12 +27,8 @@ namespace ATDBackend.Database.Models
         public Category Category { get; set; } //FOREIGN KEY
 
 
-        public List<int> ContributorSchoolIds { get; set; } //FOREIGN KEY
 
-        [Required]
-        [ForeignKey(nameof(ContributorSchoolIds))]
-        [DeleteBehavior(DeleteBehavior.Restrict)]
-        public List<School> ContributorSchools { get; set; } //FOREIGN KEY
+        public List<SeedContributor> SeedContributors { get; set; } //FOREIGN KEY
 
 
         [Required]
@@ -48,6 +44,6 @@ namespace ATDBackend.Database.Models
         public bool Is_active { get; set; }
 
         [Required]
-        public string Image { get; set; }
+        public byte[] Image { get; set; }
     }
 }

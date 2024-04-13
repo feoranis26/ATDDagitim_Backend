@@ -4,6 +4,8 @@ using ATDBackend.Database.Models; //DB Models
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ATDBackend.Security.SessionSystem;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ATDBackend.Controllers
 {
@@ -26,8 +28,9 @@ namespace ATDBackend.Controllers
         /// <returns></returns>
         [HttpPost]
         [RequireAuth(Permission.PRODUCT_CREATE)]
-        public IActionResult AddProduct([FromBody] NewSeedDTO seedDto) //REQUIRES AUTHENTICATION
+        public IActionResult AddProduct([FromForm] NewSeedDTO seedDto) //REQUIRES AUTHENTICATION
         {
+            
             var category = _context.Categories.Find(seedDto.CategoryId);
 
             var school = _context.Schools.Find(seedDto.SchooolId);
@@ -50,7 +53,7 @@ namespace ATDBackend.Controllers
                 Name = seedDto.Name,
                 Category = category,
                 Description = seedDto.Description,
-                ContributorSchoolIds = new List<int>() { seedDto.SchooolId },
+                SeedContributors = new List<SeedContributor> { new SeedContributor { School = school } },
                 Stock = seedDto.Stock,
                 Date_added = DateTime.UtcNow,
                 Price = seedDto.Price,
@@ -75,18 +78,18 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.PRODUCT_CONTRIBUTOR_MODIFY)]
         public IActionResult AddContributor(int productId, int schoolId) //REQUIRES AUTHENTICATION
         {
-            Seed? seed = _context.Seeds.Find(productId);
+            Seed? seed = _context.Seeds.Include(x => x.SeedContributors).Where(x => x.Id == productId).FirstOrDefault();
             School? school = _context.Schools.Find(schoolId);
 
             if (seed == null) return NotFound("seednotfound");
             if (school == null) return NotFound("schoolnotfound");
-            if (seed.ContributorSchoolIds.Contains(schoolId)) return BadRequest("contributorexists");
+            if (!seed.SeedContributors.Where(x => x.SchoolId == schoolId).IsNullOrEmpty()) return BadRequest("contributorexists");
 
-            seed.ContributorSchoolIds.Add(schoolId);
+            seed.SeedContributors.Add(new SeedContributor() { SeedId = productId, SchoolId = schoolId});
             _context.Seeds.Update(seed);
             _context.SaveChanges();
 
-            return Ok("OK"); // TODO: Check if save changes successful
+            return Ok("OK");
         }
 
         /// <summary>
@@ -104,9 +107,11 @@ namespace ATDBackend.Controllers
 
             if (seed == null) return NotFound("seednotfound");
             if (school == null) return NotFound("schoolnotfound");
-            if (!seed.ContributorSchoolIds.Contains(schoolId)) return NotFound("contributornotfound");
 
-            seed.ContributorSchoolIds.Remove(schoolId);
+            SeedContributor? contributor = seed.SeedContributors.Where(x => x.SchoolId == schoolId).FirstOrDefault();
+            if (contributor == null) return NotFound("contributornotfound");
+
+            seed.SeedContributors.Remove(contributor);
             _context.Seeds.Update(seed);
             _context.SaveChanges();
 
@@ -122,7 +127,7 @@ namespace ATDBackend.Controllers
         /// <returns></returns>
         [HttpPut]
         [RequireAuth(Permission.PRODUCT_MODIFY)]
-        public IActionResult UpdateProduct(int Id, [FromBody] SeedUpdateDTO? seedDto)
+        public IActionResult UpdateProduct(int Id, [FromForm] SeedUpdateDTO? seedDto)
         {
             if (seedDto == null || Id == 0)
                 return BadRequest("Invalid Id or SeedDto");
@@ -164,32 +169,35 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("Page number cannot be smaller than 1");
             }
-            if (PageSize > 100)
+            if (PageSize < 1 || PageSize > 100)
             {
-                return BadRequest("Page Size cannot be bigger than 100");
+                return BadRequest("Page Size must be between 1 and 100");
             }
 
-            if (CategoryId != null)
-            {
-                var products = _context
-                    .Seeds
-                    .Include(s => s.Category)
-                    .Where(x => x.CategoryId == CategoryId)
-                    .Skip((Page - 1) * PageSize)
-                    .Take(PageSize)
-                    .ToList();
-                return Ok(products);
-            }
-            else
-            {
-                var products = _context
-                    .Seeds
-                    .Include(s => s.Category)
-                    .Skip((Page - 1) * PageSize)
-                    .Take(PageSize)
-                    .ToList();
-                return Ok(products);
-            }
+
+            var products = _context
+                .Seeds
+                .Include(s => s.Category)
+                .Include(s => s.SeedContributors).ThenInclude(x => x.School)
+                .Where(x => CategoryId == null ? true : x.CategoryId == CategoryId)
+                .Select(x => new SeedFetchDTO
+                {
+                    CategoryName = x.Category.CategoryName,
+                    Id = x.Id,
+                    ContributorSchoolNames = x.SeedContributors.Select(s => s.School.Name).ToArray(),
+                    Description = x.Description,
+                    Is_active = x.Is_active,
+                    Name = x.Name,
+                    Price = x.Price,
+                    Stock = x.Stock
+                })
+                .Skip((Page - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
+            return Ok(products);
+
+
         }
 
         /// <summary>
@@ -200,31 +208,43 @@ namespace ATDBackend.Controllers
         /// you can also get a list of products by providing a categoryId.
         /// </remarks>
         /// <param name="productId"></param>
-        /// <param name="categoryId"></param>
         /// <returns></returns>
-        [HttpGet("find")]
-        public IActionResult GetOneProduct(int? productId, int? categoryId)
+        [HttpGet("{productId}")]
+        public IActionResult GetOneProduct(int productId)
         {
-            if ((productId == null) == (categoryId == null))
-                return BadRequest(
-                    "Why the fuck are you filling (or leaving them empty) the both integers at the same time?"
-                );
-
-            if (productId != null)
+            SeedFetchDTO? seed = _context.Seeds
+            .Include(s => s.Category)
+            .Include(s => s.SeedContributors).ThenInclude(x => x.School)
+            .Where(x => x.Id == productId)
+            .Select(x => new SeedFetchDTO
             {
-                Seed? seed = _context.Seeds.Where(x => x.Id == productId).FirstOrDefault();
-                if (seed == null)
-                    return BadRequest("Seed not found");
-                return Ok(seed);
+                CategoryName = x.Category.CategoryName,
+                Id = x.Id,
+                ContributorSchoolNames = x.SeedContributors.Select(s => s.School.Name).ToArray(),
+                Description = x.Description,
+                Is_active = x.Is_active,
+                Name = x.Name,
+                Price = x.Price,
+                Stock = x.Stock
+            }).FirstOrDefault();
+
+            if (seed == null)
+            {
+                return NotFound("seednotfound");
             }
 
-            if (categoryId != null)
-            {
-                Seed[] seeds = [.. _context.Seeds.Where(x => x.CategoryId == categoryId)];
-                return Ok(seeds);
-            }
+            return Ok(seed);
+        }
 
-            return BadRequest("This shouldn't have happend...");
+        [HttpGet("{productId}/image")]
+        public IActionResult GetProductImage(int productId)
+        {
+            Seed? seed = _context.Seeds.Find(productId);
+
+            if(seed == null)
+            return NotFound("seednotfound");
+
+            return File(seed.Image, "image/jpeg");
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ATDBackend.Database.DBContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ATDBackend.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240413181723_seed contrschools_upd5")]
+    partial class seedcontrschools_upd5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,6 +134,10 @@ namespace ATDBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<List<int>>("ContributedSeedIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<float>("Credit")
                         .HasColumnType("real");
 
@@ -220,6 +227,9 @@ namespace ATDBackend.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ContributedSeedIds")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("Date_added")
                         .HasColumnType("timestamp with time zone");
 
@@ -241,12 +251,18 @@ namespace ATDBackend.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
+                    b.Property<List<int>>("SeedContributorIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<int>("Stock")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("ContributedSeedIds");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -262,9 +278,14 @@ namespace ATDBackend.Migrations
                     b.Property<int>("SchoolId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("SeedContributorIds")
+                        .HasColumnType("integer");
+
                     b.HasKey("SeedId", "SchoolId");
 
                     b.HasIndex("SchoolId");
+
+                    b.HasIndex("SeedContributorIds");
 
                     b.ToTable("SeedContributor");
                 });
@@ -440,19 +461,29 @@ namespace ATDBackend.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("ATDBackend.Database.Models.School", null)
+                        .WithMany("ContributedSeeds")
+                        .HasForeignKey("ContributedSeedIds")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Category");
                 });
 
             modelBuilder.Entity("ATDBackend.Database.Models.SeedContributor", b =>
                 {
                     b.HasOne("ATDBackend.Database.Models.School", "School")
-                        .WithMany("SeedContributors")
+                        .WithMany()
                         .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ATDBackend.Database.Models.Seed", "Seed")
+                    b.HasOne("ATDBackend.Database.Models.Seed", null)
                         .WithMany("SeedContributors")
+                        .HasForeignKey("SeedContributorIds")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ATDBackend.Database.Models.Seed", "Seed")
+                        .WithMany()
                         .HasForeignKey("SeedId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -517,7 +548,7 @@ namespace ATDBackend.Migrations
 
             modelBuilder.Entity("ATDBackend.Database.Models.School", b =>
                 {
-                    b.Navigation("SeedContributors");
+                    b.Navigation("ContributedSeeds");
                 });
 
             modelBuilder.Entity("ATDBackend.Database.Models.Seed", b =>

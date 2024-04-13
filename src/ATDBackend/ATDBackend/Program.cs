@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using ATDBackend.Database.DBContexts;
 using ATDBackend.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -184,9 +185,17 @@ namespace ATDBackend
                 .Services
                 .AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
+
+            builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+               options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
+                          );
+
             var app = builder.Build();
 
             InitModules(app.Logger, app.Configuration);
+
+
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
