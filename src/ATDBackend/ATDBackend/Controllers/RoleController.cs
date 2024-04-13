@@ -30,12 +30,13 @@ namespace ATDBackend.Controllers
 
         [HttpPost]
         [RequireMASTER]
-        public IActionResult AddRole(string rolename, ulong permissions)
+        public IActionResult AddRole(string rolename, int id, ulong permissions)
         {
             try
             {
                 Role role = new Role()
                 {
+                    Id = id,
                     RoleName = rolename,
                     Permissions = permissions
                 };
