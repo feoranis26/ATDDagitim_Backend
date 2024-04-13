@@ -55,7 +55,7 @@ namespace ATDBackend.Controllers
                 Date_added = DateTime.UtcNow,
                 Price = seedDto.Price,
                 Is_active = seedDto.Is_active,
-                Image = seedDto.Image
+                //Image = seedDto.Image
             };
 
             _context.Seeds.Add(seed);
@@ -139,8 +139,8 @@ namespace ATDBackend.Controllers
                 seed.Price = (int)seedDto.Price;
             if (seedDto.Is_active != null)
                 seed.Is_active = (bool)seedDto.Is_active;
-            if (seedDto.Image != null)
-                seed.Image = seedDto.Image;
+            if (seedDto.Image != null) ;
+                //seed.Image = seedDto.Image;
             _context.SaveChanges();
             return Ok(seed);
         }
