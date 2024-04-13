@@ -182,6 +182,7 @@ namespace ATDBackend.Controllers
                 .Seeds
                 .Include(s => s.Category)
                 .Include(s => s.SeedContributors)
+                .IgnoreAutoIncludes()
                 .ToList();
 
             return Ok(a);
