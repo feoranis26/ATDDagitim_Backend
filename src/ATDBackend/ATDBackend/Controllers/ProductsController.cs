@@ -180,12 +180,12 @@ namespace ATDBackend.Controllers
 
             var a = _context
                 .Seeds
-                .IgnoreAutoIncludes()
                 .Include(s => s.Category)
                 .Include(s => s.SeedContributors)
                 .ToList();
 
-            return Ok(a);
+            return Ok("AAA");
+           // return Ok(a);
 /*
             var products = _context
                 .Seeds
