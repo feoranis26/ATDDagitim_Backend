@@ -31,8 +31,7 @@ namespace ATDBackend.Database.Models
         [Required]
         public string Hashed_PW { get; set; }
 
-
-        public string BasketJson { get; set; }
+        public List<BasketSeed> BasketSeeds { get; set; }
 
         [Required]
         public DateTime Register_date { get; set; }
