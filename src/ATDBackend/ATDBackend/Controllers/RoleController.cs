@@ -96,5 +96,12 @@ namespace ATDBackend.Controllers
             }
 
         }
+
+        [HttpGet("permissions")]
+        [RequireMASTER]
+        public IActionResult GetPermissions()
+        {
+            return Ok(Permissions.GetPermissions());
+        }
     }
 }
