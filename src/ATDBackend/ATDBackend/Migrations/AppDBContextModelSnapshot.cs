@@ -236,9 +236,9 @@ namespace ATDBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("Image")
+                    b.Property<string>("Image")
                         .IsRequired()
-                        .HasColumnType("bytea");
+                        .HasColumnType("text");
 
                     b.Property<bool>("Is_active")
                         .HasColumnType("boolean");
