@@ -180,9 +180,9 @@ namespace ATDBackend.Controllers
 
             var a = _context
                 .Seeds
+                .IgnoreAutoIncludes()
                 .Include(s => s.Category)
                 .Include(s => s.SeedContributors)
-                .IgnoreAutoIncludes()
                 .ToList();
 
             return Ok(a);
