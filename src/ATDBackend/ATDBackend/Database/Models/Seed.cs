@@ -27,12 +27,12 @@ namespace ATDBackend.Database.Models
         public Category Category { get; set; } //FOREIGN KEY
 
 
-        public ICollection<int> ContributorSchoolIds { get; set; } //FOREIGN KEY
+        public List<int> ContributorSchoolIds { get; set; } //FOREIGN KEY
 
         [Required]
         [ForeignKey(nameof(ContributorSchoolIds))]
         [DeleteBehavior(DeleteBehavior.Restrict)]
-        public ICollection<School> ContributorSchools { get; set; } //FOREIGN KEY
+        public List<School> ContributorSchools { get; set; } //FOREIGN KEY
 
 
         [Required]
