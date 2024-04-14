@@ -130,7 +130,7 @@ namespace ATDBackend
                 });
             //DB Context
             var conn = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-            builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn), ServiceLifetime.Scoped);
+            builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn), ServiceLifetime.Transient, ServiceLifetime.Transient);
 
 
             //Identity
