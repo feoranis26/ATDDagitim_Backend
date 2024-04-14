@@ -1,6 +1,7 @@
 ﻿using ATDBackend.Discord.Commands;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
+using Newtonsoft.Json;
 
 namespace ATDBackend.Discord
 {
@@ -34,6 +35,16 @@ namespace ATDBackend.Discord
 
 
             await Client.GetChannelAsync(1229091852834046064).Result.SendMessageAsync("Discord Bot Started");
+
+
+            slash.AutocompleteErrored += Slash_AutocompleteErrored;
+        }
+
+        private static Task Slash_AutocompleteErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.AutocompleteErrorEventArgs args)
+        {
+            Console.WriteLine("AUTOCOMPLETE ERROR");
+            Console.WriteLine(JsonConvert.SerializeObject(args.Exception));
+            return Task.CompletedTask;
         }
     }
 }
