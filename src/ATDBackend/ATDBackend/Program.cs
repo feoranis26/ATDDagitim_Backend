@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using ATDBackend.Database.DBContexts;
+using ATDBackend.Discord;
 using ATDBackend.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -193,6 +194,7 @@ namespace ATDBackend
             var app = builder.Build();
 
             InitModules(app.Logger, app.Configuration);
+            DiscordMain.InitDiscord(app.Logger).Wait();
 
 
 
