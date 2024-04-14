@@ -17,7 +17,8 @@ namespace ATDBackend.Discord
             {
                 Intents = DiscordIntents.All,
                 TokenType = TokenType.Bot,
-                Token = Environment.GetEnvironmentVariable("DISCORD_TOKEN")
+                Token = Environment.GetEnvironmentVariable("DISCORD_TOKEN"),
+                MinimumLogLevel = LogLevel.Debug
             });
 
             var slash = Client.UseSlashCommands(new SlashCommandsConfiguration()
