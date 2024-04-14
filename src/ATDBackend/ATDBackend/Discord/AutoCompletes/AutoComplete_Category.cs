@@ -5,6 +5,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace ATDBackend.Discord.AutoCompletes
 {
@@ -36,7 +37,7 @@ namespace ATDBackend.Discord.AutoCompletes
             }
             catch(Exception ex)
             {
-                Console.WriteLine("AAA " + ex);
+                Console.WriteLine("AAA \n" + JsonConvert.SerializeObject(ex));
                 return new List<DiscordAutoCompleteChoice>();
             }
         }
