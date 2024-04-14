@@ -45,12 +45,12 @@ namespace ATDBackend.Controllers
 
         [HttpPost]
         [RequireAuth(Permission.SCHOOL_SELF_PURCHASEPRODUCT)]
-        public IActionResult AddToBasket(int seedId, int quantity)
+        public IActionResult AddToBasket(int productId, int quantity)
         {
             int? userId = (HttpContext.Items["User"] as User)?.Id;
             if (userId == null) return Unauthorized("nouser");
 
-            if(_context.Seeds.Find(seedId) == null) return NotFound("seednotfound");
+            if(_context.Seeds.Find(productId) == null) return NotFound("seednotfound");
             if(quantity <= 0 || quantity > 200) return BadRequest("invalidquantity");
 
 
@@ -58,12 +58,21 @@ namespace ATDBackend.Controllers
             User? user = _context.Users.Where(x => x.Id == userId).Include(x => x.BasketSeeds).FirstOrDefault();
             if(user == null) return Unauthorized("nouser");
 
-            user.BasketSeeds.Add(new BasketSeed()
+            BasketSeed? bs = user.BasketSeeds.Where(x => x.SeedId == productId).FirstOrDefault();
+            if (bs != null)
             {
-                Quantity = quantity,
-                SeedId = seedId,
-                UserId = userId.Value
-            });
+                bs.Quantity = quantity;
+            }
+            else
+            {
+                user.BasketSeeds.Add(new BasketSeed()
+                {
+                    Quantity = quantity,
+                    SeedId = productId,
+                    UserId = userId.Value
+                });
+            }
+
             _context.Users.Update(user);
             _context.SaveChanges();
 
@@ -72,19 +81,19 @@ namespace ATDBackend.Controllers
 
         [HttpDelete]
         [RequireAuth(Permission.SCHOOL_SELF_PURCHASEPRODUCT)]
-        public IActionResult DeleteSingleFromBasket(int seedId)
+        public IActionResult DeleteSingleFromBasket(int productId)
         {
             int? userId = (HttpContext.Items["User"] as User)?.Id;
             if (userId == null) return Unauthorized("nouser");
 
-            if (_context.Seeds.Find(seedId) == null) return NotFound("seednotfound");
+            if (_context.Seeds.Find(productId) == null) return NotFound("seednotfound");
 
 
 
             User? user = _context.Users.Where(x => x.Id == userId).Include(x => x.BasketSeeds).FirstOrDefault();
             if (user == null) return Unauthorized("nouser");
 
-            BasketSeed? bs = user.BasketSeeds.Where(x => x.SeedId == seedId).FirstOrDefault();
+            BasketSeed? bs = user.BasketSeeds.Where(x => x.SeedId == productId).FirstOrDefault();
             if(bs == null) return NotFound("basketseednotfound");
 
             bool s = user.BasketSeeds.Remove(bs);
