@@ -119,12 +119,5 @@ namespace ATDBackend.Controllers
 
             return Ok();
         }
-
-        [HttpPost("purchase")]
-        [RequireAuth(Permission.SCHOOL_SELF_PURCHASEPRODUCT)]
-        public IActionResult PurchaseBasket(/* CONTACT INFO ARGS */)
-        {
-            return Ok();
-        }
     }
 }
