@@ -19,13 +19,13 @@ namespace ATDBackend.Discord.Commands
         private readonly AppDBContext dbContext = appDbContext;
 
         [SlashCommand("add", "Creates a new seed")]
-        public async Task Ping(InteractionContext ctx, [Autocomplete(typeof(AutoComplete_Category))][Option("cateogry", "Seed category", true)] int id)
+        public async Task Ping(InteractionContext ctx, [Autocomplete(typeof(AutoComplete_Category))][Option("cateogry", "Seed category", true)] string categoryid)
         {
             try
             {
                 await ctx.DeferAsync();
 
-                await ctx.EditResponseAsync(id.ToString());
+                await ctx.EditResponseAsync(categoryid.ToString());
             }
             catch(Exception ex)
             {
