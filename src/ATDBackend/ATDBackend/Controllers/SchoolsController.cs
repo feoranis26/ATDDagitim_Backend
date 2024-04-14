@@ -2,7 +2,8 @@ using ATDBackend.DTO; //Data Transfer Objects
 using ATDBackend.Database.DBContexts; //DB Contexts
 using ATDBackend.Database.Models; //DB Models
 using Microsoft.AspNetCore.Mvc;
-using ATDBackend.Security.SessionSystem; //You know what this is...
+using ATDBackend.Security.SessionSystem;
+using ATDBackend.Migrations; //You know what this is...
 
 namespace ATDBackend.Controllers
 {
@@ -41,6 +42,24 @@ namespace ATDBackend.Controllers
         public IActionResult GetSchools() //REQUIRES AUTHENTICATION
         {
             return Ok(_context.Schools.ToList());
+        }
+
+        [HttpGet]
+        [RequireAuth(Permission.SCHOOL_SELF_READ)]
+        public IActionResult GetSelfSchool() //REQUIRES AUTHENTICATION
+        {
+            User? user = HttpContext.Items["User"] as User;
+
+            if (user == null) return Unauthorized("nouser");
+
+            School? school = _context.Schools.Find(user.SchoolId);
+            if (school == null) return NotFound("noschool");
+
+            return Ok(new
+            {
+                school.Name,
+                school.Credit
+            });
         }
     }
 }
