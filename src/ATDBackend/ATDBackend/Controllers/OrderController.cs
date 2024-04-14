@@ -59,6 +59,8 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.ORDER_SELF_CREATE)]
         public IActionResult CreateOrder([FromBody] OrderDTO order)
         {
+            return StatusCode(500);
+            /*
             //Check if order is valid
             if (HttpContext.Items["User"] is not User tempUser)
             {
@@ -168,6 +170,7 @@ namespace ATDBackend.Controllers
             _context.Orders.Add(newOrder);
             _context.SaveChanges();
             return CreatedAtAction(nameof(GetOrder), new { orderId = newOrder.Id }, newOrder);
+            */
         }
 
         /// <summary>
@@ -186,6 +189,8 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.PERMISSION_ADMIN)]
         public IActionResult ModifyOrder(int orderId, [FromBody] OrderToModifyDTO orderToModify)
         {
+            return StatusCode(500);
+            /*
             var order = _context.Orders.Find(orderId);
             if (order is null)
             {
@@ -236,6 +241,7 @@ namespace ATDBackend.Controllers
             schoolOrders[schoolOrderIndex] = order;
             _context.SaveChanges();
             return Ok(order);
+            */
         }
     }
 }
