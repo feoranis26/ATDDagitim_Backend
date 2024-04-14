@@ -22,7 +22,6 @@ namespace ATDBackend.Discord.Commands
             await ctx.DeferAsync();
 
             await ctx.EditResponseAsync("Pong");
-            await ctx.EditResponseAsync(string.Join(" , ", dbContext.Seeds.ToList().Select(x => x.Name)));
         }
 
     }

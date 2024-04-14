@@ -1,15 +1,34 @@
-﻿using DSharpPlus.Entities;
+﻿using ATDBackend.Controllers;
+using ATDBackend.Database.DBContexts;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ATDBackend.Discord.AutoCompletes
 {
-    public class AutoComplete_Category : IAutocompleteProvider
+    public class AutoComplete_Category(
+        ILogger<AuthController> logger,
+        IConfiguration configuration,
+        AppDBContext appDbContext) : IAutocompleteProvider
     {
+        private readonly IConfiguration _configuration = configuration;
+        private readonly ILogger<AuthController> _logger = logger;
+        private readonly AppDBContext dbContext = appDbContext;
+
         public async Task<IEnumerable<DiscordAutoCompleteChoice>> Provider(AutocompleteContext ctx)
         {
-            string item = ctx.OptionValue.ToString();
+            string? categoryStr = ctx.OptionValue?.ToString()?.ToLower();
 
-            return null;
+            Dictionary<int, string> categories = new Dictionary<int, string>();
+
+            List<DiscordAutoCompleteChoice> choices = new();
+
+            if(categoryStr == null) (await dbContext.Categories.ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
+            else (await dbContext.Categories.Where(x => x.CategoryName.ToLower().Contains(categoryStr)).ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
+
+
+            return choices;
         }
     }
 }
