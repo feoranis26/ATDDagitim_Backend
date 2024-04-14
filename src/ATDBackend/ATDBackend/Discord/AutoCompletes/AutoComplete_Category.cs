@@ -21,6 +21,7 @@ namespace ATDBackend.Discord.AutoCompletes
         {
             try
             {
+                Console.WriteLine("AYTOCOMPELTE");
                 string? categoryStr = ctx.OptionValue?.ToString()?.ToLower();
                 Console.WriteLine(categoryStr);
                 Dictionary<int, string> categories = new Dictionary<int, string>();
