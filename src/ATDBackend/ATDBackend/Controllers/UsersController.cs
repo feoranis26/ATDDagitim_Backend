@@ -91,5 +91,24 @@ namespace ATDBackend.Controllers
             //PRODUCTION:
             return Created();
         }
+
+
+        [HttpGet]
+        [RequireAuth(Permission.None)]
+        public IActionResult GetSelf()
+        {
+            User? user = HttpContext.Items["User"] as User;
+
+            if(user == null) return Unauthorized("nouser");
+
+            return Ok(new
+            {
+                user.Username,
+                user.Name,
+                user.Surname,
+                user.Email,
+                user.Phone_number
+            });
+        }
     }
 }
