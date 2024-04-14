@@ -34,5 +34,13 @@ namespace ATDBackend.Discord.Commands
             await ctx.EditResponseAsync("AAb");
             //await ctx.EditResponseAsync(_context == null ? "APP DB CONTEXT IS NULLLLLLLLLLLLLLLLLLLL" : "APP DB CONTEXT IS NOT NULLLLLLLLLLLLLLLLLLLL");
         }
+
+        [SlashCommand("ping", "Replies with pong!")]
+        public async Task Ping(InteractionContext ctx)
+        {
+            await ctx.DeferAsync();
+
+            await ctx.EditResponseAsync("PONGGGGG");
+        }
     }
 }
