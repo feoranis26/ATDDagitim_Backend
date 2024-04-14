@@ -3,6 +3,7 @@ using ATDBackend.Database.DBContexts;
 using ATDBackend.Database.Models;
 using ATDBackend.Discord.Extensions;
 using DSharpPlus.SlashCommands;
+using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Discord.Commands
 {
@@ -10,16 +11,18 @@ namespace ATDBackend.Discord.Commands
     public class Commands_Seed(
         ILogger<AuthController> logger,
         IConfiguration configuration,
-        AppDBContext context) : ApplicationCommandModule
+        IDbContextFactory<AppDBContext> dbFactory) : ApplicationCommandModule
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
-        private readonly AppDBContext _context = context;
+        private readonly IDbContextFactory<AppDBContext> dbFactory = dbFactory;
 
 
         [SlashCommand("add", "Add a seed to the database")]
         public async Task AddSeed(InteractionContext ctx)
         {
+            using AppDBContext db = dbFactory.CreateDbContext();
+
             try
             {
                 Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -27,7 +30,7 @@ namespace ATDBackend.Discord.Commands
                 await ctx.DeferAsync();
 
                 await ctx.EditResponseAsync("AA");
-                await ctx.EditResponseAsync(_context == null ? "APP DB CONTEXT IS NULLLLLLLLLLLLLLLLLLLL" : "APP DB CONTEXT IS NOT NULLLLLLLLLLLLLLLLLLLL");
+                await ctx.EditResponseAsync(string.Join(" , ", db.Seeds.ToList().Select(x => x.Name)));
             }
             catch(Exception ex)
             {
