@@ -26,6 +26,7 @@ namespace ATDBackend.Discord
             });
 
             slash.RegisterCommands<Commands_Misc>();
+            slash.RegisterCommands<Commands_Seed>();
 
             await Client.ConnectAsync();
 
