@@ -20,10 +20,19 @@ namespace ATDBackend.Discord.Commands
         [SlashCommand("add", "Add a seed to the database")]
         public async Task AddSeed(InteractionContext ctx)
         {
-            await ctx.DeferAsync();
+            try
+            {
+                Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
-            await ctx.EditResponseAsync("AA");
-            await ctx.EditResponseAsync(_context == null ? "APP DB CONTEXT IS NULLLLLLLLLLLLLLLLLLLL" : "APP DB CONTEXT IS NOT NULLLLLLLLLLLLLLLLLLLL");
+                await ctx.DeferAsync();
+
+                await ctx.EditResponseAsync("AA");
+                await ctx.EditResponseAsync(_context == null ? "APP DB CONTEXT IS NULLLLLLLLLLLLLLLLLLLL" : "APP DB CONTEXT IS NOT NULLLLLLLLLLLLLLLLLLLL");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"THE ERRR / {ex.Message} / {ex.StackTrace}");
+            }
         }
 
         [SlashCommand("a", "bb")]
