@@ -27,7 +27,13 @@ namespace ATDBackend.Discord.AutoCompletes
                 Console.WriteLine(categoryStr);
                 Dictionary<int, string> categories = new Dictionary<int, string>();
 
-                List<DiscordAutoCompleteChoice> choices = new();
+                List<DiscordAutoCompleteChoice> choices = new()
+                {
+                    new DiscordAutoCompleteChoice("name", "val"),
+                    new DiscordAutoCompleteChoice("name2", "val2")
+                };
+
+                return choices;
 
                 if (categoryStr.IsNullOrEmpty()) (await dbContext.Categories.ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
                 else (await dbContext.Categories.Where(x => x.CategoryName.ToLower().Contains(categoryStr)).ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
