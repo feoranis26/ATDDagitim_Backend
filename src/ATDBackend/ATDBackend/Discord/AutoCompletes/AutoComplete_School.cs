@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Discord.AutoCompletes
 {
-    public class AutoComplete_Category(
+    public class AutoComplete_School(
         ILogger<AuthController> logger,
         IConfiguration configuration,
         AppDBContext appDbContext) : IAutocompleteProvider
@@ -22,8 +22,8 @@ namespace ATDBackend.Discord.AutoCompletes
 
             List<DiscordAutoCompleteChoice> choices = new();
 
-            if (input.IsNullOrEmpty()) (await dbContext.Categories.ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id.ToString())));
-            else (await dbContext.Categories.Where(x => x.CategoryName.ToLower().Contains(input)).ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id.ToString())));
+            if (input.IsNullOrEmpty()) (await dbContext.Schools.ToListAsync()).ForEach(x => choices.Add(new(x.Name, x.Id.ToString())));
+            else (await dbContext.Schools.Where(x => x.Name.ToLower().Contains(input)).ToListAsync()).ForEach(x => choices.Add(new(x.Name, x.Id.ToString())));
 
             return choices;
         }
