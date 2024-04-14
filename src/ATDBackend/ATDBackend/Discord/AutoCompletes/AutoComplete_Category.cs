@@ -1,5 +1,6 @@
 ﻿using ATDBackend.Controllers;
 using ATDBackend.Database.DBContexts;
+using ATDBackend.Utils;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
@@ -18,17 +19,25 @@ namespace ATDBackend.Discord.AutoCompletes
 
         public async Task<IEnumerable<DiscordAutoCompleteChoice>> Provider(AutocompleteContext ctx)
         {
-            string? categoryStr = ctx.OptionValue?.ToString()?.ToLower();
+            try
+            {
+                string? categoryStr = ctx.OptionValue?.ToString()?.ToLower();
+                Console.WriteLine(categoryStr);
+                Dictionary<int, string> categories = new Dictionary<int, string>();
 
-            Dictionary<int, string> categories = new Dictionary<int, string>();
+                List<DiscordAutoCompleteChoice> choices = new();
 
-            List<DiscordAutoCompleteChoice> choices = new();
-
-            if(categoryStr == null) (await dbContext.Categories.ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
-            else (await dbContext.Categories.Where(x => x.CategoryName.ToLower().Contains(categoryStr)).ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
+                if (categoryStr.IsNullOrEmpty()) (await dbContext.Categories.ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
+                else (await dbContext.Categories.Where(x => x.CategoryName.ToLower().Contains(categoryStr)).ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
 
 
-            return choices;
+                return choices;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("AAA " + ex);
+                return new List<DiscordAutoCompleteChoice>();
+            }
         }
     }
 }
