@@ -22,7 +22,17 @@ namespace ATDBackend.Discord.Commands
         {
             await ctx.DeferAsync();
 
-            await ctx.EditResponseAsync(_context == null ? "APP DB CONTEXT IS NULLLLLLLLLLLLLLLLLLLL" : "APP DB CONTEXT IS NOT NULLLLLLLLLLLLLLLLLLLL");
+            await ctx.EditResponseAsync("AA");
+            //await ctx.EditResponseAsync(_context == null ? "APP DB CONTEXT IS NULLLLLLLLLLLLLLLLLLLL" : "APP DB CONTEXT IS NOT NULLLLLLLLLLLLLLLLLLLL");
+        }
+
+        [SlashCommand("a", "bb")]
+        public async Task a(InteractionContext ctx)
+        {
+            await ctx.DeferAsync();
+
+            await ctx.EditResponseAsync("AAb");
+            //await ctx.EditResponseAsync(_context == null ? "APP DB CONTEXT IS NULLLLLLLLLLLLLLLLLLLL" : "APP DB CONTEXT IS NOT NULLLLLLLLLLLLLLLLLLLL");
         }
     }
 }
