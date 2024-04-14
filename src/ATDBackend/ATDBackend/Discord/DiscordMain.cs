@@ -1,4 +1,6 @@
-﻿using DSharpPlus;
+﻿using ATDBackend.Discord.Commands;
+using DSharpPlus;
+using DSharpPlus.SlashCommands;
 
 namespace ATDBackend.Discord
 {
@@ -14,6 +16,10 @@ namespace ATDBackend.Discord
                 TokenType = TokenType.Bot,
                 Token = Environment.GetEnvironmentVariable("DISCORD_TOKEN")
             });
+
+            var slash = Client.UseSlashCommands();
+
+            slash.RegisterCommands<Commands_Misc>();
 
             await Client.ConnectAsync();
 
