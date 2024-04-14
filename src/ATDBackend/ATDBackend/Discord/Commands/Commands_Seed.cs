@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Discord.Commands
 {
-    
+    [SlashCommandGroup("seed", "Seed commands")]
     public class Commands_Seed(
         ILogger<AuthController> logger,
         IConfiguration configuration,
