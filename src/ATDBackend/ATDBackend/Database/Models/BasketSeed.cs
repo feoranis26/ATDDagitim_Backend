@@ -22,6 +22,6 @@ namespace ATDBackend.Database.Models
         public User School { get; set; }
 
 
-        public int Count { get; set; }
+        public int Quantity { get; set; }
     }
 }
