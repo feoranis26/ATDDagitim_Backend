@@ -19,7 +19,7 @@ namespace ATDBackend.Database.Models
 
         [ForeignKey(nameof(UserId))]
         [DeleteBehavior(DeleteBehavior.Restrict)]
-        public User School { get; set; }
+        public User User { get; set; }
 
 
         public int Quantity { get; set; }
