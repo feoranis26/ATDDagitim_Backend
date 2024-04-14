@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using ATDBackend.Database.DBContexts;
 using ATDBackend.Discord;
 using ATDBackend.Swagger;
+using DSharpPlus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -15,6 +16,8 @@ namespace ATDBackend
 {
     public class Program
     {
+        public static AppDBContext? DBContext { get; private set; }
+
         private static void InitModules(ILogger logger, IConfiguration config)
         {
             Assembly asm = Assembly.GetExecutingAssembly();
@@ -191,10 +194,16 @@ namespace ATDBackend
                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
                           );
 
+
+
+
+
             var app = builder.Build();
 
+            // Discord
+            DiscordMain.InitDiscord(app.Services).Wait();
+
             InitModules(app.Logger, app.Configuration);
-            DiscordMain.InitDiscord(app.Logger).Wait();
 
 
 
