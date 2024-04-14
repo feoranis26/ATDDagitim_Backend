@@ -31,7 +31,7 @@ namespace ATDBackend.Discord.AutoCompletes
                 if (categoryStr.IsNullOrEmpty()) (await dbContext.Categories.ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
                 else (await dbContext.Categories.Where(x => x.CategoryName.ToLower().Contains(categoryStr)).ToListAsync()).ForEach(x => choices.Add(new(x.CategoryName, x.Id)));
 
-
+                Console.WriteLine($"LEN: {choices.Count} // {string.Join(" / ", choices.Select(x => x.Name))}");
                 return choices;
             }
             catch(Exception ex)
