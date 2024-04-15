@@ -3,6 +3,7 @@ using ATDBackend.Database.DBContexts;
 using ATDBackend.Database.Models;
 using ATDBackend.Discord.AutoCompletes;
 using ATDBackend.Discord.Extensions;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +24,7 @@ namespace ATDBackend.Discord.Commands
             [Option("name", "Name of the seed")] string name,
             [Option("description", "Description of the seed")] string description,
             [Autocomplete(typeof(AutoComplete_Category))][Option("cateogry", "Seed category", true)] string categoryid_str,
-            [Option("image", "Image of the seed")] byte[] image,
+            [Option("image", "Image of the seed")] DiscordAttachment image_att,
             [Option("price", "Price of the seed")] string price_str,
             [Option("is_active", "Whether if the seed is active or not")] bool isActive,
             [Autocomplete(typeof(AutoComplete_School))][Option("contributor_school", "Contributor school of the seed")] string cschoolid_str,
@@ -49,6 +50,14 @@ namespace ATDBackend.Discord.Commands
             if (!int.TryParse(id_str, out int id))
             {
                 await ctx.EditResponseAsync("Invalid id");
+                return;
+            }
+
+            byte[]? image = await image_att.GetFileContentAsync();
+
+            if (image == null)
+            {
+                await ctx.EditResponseAsync("Couldn't fetch image");
                 return;
             }
 
