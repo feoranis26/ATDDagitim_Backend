@@ -27,8 +27,8 @@ namespace ATDBackend.Discord.Commands
             [Option("stock", "Stock of the seed")] string stock_str,
             [Autocomplete(typeof(AutoComplete_Category))][Option("cateogry", "Seed category", true)] string categoryid_str,
             [Autocomplete(typeof(AutoComplete_School))][Option("contributor_school", "Contributor school of the seed")] string cschoolid_str,
-            [Option("is_active", "Whether if the seed is active or not")] bool isActive = true,
-            [Option("image", "Image of the seed")] DiscordAttachment image_att
+            [Option("image", "Image of the seed")] DiscordAttachment image_att,
+            [Option("is_active", "Whether if the seed is active or not")] bool isActive = true
             )
         {
             try
