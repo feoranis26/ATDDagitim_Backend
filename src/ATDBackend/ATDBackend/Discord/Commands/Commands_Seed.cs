@@ -28,79 +28,80 @@ namespace ATDBackend.Discord.Commands
             [Option("price", "Price of the seed")] string price_str,
             [Option("is_active", "Whether if the seed is active or not")] bool isActive,
             [Autocomplete(typeof(AutoComplete_School))][Option("contributor_school", "Contributor school of the seed")] string cschoolid_str,
-            [Option("stock", "Stock of the seed")] string stock_str,
-            [Option("id", "id")] string id_str
+            [Option("stock", "Stock of the seed")] string stock_str
             )
         {
-
-            await ctx.DeferAsync();
-
-            if (!int.TryParse(price_str, out int price))
+            try
             {
-                await ctx.EditResponseAsync("Invalid price");
-                return;
-            }
+                await ctx.DeferAsync();
 
-            if (!int.TryParse(stock_str, out int stock))
-            {
-                await ctx.EditResponseAsync("Invalid stock");
-                return;
-            }
+                if (!int.TryParse(price_str, out int price))
+                {
+                    await ctx.EditResponseAsync("Invalid price");
+                    return;
+                }
 
-            if (!int.TryParse(id_str, out int id))
-            {
-                await ctx.EditResponseAsync("Invalid id");
-                return;
-            }
+                if (!int.TryParse(stock_str, out int stock))
+                {
+                    await ctx.EditResponseAsync("Invalid stock");
+                    return;
+                }
 
-            byte[]? image = await image_att.GetFileContentAsync();
+                byte[]? image = await image_att.GetFileContentAsync();
 
-            if (image == null)
-            {
-                await ctx.EditResponseAsync("Couldn't fetch image");
-                return;
-            }
+                if (image == null)
+                {
+                    await ctx.EditResponseAsync("Couldn't fetch image");
+                    return;
+                }
 
-            if (!int.TryParse(categoryid_str, out int categoryId) || dbContext.Categories.Find(categoryId) == null)
-            {
-                await ctx.EditResponseAsync("Invalid category id");
-                return;
-            }
+                if (!int.TryParse(categoryid_str, out int categoryId) || dbContext.Categories.Find(categoryId) == null)
+                {
+                    await ctx.EditResponseAsync("Invalid category id");
+                    return;
+                }
 
-            if (!int.TryParse(cschoolid_str, out int cschoolId) || dbContext.Schools.Find(cschoolId) == null)
-            {
-                await ctx.EditResponseAsync("Invalid school id");
-                return;
-            }
+                if (!int.TryParse(cschoolid_str, out int cschoolId) || dbContext.Schools.Find(cschoolId) == null)
+                {
+                    await ctx.EditResponseAsync("Invalid school id");
+                    return;
+                }
 
 
 
 
-            Seed seed = new Seed()
-            {
-                Name = name,
-                Description = description,
-                CategoryId = categoryId,
-                Image = image,
-                Price = price,
-                Is_active = isActive,
-                Stock = stock,
-                Date_added = DateTime.Now,
-                Id = id,
-                SeedContributors = new List<SeedContributor>()
+                Seed seed = new Seed()
+                {
+                    Name = name,
+                    Description = description,
+                    CategoryId = categoryId,
+                    Image = image,
+                    Price = price,
+                    Is_active = isActive,
+                    Stock = stock,
+                    Date_added = DateTime.Now
+                };
+
+                dbContext.Seeds.Add(seed);
+                await dbContext.SaveChangesAsync();
+
+                seed.SeedContributors = new List<SeedContributor>()
                 {
                     new SeedContributor()
                     {
-                        SchoolId = cschoolId,
-                        SeedId = id
+                        SeedId = seed.Id,
+                        SchoolId = cschoolId
                     }
-                }
-            };
+                };
+                await dbContext.SaveChangesAsync();
 
-            dbContext.Seeds.Add(seed);
-            await dbContext.SaveChangesAsync();
-
-            await ctx.EditResponseAsync("Success");
+                await ctx.EditResponseAsync("Success");
+            }
+            catch(Exception ex)
+            {
+                await ctx.EditResponseAsync("An error occured / " + ex.Message);
+                _logger.LogError(ex, "Error");
+            }
         }
     }
 }
