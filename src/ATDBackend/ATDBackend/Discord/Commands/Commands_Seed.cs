@@ -79,7 +79,7 @@ namespace ATDBackend.Discord.Commands
                     Price = price,
                     Is_active = isActive,
                     Stock = stock,
-                    Date_added = DateTime.Now
+                    Date_added = DateTime.Now.ToUniversalTime()
                 };
 
                 dbContext.Seeds.Add(seed);
