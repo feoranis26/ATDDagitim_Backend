@@ -23,12 +23,12 @@ namespace ATDBackend.Discord.Commands
         public async Task Ping(InteractionContext ctx,
             [Option("name", "Name of the seed")] string name,
             [Option("description", "Description of the seed")] string description,
-            [Autocomplete(typeof(AutoComplete_Category))][Option("cateogry", "Seed category", true)] string categoryid_str,
-            [Option("image", "Image of the seed")] DiscordAttachment image_att,
             [Option("price", "Price of the seed")] string price_str,
-            [Option("is_active", "Whether if the seed is active or not")] bool isActive,
+            [Option("stock", "Stock of the seed")] string stock_str,
+            [Autocomplete(typeof(AutoComplete_Category))][Option("cateogry", "Seed category", true)] string categoryid_str,
             [Autocomplete(typeof(AutoComplete_School))][Option("contributor_school", "Contributor school of the seed")] string cschoolid_str,
-            [Option("stock", "Stock of the seed")] string stock_str
+            [Option("is_active", "Whether if the seed is active or not")] bool isActive = true,
+            [Option("image", "Image of the seed")] DiscordAttachment image_att
             )
         {
             try
@@ -37,13 +37,13 @@ namespace ATDBackend.Discord.Commands
 
                 if (!int.TryParse(price_str, out int price))
                 {
-                    await ctx.EditResponseAsync("Invalid price");
+                    await ctx.EditResponseAsync(DiscordColor.Red, "Invalid price", "");
                     return;
                 }
 
                 if (!int.TryParse(stock_str, out int stock))
                 {
-                    await ctx.EditResponseAsync("Invalid stock");
+                    await ctx.EditResponseAsync(DiscordColor.Red, "Invalid stock", "");
                     return;
                 }
 
@@ -51,19 +51,19 @@ namespace ATDBackend.Discord.Commands
 
                 if (image == null)
                 {
-                    await ctx.EditResponseAsync("Couldn't fetch image");
+                    await ctx.EditResponseAsync(DiscordColor.DarkRed, "Couldn't fetch image", "");
                     return;
                 }
 
                 if (!int.TryParse(categoryid_str, out int categoryId) || dbContext.Categories.Find(categoryId) == null)
                 {
-                    await ctx.EditResponseAsync("Invalid category id");
+                    await ctx.EditResponseAsync(DiscordColor.Red, "Invalid category id", "");
                     return;
                 }
 
                 if (!int.TryParse(cschoolid_str, out int cschoolId) || dbContext.Schools.Find(cschoolId) == null)
                 {
-                    await ctx.EditResponseAsync("Invalid school id");
+                    await ctx.EditResponseAsync(DiscordColor.Red, "Invalid school id", "");
                     return;
                 }
 
@@ -95,11 +95,11 @@ namespace ATDBackend.Discord.Commands
                 };
                 await dbContext.SaveChangesAsync();
 
-                await ctx.EditResponseAsync("Success");
+                await ctx.EditResponseAsync(DiscordColor.SpringGreen, $"[Success](https://www.sehirbahceleri.com.tr/seeds/seed/{seed.Id})", "");
             }
             catch(Exception ex)
             {
-                await ctx.EditResponseAsync("An error occured / " + ex.Message);
+                await ctx.EditResponseAsync(DiscordColor.DarkRed, "Server Error", ex.Message);
                 _logger.LogError(ex, "Error");
             }
         }
