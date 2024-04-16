@@ -31,9 +31,6 @@ namespace ATDBackend.Database.Models
         public string? OrderDetails { get; set; }
 
         [Required]
-        public List<int> Seeds { get; set; }
-
-        [Required]
         public DateTime Timestamp { get; set; }
 
         [Required]

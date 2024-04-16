@@ -4,6 +4,7 @@ using ATDBackend.Database.DBContexts;
 using ATDBackend.Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using ATDBackend.Security.SessionSystem;
+using ATDBackend.DTO;
 
 namespace ATDBackend.Controllers
 {
@@ -59,8 +60,7 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.ORDER_SELF_CREATE)]
         public IActionResult CreateOrder([FromBody] OrderDTO order)
         {
-            return StatusCode(500);
-            /*
+
             //Check if order is valid
             if (HttpContext.Items["User"] is not User tempUser)
             {
@@ -83,7 +83,7 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("Invalid Address");
             }
-            if (user.BasketJson is null)
+            if (user.BasketSeeds is null)
             {
                 return BadRequest("No Basket");
             }
@@ -93,47 +93,37 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("No School");
             }
-            //Create basketSeeds
-            List<BasketSeed>? basketSeeds = JsonSerializer.Deserialize<List<BasketSeed>>(
-                user.BasketJson
-            );
+
+            var basketSeeds = user.BasketSeeds;
             float? totalOrderPrice = 0; //Order Price
-            List<int> seedIds = [];
-            if (basketSeeds is null)
-            {
-                return BadRequest("No Seeds in Basket or invalid basket");
-            }
+            List<BasketSeedDTO> SeedKeeper = [];//Save the current seed parameters
+
             foreach (var seedinBasket in basketSeeds)
             {
-                var seed = _context.Seeds.Find(seedinBasket.Id);
+                var seed = _context.Seeds.Find(seedinBasket.SeedId);
                 if (
                     seed is null
                     || seed.Is_active == false //seed isn't active
                     || seed.Stock < seedinBasket.Quantity //not enough stock
-                    || seed.Price != seedinBasket.Price //price has changed
                     || seed.Price <= 0 //seed is free or negative price
                 )
                 {
-                    return BadRequest("Invalid Seed in basket"); //If seed is not purchasable
+                    return BadRequest("Invalid Seed in basket, run GET[/Basket] to fix"); //If seed is not purchasable
                 }
                 else
                 {
-                    totalOrderPrice += seed.Price * seedinBasket.Quantity; //Set total order price
-
-                    for (int i = 0; i < seedinBasket.Quantity; i++)
+                    SeedKeeper.Add(new BasketSeedDTO
                     {
-                        seedIds.Add(seed.Id);
-                    }
+                        Id = seed.Id,
+                        Name = seed.Name,
+                        CategoryId = seed.CategoryId,
+                        Stock = seed.Stock,
+                        Price = seed.Price,
+                        Quantity = seedinBasket.Quantity
+                    });
+                    totalOrderPrice += seed.Price * seedinBasket.Quantity; //Set total order price
+                    seed.Stock -= seedinBasket.Quantity; //Reduce stock
                 }
-            }
-            foreach (var seedId in seedIds)
-            {
-                var seed = _context.Seeds.Find(seedId);
-                if (seed is null)
-                {
-                    return BadRequest("Invalid Seed in basket");
-                }
-                seed.Stock -= 1; //Reduce stock
             }
             //All checks passed, create order
             if (totalOrderPrice <= 0 || totalOrderPrice > 1000000 || totalOrderPrice is null)
@@ -159,8 +149,7 @@ namespace ATDBackend.Controllers
                 Status = _status[0],
                 Price = (float)totalOrderPrice,
                 Timestamp = DateTime.UtcNow,
-                Seeds = seedIds,
-                OrderDetails = JsonSerializer.Serialize(basketSeeds)
+                OrderDetails = JsonSerializer.Serialize(SeedKeeper)//Save the current price and stock of the seeds to avoid future discrepancies
             };
             List<Order>? schoolOrders = JsonSerializer.Deserialize<List<Order>>(userSchool.Orders);
             schoolOrders ??= [];
@@ -170,7 +159,6 @@ namespace ATDBackend.Controllers
             _context.Orders.Add(newOrder);
             _context.SaveChanges();
             return CreatedAtAction(nameof(GetOrder), new { orderId = newOrder.Id }, newOrder);
-            */
         }
 
         /// <summary>
