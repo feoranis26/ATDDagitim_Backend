@@ -16,7 +16,7 @@ namespace ATDBackend.Database.Models
         [Required]
         public string Address { get; set; }
 
-        public string Orders { get; set; }
+        public List<Order> Orders { get; set; } //FOREIGN KEY
 
         [Required]
         public float Credit { get; set; }
