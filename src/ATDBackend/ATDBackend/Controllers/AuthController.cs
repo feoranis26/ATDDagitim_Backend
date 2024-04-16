@@ -50,7 +50,7 @@ namespace ATDBackend.Controllers
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.None
+                        SameSite = SameSiteMode.None,
                     }
                 );
 
@@ -60,7 +60,8 @@ namespace ATDBackend.Controllers
                     "true",
                     new CookieOptions
                     {
-                        SameSite = SameSiteMode.None
+                        SameSite = SameSiteMode.None,
+                        HttpOnly = false,
                     }
                 );
 
@@ -75,7 +76,7 @@ namespace ATDBackend.Controllers
 
             Session? ses = SessionHandler.GetSessionByUserID(user.Id);
 
-            if(ses != null) SessionHandler.RemoveSession(ses);
+            if (ses != null) SessionHandler.RemoveSession(ses);
 
 
             Response.Cookies.Append(
