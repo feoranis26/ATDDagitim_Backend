@@ -48,9 +48,7 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.SCHOOL_SELF_READ)]
         public IActionResult GetSelfSchool() //REQUIRES AUTHENTICATION
         {
-            User? user = HttpContext.Items["User"] as User;
-
-            if (user == null) return Unauthorized("nouser");
+            if (HttpContext.Items["User"] is not User user) return Unauthorized("nouser");
 
             School? school = _context.Schools.Find(user.SchoolId);
             if (school == null) return NotFound("noschool");

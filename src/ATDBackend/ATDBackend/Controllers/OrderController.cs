@@ -5,6 +5,8 @@ using ATDBackend.Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using ATDBackend.Security.SessionSystem;
 using ATDBackend.DTO;
+using Microsoft.EntityFrameworkCore;
+using ATDBackend.Security;
 
 namespace ATDBackend.Controllers
 {
@@ -20,7 +22,14 @@ namespace ATDBackend.Controllers
         private readonly ILogger<AuthController> _logger = logger;
         private readonly AppDBContext _context = context;
 
-        private readonly string[] _status = ["Pending", "Processing", "Shipped", "Delivered"];
+        enum Status
+        {
+            Pending,
+            Processing,
+            Shipped,
+            Delivered,
+            Cancelled
+        }
 
         /// <summary>
         /// Get all orders
@@ -66,12 +75,12 @@ namespace ATDBackend.Controllers
             {
                 return Unauthorized("No User");
             }
-            var user = _context.Users.Find(tempUser.Id);
+            var user = _context.Users.Include(u => u.BasketSeeds).FirstOrDefault(u => u.Id == tempUser.Id);
             if (user is null)
             {
                 return Unauthorized("No User");
             }
-            if (!order.Email.Contains("@"))
+            if (!PatternVerifier.VerifyEmail(order.Email))
             {
                 return BadRequest("Invalid Email");
             }
@@ -146,16 +155,11 @@ namespace ATDBackend.Controllers
                 Address = order.Address,
                 PhoneNumber = order.PhoneNumber,
                 Email = order.Email,
-                Status = _status[0],
+                Status = Status.Pending.ToString(),
                 Price = (float)totalOrderPrice,
                 Timestamp = DateTime.UtcNow,
                 OrderDetails = JsonSerializer.Serialize(SeedKeeper)//Save the current price and stock of the seeds to avoid future discrepancies
             };
-            List<Order>? schoolOrders = JsonSerializer.Deserialize<List<Order>>(userSchool.Orders);
-            schoolOrders ??= [];
-            schoolOrders.Add(newOrder);
-            userSchool.Orders = JsonSerializer.Serialize(schoolOrders); //Add the order to the school's orders
-
             _context.Orders.Add(newOrder);
             _context.SaveChanges();
             return CreatedAtAction(nameof(GetOrder), new { orderId = newOrder.Id }, newOrder);
@@ -177,16 +181,10 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.PERMISSION_ADMIN)]
         public IActionResult ModifyOrder(int orderId, [FromBody] OrderToModifyDTO orderToModify)
         {
-            return StatusCode(500);
-            /*
             var order = _context.Orders.Find(orderId);
             if (order is null)
             {
                 return NotFound("Order not found");
-            }
-            if (HttpContext.Items["User"] is not User user)
-            {
-                return Unauthorized("No User");
             }
             if (orderToModify == null)
             {
@@ -198,11 +196,18 @@ namespace ATDBackend.Controllers
             }
             if (orderToModify.StatusId != null)
             {
-                order.Status = _status[(int)orderToModify.StatusId];
+                if (!Enum.IsDefined(typeof(Status), orderToModify.StatusId))
+                {
+                    return BadRequest("Invalid Status Id");
+                }
+                else
+                {
+                    order.Status = Enum.GetName(typeof(Status), orderToModify.StatusId);
+                }
             }
             if (orderToModify.StatusName != null)
             {
-                if (!_status.Contains(orderToModify.StatusName))
+                if (!Enum.TryParse<Status>(orderToModify.StatusName, out var status))
                 {
                     return BadRequest("Invalid Status Name");
                 }
@@ -220,16 +225,8 @@ namespace ATDBackend.Controllers
             {
                 return BadRequest("No School");
             }
-            List<Order>? schoolOrders = JsonSerializer.Deserialize<List<Order>>(orderSchool.Orders);
-            int schoolOrderIndex = schoolOrders.FindIndex(o => o.Id == order.Id);
-            if (schoolOrders is null || schoolOrderIndex == -1)
-            {
-                return StatusCode(500, "School Orders not found");
-            }
-            schoolOrders[schoolOrderIndex] = order;
             _context.SaveChanges();
             return Ok(order);
-            */
         }
     }
 }

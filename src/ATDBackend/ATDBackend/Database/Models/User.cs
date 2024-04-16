@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Database.Models
 {
-    [Index(nameof(Email), nameof(Username) , IsUnique = true)]
+    [Index(nameof(Email), nameof(Username), IsUnique = true)]
     public class User
     {
         [Key]
@@ -31,7 +31,7 @@ namespace ATDBackend.Database.Models
         [Required]
         public string Hashed_PW { get; set; }
 
-        public List<BasketSeed> BasketSeeds { get; set; }
+        public List<BasketSeed>? BasketSeeds { get; set; }
 
         [Required]
         public DateTime Register_date { get; set; }
