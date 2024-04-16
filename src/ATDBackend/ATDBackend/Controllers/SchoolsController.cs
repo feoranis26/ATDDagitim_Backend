@@ -28,6 +28,7 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.SCHOOL_GLOBAL_CREATE)]
         public IActionResult AddSchool([FromBody] School school) //REQUIRES AUTHENTICATION
         {
+            school.Orders = "[]";
             _context.Schools.Add(school);
             _context.SaveChanges();
             return Ok(school);

@@ -178,16 +178,10 @@ namespace ATDBackend.Controllers
         [RequireAuth(Permission.PERMISSION_ADMIN)]
         public IActionResult ModifyOrder(int orderId, [FromBody] OrderToModifyDTO orderToModify)
         {
-            return StatusCode(500);
-            /*
             var order = _context.Orders.Find(orderId);
             if (order is null)
             {
                 return NotFound("Order not found");
-            }
-            if (HttpContext.Items["User"] is not User user)
-            {
-                return Unauthorized("No User");
             }
             if (orderToModify == null)
             {
@@ -230,7 +224,6 @@ namespace ATDBackend.Controllers
             schoolOrders[schoolOrderIndex] = order;
             _context.SaveChanges();
             return Ok(order);
-            */
         }
     }
 }
