@@ -5,6 +5,7 @@ using ATDBackend.Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using ATDBackend.Security.SessionSystem;
 using ATDBackend.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace ATDBackend.Controllers
 {
@@ -66,7 +67,7 @@ namespace ATDBackend.Controllers
             {
                 return Unauthorized("No User");
             }
-            var user = _context.Users.Find(tempUser.Id);
+            var user = _context.Users.Include(u => u.BasketSeeds).FirstOrDefault(u => u.Id == tempUser.Id);
             if (user is null)
             {
                 return Unauthorized("No User");
